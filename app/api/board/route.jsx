@@ -16,10 +16,14 @@ export const dynamic = "force-dynamic";
 const ENV = {
   stopA:  process.env.BOARD_STOP_A,
   linesA: process.env.BOARD_LINES_A,
+  destA:  process.env.BOARD_DEST_A,
+  notDestA: process.env.BOARD_NOTDEST_A,
   labelA: process.env.BOARD_LABEL_A,
   rowsA:  process.env.BOARD_ROWS_A,
   stopB:  process.env.BOARD_STOP_B,
   linesB: process.env.BOARD_LINES_B,
+  destB:  process.env.BOARD_DEST_B,
+  notDestB: process.env.BOARD_NOTDEST_B,
   labelB: process.env.BOARD_LABEL_B,
   rowsB:  process.env.BOARD_ROWS_B,
   lat:    process.env.BOARD_LAT,
@@ -40,12 +44,16 @@ function conf(url) {
     a: {
       stop:  pick("stopA",  "Bottmingen"),
       lines: pick("linesA", ""),
+      dest:  pick("destA", ""),
+      notDest: pick("notDestA", ""),
       label: pick("labelA", "Tram"),
       rows:  parseInt(pick("rowsA", "4"), 10) || 4,
     },
     b: {
       stop:  pick("stopB",  "Bottmingen"),
       lines: pick("linesB", ""),
+      dest:  pick("destB", ""),
+      notDest: pick("notDestB", ""),
       label: pick("labelB", "Bus"),
       rows:  parseInt(pick("rowsB", "3"), 10) || 3,
     },
@@ -149,6 +157,18 @@ async function departures(block) {
   const json = await res.json();
 
   const wanted = block.lines.split(",").map(s => s.trim()).filter(Boolean);
+
+  // Fahrtrichtung ueber das Endziel. Kleinschreibung und
+  // Teilstring, damit "basel" auch "Basel, MParc" trifft.
+  const liste = (v) => String(v || "").split(",").map(x => x.trim().toLowerCase()).filter(Boolean);
+  const nur   = liste(block.dest);
+  const ohne  = liste(block.notDest);
+  const passt = (ziel) => {
+    const z = String(ziel || "").toLowerCase();
+    if (nur.length  && !nur.some(n => z.includes(n)))  return false;
+    if (ohne.length &&  ohne.some(n => z.includes(n))) return false;
+    return true;
+  };
   const now = Date.now();
   let offset = null;
 
@@ -181,6 +201,7 @@ async function departures(block) {
   .filter(Boolean)
   .filter(d => d.eta >= 0)
   .filter(d => !wanted.length || wanted.includes(d.line))
+  .filter(d => passt(d.dest))
   .sort((x, y) => x.realMs - y.realMs)
   .slice(0, block.rows);
 

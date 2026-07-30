@@ -19,7 +19,7 @@ const input = {
   border: "1px solid #bbb", borderRadius: 4, boxSizing: "border-box",
 };
 
-function StopPicker({ title, value, onChange, lines, onLines, rows, onRows, kind, onKind }) {
+function StopPicker({ title, value, onChange, lines, onLines, rows, onRows, kind, onKind, notDest, onNotDest }) {
   const [hits, setHits] = useState([]);
   const [open, setOpen] = useState(false);
 
@@ -63,6 +63,15 @@ function StopPicker({ title, value, onChange, lines, onLines, rows, onRows, kind
         </div>
       )}
 
+      <div style={{ marginTop: 12 }}>
+        <label style={label}>Gegenrichtung ausblenden</label>
+        <input style={input} value={notDest} placeholder="Rodersdorf, Ettingen"
+          onChange={(e) => onNotDest(e.target.value)} />
+        <span style={{ fontSize: 11, color: "#888", lineHeight: 1.4 }}>
+          Endziele der Richtung, die du nicht sehen willst.
+        </span>
+      </div>
+
       <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
         <div style={{ flex: 2 }}>
           <label style={label}>Nur diese Linien</label>
@@ -84,16 +93,16 @@ function StopPicker({ title, value, onChange, lines, onLines, rows, onRows, kind
 }
 
 export default function Page() {
-  const [a, setA] = useState({ stop: "", lines: "", rows: "4", label: "Tram" });
-  const [b, setB] = useState({ stop: "", lines: "", rows: "3", label: "Bus" });
+  const [a, setA] = useState({ stop: "", lines: "", rows: "4", label: "Tram", notDest: "" });
+  const [b, setB] = useState({ stop: "", lines: "", rows: "3", label: "Bus", notDest: "" });
   const [coords, setCoords] = useState("47.52, 7.57");
   const [bust, setBust] = useState(0);
 
   const [lat, lon] = coords.split(",").map(s => parseFloat(s.trim()));
 
   const query = new URLSearchParams({
-    stopA: a.stop, linesA: a.lines, rowsA: a.rows, labelA: a.label,
-    stopB: b.stop, linesB: b.lines, rowsB: b.rows, labelB: b.label,
+    stopA: a.stop, linesA: a.lines, rowsA: a.rows, labelA: a.label, notDestA: a.notDest,
+    stopB: b.stop, linesB: b.lines, rowsB: b.rows, labelB: b.label, notDestB: b.notDest,
     lat: isNaN(lat) ? "47.52" : String(lat),
     lon: isNaN(lon) ? "7.57" : String(lon),
   }).toString();
@@ -123,6 +132,7 @@ export default function Page() {
           lines={a.lines} onLines={(v) => setA({ ...a, lines: v })}
           rows={a.rows} onRows={(v) => setA({ ...a, rows: v })}
           kind={a.label} onKind={(v) => setA({ ...a, label: v })}
+          notDest={a.notDest} onNotDest={(v) => setA({ ...a, notDest: v })}
         />
         <StopPicker
           title="Block 2, unten"
@@ -130,6 +140,7 @@ export default function Page() {
           lines={b.lines} onLines={(v) => setB({ ...b, lines: v })}
           rows={b.rows} onRows={(v) => setB({ ...b, rows: v })}
           kind={b.label} onKind={(v) => setB({ ...b, label: v })}
+          notDest={b.notDest} onNotDest={(v) => setB({ ...b, notDest: v })}
         />
       </div>
 

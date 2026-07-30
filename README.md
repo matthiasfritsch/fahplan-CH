@@ -26,15 +26,17 @@ In Vercel unter Settings, Environment Variables eintragen, dann einmal
 neu deployen. Danach reicht dem Geraet der nackte Pfad `/api/board`.
 
 ```
-BOARD_STOP_A    Bottmingen, Schloss
-BOARD_LINES_A   10, 17
-BOARD_LABEL_A   Tram
-BOARD_ROWS_A    4
+BOARD_STOP_A      Bottmingen, Batteriestrasse
+BOARD_LINES_A     10, 17
+BOARD_LABEL_A     Tram
+BOARD_ROWS_A      4
+BOARD_NOTDEST_A   Rodersdorf, Ettingen
 
-BOARD_STOP_B    Binningen, Kronenplatz
-BOARD_LINES_B   34, 47
-BOARD_LABEL_B   Bus
-BOARD_ROWS_B    3
+BOARD_STOP_B      Bottmingen, Bodenackerstrasse
+BOARD_LINES_B     47
+BOARD_LABEL_B     Bus
+BOARD_ROWS_B      3
+BOARD_NOTDEST_B   Schloss
 
 BOARD_LAT       47.52
 BOARD_LON       7.57
@@ -42,6 +44,22 @@ BOARD_LON       7.57
 
 Alles laesst sich auch per URL ueberschreiben, praktisch zum Ausprobieren:
 `/api/board?stopA=...&linesA=10,17&rowsA=5`
+
+## Fahrtrichtung
+
+Die API kennt kein Richtungsfeld, wohl aber das Endziel jeder Fahrt.
+Darueber wird gefiltert, mit Teilstring und ohne Ruecksicht auf
+Gross- und Kleinschreibung.
+
+- `BOARD_NOTDEST_A` bzw. `notDestA` blendet Ziele aus. Robuster,
+  weil die Gegenrichtung wenige feste Endpunkte hat.
+- `BOARD_DEST_A` bzw. `destA` laesst nur genannte Ziele durch.
+  Sproeder, weil Kurzwenden Richtung Stadt sonst wegfallen.
+
+Beide Listen werden an Kommas getrennt. Volle Haltestellennamen mit
+Komma zerfallen dadurch in zwei Begriffe, was meistens trotzdem
+passt. Im Zweifel ein einzelnes eindeutiges Wort nehmen, also
+`Schloss` statt `Bottmingen, Schloss`.
 
 `/api/board?debug=1` liefert statt des Bildes die Rohdaten als JSON.
 Erste Anlaufstelle, wenn eine Zeile fehlt oder komisch aussieht.
