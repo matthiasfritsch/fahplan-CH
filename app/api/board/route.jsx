@@ -56,42 +56,53 @@ function conf(url) {
 
 /* ============================================================
    Schriften
-   Google Fonts liefert TTF statt WOFF2, wenn man sich als
-   alter Browser ausgibt. Satori kann kein WOFF2, deshalb der
-   Umweg. Das Ergebnis bleibt im Modul-Cache, wird also nur
-   beim ersten Aufruf nach einem Kaltstart geholt.
+   Feste Adressen statt CSS-Parsen. Die WOFF-Dateien kommen aus
+   den offiziellen npm-Paketen von IBM, ausgeliefert ueber zwei
+   unabhaengige CDNs. Satori kann TTF, OTF und WOFF, nur WOFF2
+   nicht, deshalb bewusst die WOFF-Variante.
+
+   Das Ergebnis bleibt im Modul-Cache, wird also nur beim ersten
+   Aufruf nach einem Kaltstart geholt.
    ============================================================ */
-const OLD_UA =
-  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/537.36 " +
-  "(KHTML, like Gecko) Chrome/25.0.1364.97 Safari/537.36";
+const FONT_FILES = [
+  { name: "Plex Cond", weight: 500, pkg: "@ibm/plex-sans-condensed@2.0.0", file: "IBMPlexSansCondensed-Medium.woff" },
+  { name: "Plex Cond", weight: 700, pkg: "@ibm/plex-sans-condensed@2.0.0", file: "IBMPlexSansCondensed-Bold.woff" },
+  { name: "Plex Mono", weight: 500, pkg: "@ibm/plex-mono@2.5.0",           file: "IBMPlexMono-Medium.woff" },
+  { name: "Plex Mono", weight: 600, pkg: "@ibm/plex-mono@2.5.0",           file: "IBMPlexMono-SemiBold.woff" },
+];
 
 let FONT_CACHE = null;
 
-async function ttf(family, weight) {
-  const cssUrl =
-    "https://fonts.googleapis.com/css2?family=" +
-    encodeURIComponent(family) + ":wght@" + weight;
-  const css = await fetch(cssUrl, { headers: { "User-Agent": OLD_UA } }).then(r => r.text());
-  const m = css.match(/src:\s*url\((https:\/\/[^)]+\.ttf)\)/);
-  if (!m) throw new Error("Keine TTF-Quelle fuer " + family + " " + weight);
-  const res = await fetch(m[1]);
-  return res.arrayBuffer();
+// Reihenfolge der Quellen: zuerst die Dateien aus public/fonts
+// im eigenen Projekt, danach zwei oeffentliche CDNs als Netz.
+function sourcesFor(spec, origin) {
+  const npmPath = spec.pkg + "/fonts/complete/woff/" + spec.file;
+  return [
+    origin + "/fonts/" + spec.file,
+    "https://cdn.jsdelivr.net/npm/" + npmPath,
+    "https://unpkg.com/" + npmPath,
+  ];
 }
 
-async function fonts() {
+async function loadFont(spec, origin) {
+  const fehler = [];
+  for (const src of sourcesFor(spec, origin)) {
+    try {
+      const res = await fetch(src);
+      if (!res.ok) { fehler.push(src + " -> " + res.status); continue; }
+      const buf = await res.arrayBuffer();
+      if (buf.byteLength < 1000) { fehler.push(src + " -> zu klein"); continue; }
+      return { name: spec.name, data: buf, weight: spec.weight, style: "normal" };
+    } catch (e) {
+      fehler.push(src + " -> " + e.message);
+    }
+  }
+  throw new Error("Schrift nicht ladbar: " + spec.file + "\n  " + fehler.join("\n  "));
+}
+
+async function fonts(origin) {
   if (FONT_CACHE) return FONT_CACHE;
-  const [c5, c7, m5, m6] = await Promise.all([
-    ttf("IBM Plex Sans Condensed", 500),
-    ttf("IBM Plex Sans Condensed", 700),
-    ttf("IBM Plex Mono", 500),
-    ttf("IBM Plex Mono", 600),
-  ]);
-  FONT_CACHE = [
-    { name: "Plex Cond", data: c5, weight: 500, style: "normal" },
-    { name: "Plex Cond", data: c7, weight: 700, style: "normal" },
-    { name: "Plex Mono", data: m5, weight: 500, style: "normal" },
-    { name: "Plex Mono", data: m6, weight: 600, style: "normal" },
-  ];
+  FONT_CACHE = await Promise.all(FONT_FILES.map(f => loadFont(f, origin)));
   return FONT_CACHE;
 }
 
@@ -237,6 +248,17 @@ async function handle(request) {
       { headers: { "content-type": "text/plain; charset=utf-8" } });
   }
 
+  // Stufe 2 der Diagnose: nur die Schriften, ohne Daten und
+  // ohne Rendern. Sagt dir genau, welche Datei zickt.
+  if (url.searchParams.get("fonts") === "1") {
+    const f = await fonts(url.origin);
+    return new Response(
+      "ok, " + f.length + " Schriften geladen\n" +
+      f.map(x => x.name + " " + x.weight + ": " + x.data.byteLength + " Bytes").join("\n"),
+      { headers: { "content-type": "text/plain; charset=utf-8" } }
+    );
+  }
+
   const cfg = conf(url);
 
   // Faellt eine Quelle aus, wird das Board trotzdem gezeichnet
@@ -282,7 +304,7 @@ async function handle(request) {
     {
       width: W,
       height: H,
-      fonts: await fonts(),
+      fonts: await fonts(url.origin),
       headers: {
         // Kurz cachen: schuetzt die Transport-API vor Doppelabrufen,
         // ohne dass die Anzeige spuerbar hinterherhinkt.
