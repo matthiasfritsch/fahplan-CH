@@ -1,34 +1,57 @@
 import { ImageResponse } from "next/og";
 import Board, { W, H } from "./Board";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 /* ============================================================
    Konfiguration
    Reihenfolge: URL-Parameter schlaegt Umgebungsvariable
-   schlaegt Voreinstellung. So kannst du im Browser schnell
-   etwas ausprobieren, ohne neu zu deployen.
+   schlaegt Voreinstellung.
+
+   Achtung: process.env muss statisch geschrieben stehen, also
+   process.env.BOARD_STOP_A und nicht process.env[name]. Beim
+   Bauen werden diese Stellen durch die Werte ersetzt, ein
+   berechneter Schluessel findet nichts mehr.
    ============================================================ */
+const ENV = {
+  stopA:  process.env.BOARD_STOP_A,
+  linesA: process.env.BOARD_LINES_A,
+  labelA: process.env.BOARD_LABEL_A,
+  rowsA:  process.env.BOARD_ROWS_A,
+  stopB:  process.env.BOARD_STOP_B,
+  linesB: process.env.BOARD_LINES_B,
+  labelB: process.env.BOARD_LABEL_B,
+  rowsB:  process.env.BOARD_ROWS_B,
+  lat:    process.env.BOARD_LAT,
+  lon:    process.env.BOARD_LON,
+};
+
 function conf(url) {
   const q = url.searchParams;
-  const pick = (param, env, fallback) =>
-    q.get(param) ?? process.env[env] ?? fallback;
+  const pick = (key, fallback) => {
+    const fromUrl = q.get(key);
+    if (fromUrl !== null && fromUrl !== "") return fromUrl;
+    const fromEnv = ENV[key];
+    if (fromEnv !== undefined && fromEnv !== "") return fromEnv;
+    return fallback;
+  };
 
   return {
     a: {
-      stop:  pick("stopA",  "BOARD_STOP_A",  "Bottmingen"),
-      lines: pick("linesA", "BOARD_LINES_A", ""),
-      label: pick("labelA", "BOARD_LABEL_A", "Tram"),
-      rows:  parseInt(pick("rowsA", "BOARD_ROWS_A", "4"), 10),
+      stop:  pick("stopA",  "Bottmingen"),
+      lines: pick("linesA", ""),
+      label: pick("labelA", "Tram"),
+      rows:  parseInt(pick("rowsA", "4"), 10) || 4,
     },
     b: {
-      stop:  pick("stopB",  "BOARD_STOP_B",  "Bottmingen"),
-      lines: pick("linesB", "BOARD_LINES_B", ""),
-      label: pick("labelB", "BOARD_LABEL_B", "Bus"),
-      rows:  parseInt(pick("rowsB", "BOARD_ROWS_B", "3"), 10),
+      stop:  pick("stopB",  "Bottmingen"),
+      lines: pick("linesB", ""),
+      label: pick("labelB", "Bus"),
+      rows:  parseInt(pick("rowsB", "3"), 10) || 3,
     },
-    lat: parseFloat(pick("lat", "BOARD_LAT", "47.52")),
-    lon: parseFloat(pick("lon", "BOARD_LON", "7.57")),
+    lat: parseFloat(pick("lat", "47.52")),
+    lon: parseFloat(pick("lon", "7.57")),
   };
 }
 
@@ -192,6 +215,20 @@ async function weather(lat, lon) {
    Route
    ============================================================ */
 export async function GET(request) {
+  try {
+    return await handle(request);
+  } catch (err) {
+    // Ein nackter 500er sagt nichts. Lieber Klartext, dann
+    // steht die Ursache direkt im Browser.
+    return new Response(
+      "Board-Fehler: " + (err && err.message ? err.message : String(err)) +
+      "\n\n" + (err && err.stack ? err.stack : ""),
+      { status: 500, headers: { "content-type": "text/plain; charset=utf-8" } }
+    );
+  }
+}
+
+async function handle(request) {
   const url = new URL(request.url);
   const cfg = conf(url);
 
