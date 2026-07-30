@@ -1,4 +1,3 @@
-import { ImageResponse } from "next/og";
 import Board, { W, H } from "./Board";
 
 export const runtime = "nodejs";
@@ -230,6 +229,14 @@ export async function GET(request) {
 
 async function handle(request) {
   const url = new URL(request.url);
+
+  // Stufe 1 der Diagnose: antwortet, sobald das Modul ueberhaupt
+  // geladen werden konnte. Braucht weder Netz noch Schriften.
+  if (url.searchParams.get("ping") === "1") {
+    return new Response("ok, Modul geladen, Runtime " + (process.release ? "node" : "edge"),
+      { headers: { "content-type": "text/plain; charset=utf-8" } });
+  }
+
   const cfg = conf(url);
 
   // Faellt eine Quelle aus, wird das Board trotzdem gezeichnet
@@ -256,6 +263,11 @@ async function handle(request) {
       { headers: { "content-type": "application/json; charset=utf-8" } }
     );
   }
+
+  // next/og erst hier laden. Als Top-Level-Import reisst ein
+  // Fehler beim Initialisieren das ganze Modul mit, dann greift
+  // kein try-catch mehr und du siehst nur einen nackten 500er.
+  const { ImageResponse } = await import("next/og");
 
   return new ImageResponse(
     (
