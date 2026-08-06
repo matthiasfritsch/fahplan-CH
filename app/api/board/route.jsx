@@ -312,7 +312,11 @@ async function handle(request) {
   // kein try-catch mehr und du siehst nur einen nackten 500er.
   const { ImageResponse } = await import("next/og");
 
-  return new ImageResponse(
+  // WICHTIG: ImageResponse streamt das PNG und schickt dabei kein
+  // Content-Length. Manche Clients, darunter ESPHome, lesen genau
+  // dieses Feld und laden sonst 0 Bytes. Deshalb das Bild komplett
+  // in den Speicher holen und mit gesetzter Laenge ausliefern.
+  const img = new ImageResponse(
     (
       <Board
         a={{ ...cfg.a, list: a.list }}
@@ -322,15 +326,18 @@ async function handle(request) {
         stale={stale}
       />
     ),
-    {
-      width: W,
-      height: H,
-      fonts: await fonts(url.origin),
-      headers: {
-        // Kurz cachen: schuetzt die Transport-API vor Doppelabrufen,
-        // ohne dass die Anzeige spuerbar hinterherhinkt.
-        "Cache-Control": "public, s-maxage=45, stale-while-revalidate=120",
-      },
-    }
+    { width: W, height: H, fonts: await fonts(url.origin) }
   );
+
+  const bytes = await img.arrayBuffer();
+
+  return new Response(bytes, {
+    status: 200,
+    headers: {
+      "content-type": "image/png",
+      "content-length": String(bytes.byteLength),
+      "accept-ranges": "none",
+      "cache-control": "public, s-maxage=45, stale-while-revalidate=120",
+    },
+  });
 }
