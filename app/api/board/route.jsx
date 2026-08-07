@@ -29,6 +29,7 @@ const ENV = {
   labelB: process.env.BOARD_LABEL_B,
   rowsB:  process.env.BOARD_ROWS_B,
   invert: process.env.BOARD_INVERT,
+  eta:    process.env.BOARD_ETA,
   lat:    process.env.BOARD_LAT,
   lon:    process.env.BOARD_LON,
 };
@@ -63,6 +64,7 @@ function conf(url) {
       rows:  parseInt(pick("rowsB", "3"), 10) || 3,
     },
     invert: pick("invert", "0") === "1",
+    eta: pick("eta", "auto"),
     lat: parseFloat(pick("lat", "47.52")),
     lon: parseFloat(pick("lon", "7.57")),
   };
@@ -119,6 +121,16 @@ function offsetMinutes(iso) {
   if (!m) return 120;                       // Sommerzeit als Notnagel
   const sign = m[1] === "-" ? -1 : 1;
   return sign * (parseInt(m[2], 10) * 60 + parseInt(m[3], 10));
+}
+
+/* Stosszeit: werktags 7 bis 9 Uhr. Nur dann laeuft das Geraet im
+   Minutentakt, also nur dann ist ein Countdown ehrlich. */
+function istStosszeit(offsetMin) {
+  const d = new Date(Date.now() + offsetMin * 60000);
+  const wt = d.getUTCDay();                    // 0 = Sonntag
+  const werktag = wt >= 1 && wt <= 5;
+  const std = d.getUTCHours();
+  return werktag && std >= 7 && std < 9;
 }
 
 const WEEKDAYS = ["Sonntag", "Montag", "Dienstag", "Mittwoch",
@@ -434,6 +446,12 @@ async function handle(request) {
   // Farben vor dem Rendern festlegen
   setInvert(cfg.invert);
 
+  // Countdown nur zeigen, wenn auch im Minutentakt aktualisiert
+  // wird. "auto" entscheidet nach Uhrzeit, 1 und 0 erzwingen.
+  const zeigeEta = cfg.eta === "1" ? true
+                 : cfg.eta === "0" ? false
+                 : istStosszeit(offset);
+
   // WICHTIG: ImageResponse streamt das PNG und schickt dabei kein
   // Content-Length. Manche Clients, darunter ESPHome, lesen genau
   // dieses Feld und laden sonst 0 Bytes. Deshalb das Bild komplett
@@ -446,6 +464,7 @@ async function handle(request) {
         weather={wx}
         stamp={stampFrom(offset)}
         stale={stale}
+        eta={zeigeEta}
       />
     ),
     { width: W, height: H, fonts: await fonts(url.origin) }

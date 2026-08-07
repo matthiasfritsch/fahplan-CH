@@ -62,7 +62,7 @@ function clip(s, n) {
 }
 
 // --- Eine Abfahrtszeile -------------------------------------
-function Row({ d, h, fs, last }) {
+function Row({ d, h, fs, last, eta }) {
   const base = {
     display: "flex",
     alignItems: "center",
@@ -94,7 +94,7 @@ function Row({ d, h, fs, last }) {
         overflow: "hidden", whiteSpace: "nowrap",
         fontFamily: SANS, fontWeight: 600, fontSize: Math.round(fs * 0.40),
         color: INK,
-      }}>{clip(d.dest, 17)}</div>
+      }}>{clip(d.dest, eta ? 17 : 26)}</div>
 
       <div style={{
         display: "flex", width: C_SCHED, marginRight: GAP,
@@ -127,18 +127,23 @@ function Row({ d, h, fs, last }) {
 
       {/* Ankunft am Ziel, leichter gesetzt damit die Abfahrt fuehrt */}
       <div style={{
-        display: "flex", width: C_ARR, marginRight: GAP,
+        display: "flex", width: C_ARR, marginRight: eta ? GAP : 0,
         justifyContent: "flex-end", flexShrink: 0, whiteSpace: "nowrap",
         fontFamily: NUMS, fontWeight: 700, fontSize: Math.round(fs * 0.40),
         color: MID,
       }}>{d.arrText || ""}</div>
 
-      <div style={{
-        display: "flex", width: C_ETA,
-        justifyContent: "flex-end", flexShrink: 0, whiteSpace: "nowrap", alignItems: "baseline",
-        fontFamily: NUMS, fontWeight: d.eta <= 0 ? 800 : 700,
-        fontSize: Math.round(fs * 0.40), color: INK,
-      }}>{d.etaText}</div>
+      {/* Countdown. Nur im Minutentakt sinnvoll. Bei einem
+          Fuenf-Minuten-Takt waere er schlicht falsch, deshalb
+          faellt er dort weg statt zu luegen. */}
+      {eta ? (
+        <div style={{
+          display: "flex", width: C_ETA,
+          justifyContent: "flex-end", flexShrink: 0, whiteSpace: "nowrap",
+          fontFamily: NUMS, fontWeight: d.eta <= 0 ? 800 : 700,
+          fontSize: Math.round(fs * 0.40), color: INK,
+        }}>{d.etaText}</div>
+      ) : null}
     </div>
   );
 }
@@ -146,7 +151,7 @@ function Row({ d, h, fs, last }) {
 // --- Haltestellenbalken -------------------------------------
 // Schwarz invertiert. Mit zwei Haltestellen ist das der
 // klarste Trenner den 1 Bit hergibt.
-function Band({ stop, kind, to }) {
+function Band({ stop, kind, to, eta }) {
   return (
     <div style={{
       display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -171,15 +176,17 @@ function Band({ stop, kind, to }) {
         fontFamily: SANS, fontWeight: 700, fontSize: 15, letterSpacing: 0.8,
       }}>
         <div style={{ display: "flex", width: C_TIME, marginRight: GAP, justifyContent: "flex-end" }}>AB</div>
-        <div style={{ display: "flex", width: C_ARR, marginRight: GAP, justifyContent: "flex-end" }}>AN</div>
-        <div style={{ display: "flex", width: C_ETA, justifyContent: "flex-end" }}>IN</div>
+        <div style={{ display: "flex", width: C_ARR, marginRight: eta ? GAP : 0, justifyContent: "flex-end" }}>AN</div>
+        {eta ? (
+          <div style={{ display: "flex", width: C_ETA, justifyContent: "flex-end" }}>IN</div>
+        ) : null}
       </div>
     </div>
   );
 }
 
 // --- Das ganze Board ----------------------------------------
-export default function Board({ a, b, weather, stamp, stale }) {
+export default function Board({ a, b, weather, stamp, stale, eta = true }) {
   const rowsTotal = a.rows + b.rows;
   const space = H - H_TOP - H_BAND * 2;
   const rowH = Math.floor(space / rowsTotal);
@@ -240,19 +247,19 @@ export default function Board({ a, b, weather, stamp, stale }) {
       </div>
 
       {/* Block A */}
-      <Band stop={a.stop} kind={a.label} to={a.to} />
+      <Band stop={a.stop} kind={a.label} to={a.to} eta={eta} />
       <div style={{ display: "flex", flexDirection: "column" }}>
         {fill(a.list, a.rows).map((d, i) => (
-          <Row key={"a" + i} d={d} h={rowH + extra(i)} fs={fs}
+          <Row key={"a" + i} d={d} h={rowH + extra(i)} fs={fs} eta={eta}
                last={i === a.rows - 1} />
         ))}
       </div>
 
       {/* Block B */}
-      <Band stop={b.stop} kind={b.label} to={b.to} />
+      <Band stop={b.stop} kind={b.label} to={b.to} eta={eta} />
       <div style={{ display: "flex", flexDirection: "column" }}>
         {fill(b.list, b.rows).map((d, i) => (
-          <Row key={"b" + i} d={d} h={rowH + extra(a.rows + i)} fs={fs}
+          <Row key={"b" + i} d={d} h={rowH + extra(a.rows + i)} fs={fs} eta={eta}
                last={i === b.rows - 1} />
         ))}
       </div>
