@@ -16,12 +16,14 @@ export const dynamic = "force-dynamic";
 const ENV = {
   stopA:  process.env.BOARD_STOP_A,
   linesA: process.env.BOARD_LINES_A,
+  toA:    process.env.BOARD_TO_A,
   destA:  process.env.BOARD_DEST_A,
   notDestA: process.env.BOARD_NOTDEST_A,
   labelA: process.env.BOARD_LABEL_A,
   rowsA:  process.env.BOARD_ROWS_A,
   stopB:  process.env.BOARD_STOP_B,
   linesB: process.env.BOARD_LINES_B,
+  toB:    process.env.BOARD_TO_B,
   destB:  process.env.BOARD_DEST_B,
   notDestB: process.env.BOARD_NOTDEST_B,
   labelB: process.env.BOARD_LABEL_B,
@@ -44,6 +46,7 @@ function conf(url) {
     a: {
       stop:  pick("stopA",  "Bottmingen"),
       lines: pick("linesA", ""),
+      to:    pick("toA", ""),
       dest:  pick("destA", ""),
       notDest: pick("notDestA", ""),
       label: pick("labelA", "Tram"),
@@ -52,6 +55,7 @@ function conf(url) {
     b: {
       stop:  pick("stopB",  "Bottmingen"),
       lines: pick("linesB", ""),
+      to:    pick("toB", ""),
       dest:  pick("destB", ""),
       notDest: pick("notDestB", ""),
       label: pick("labelB", "Bus"),
@@ -64,48 +68,29 @@ function conf(url) {
 
 /* ============================================================
    Schriften
-   Feste Adressen statt CSS-Parsen. Die WOFF-Dateien kommen aus
-   den offiziellen npm-Paketen von IBM, ausgeliefert ueber zwei
-   unabhaengige CDNs. Satori kann TTF, OTF und WOFF, nur WOFF2
-   nicht, deshalb bewusst die WOFF-Variante.
+   Inter fuer Text, JetBrains Mono fuer alle Ziffern. Beide haben
+   eine grosse x-Hoehe und kraeftige Stamme, was auf 1 Bit ohne
+   Graustufen entscheidend ist. Die Dateien liegen in
+   public/fonts, es wird nichts von fremden Servern geholt.
 
-   Das Ergebnis bleibt im Modul-Cache, wird also nur beim ersten
-   Aufruf nach einem Kaltstart geholt.
+   Satori kann TTF, OTF und WOFF, aber kein WOFF2.
+   Das Ergebnis bleibt im Modul-Cache.
    ============================================================ */
 const FONT_FILES = [
-  { name: "Plex Cond", weight: 500, pkg: "@ibm/plex-sans-condensed@2.0.0", file: "IBMPlexSansCondensed-Medium.woff" },
-  { name: "Plex Cond", weight: 700, pkg: "@ibm/plex-sans-condensed@2.0.0", file: "IBMPlexSansCondensed-Bold.woff" },
-  { name: "Plex Mono", weight: 500, pkg: "@ibm/plex-mono@2.5.0",           file: "IBMPlexMono-Medium.woff" },
-  { name: "Plex Mono", weight: 600, pkg: "@ibm/plex-mono@2.5.0",           file: "IBMPlexMono-SemiBold.woff" },
+  { name: "Board Sans", weight: 600, file: "Inter-600.woff" },
+  { name: "Board Sans", weight: 700, file: "Inter-700.woff" },
+  { name: "Board Nums", weight: 700, file: "JetBrainsMono-700.woff" },
+  { name: "Board Nums", weight: 800, file: "JetBrainsMono-800.woff" },
 ];
 
 let FONT_CACHE = null;
 
-// Reihenfolge der Quellen: zuerst die Dateien aus public/fonts
-// im eigenen Projekt, danach zwei oeffentliche CDNs als Netz.
-function sourcesFor(spec, origin) {
-  const npmPath = spec.pkg + "/fonts/complete/woff/" + spec.file;
-  return [
-    origin + "/fonts/" + spec.file,
-    "https://cdn.jsdelivr.net/npm/" + npmPath,
-    "https://unpkg.com/" + npmPath,
-  ];
-}
-
 async function loadFont(spec, origin) {
-  const fehler = [];
-  for (const src of sourcesFor(spec, origin)) {
-    try {
-      const res = await fetch(src);
-      if (!res.ok) { fehler.push(src + " -> " + res.status); continue; }
-      const buf = await res.arrayBuffer();
-      if (buf.byteLength < 1000) { fehler.push(src + " -> zu klein"); continue; }
-      return { name: spec.name, data: buf, weight: spec.weight, style: "normal" };
-    } catch (e) {
-      fehler.push(src + " -> " + e.message);
-    }
-  }
-  throw new Error("Schrift nicht ladbar: " + spec.file + "\n  " + fehler.join("\n  "));
+  const res = await fetch(origin + "/fonts/" + spec.file);
+  if (!res.ok) throw new Error("Schrift " + spec.file + " -> HTTP " + res.status);
+  const buf = await res.arrayBuffer();
+  if (buf.byteLength < 1000) throw new Error("Schrift " + spec.file + " zu klein");
+  return { name: spec.name, data: buf, weight: spec.weight, style: "normal" };
 }
 
 async function fonts(origin) {
@@ -134,18 +119,88 @@ function offsetMinutes(iso) {
   return sign * (parseInt(m[2], 10) * 60 + parseInt(m[3], 10));
 }
 
-const WEEKDAYS = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+const WEEKDAYS = ["Sonntag", "Montag", "Dienstag", "Mittwoch",
+                  "Donnerstag", "Freitag", "Samstag"];
 
 function stampFrom(offsetMin) {
   const d = new Date(Date.now() + offsetMin * 60000);
   const p = n => String(n).padStart(2, "0");
-  return WEEKDAYS[d.getUTCDay()] + " " + p(d.getUTCDate()) + "." + p(d.getUTCMonth() + 1)
-       + "  " + p(d.getUTCHours()) + ":" + p(d.getUTCMinutes());
+  return WEEKDAYS[d.getUTCDay()]
+       + "  |  " + p(d.getUTCDate()) + "." + p(d.getUTCMonth() + 1) + "." + d.getUTCFullYear()
+       + "  |  " + p(d.getUTCHours()) + ":" + p(d.getUTCMinutes());
 }
 
 /* ============================================================
    Abfahrten
    ============================================================ */
+/* ============================================================
+   Variante mit Ziel: /v1/connections
+   Liefert Abfahrt UND Ankunft in einem Aufruf und filtert die
+   Fahrtrichtung automatisch, weil nur Fahrten zurueckkommen,
+   die das Ziel wirklich erreichen. Deshalb braucht es hier
+   keine Ausschlusslisten mehr.
+   ============================================================ */
+async function connections(block) {
+  const url = "https://transport.opendata.ch/v1/connections"
+            + "?from=" + encodeURIComponent(block.stop)
+            + "&to=" + encodeURIComponent(block.to)
+            + "&direct=1&limit=10";
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Connections-API " + res.status);
+  const json = await res.json();
+
+  const wanted = block.lines.split(",").map(x => x.trim()).filter(Boolean);
+  const now = Date.now();
+  let offset = null;
+
+  const list = (json.connections || []).map(c => {
+    const f = c.from || {}, t = c.to || {};
+    const sched = f.departure || null;
+    if (!sched) return null;
+    if (offset === null) offset = offsetMinutes(sched);
+
+    const prog = (f.prognosis && f.prognosis.departure) || null;
+    const real = prog || sched;
+
+    const realMs  = f.departureTimestamp ? f.departureTimestamp * 1000 : Date.parse(real);
+    const schedMs = Date.parse(sched);
+    const delay   = (prog ? Math.round((Date.parse(prog) - schedMs) / 60000)
+                          : (typeof f.delay === "number" ? f.delay : 0));
+
+    // Ankunft: Prognose bevorzugen, sonst Sollzeit
+    const arrProg  = (t.prognosis && t.prognosis.arrival) || null;
+    const arrival  = arrProg || t.arrival || null;
+
+    // Liniennummer aus dem ersten Abschnitt, sonst aus products
+    const sec = (c.sections || [])[0] || {};
+    const jr  = sec.journey || {};
+    let line = String(jr.number || (c.products || [])[0] || "").trim();
+    line = line.replace(/^[A-Za-z]+\s*/, "") || line;   // "T 10" -> "10"
+
+    const eta = Math.round((realMs - now) / 60000);
+
+    return {
+      line,
+      dest: (jr.to || "").trim(),
+      delay: delay > 0 ? delay : 0,
+      schedText: hhmm(sched),
+      timeText: hhmm(real),
+      arrText: hhmm(arrival),
+      eta,
+      etaText: eta <= 0 ? "jetzt" : eta + " min",
+      realMs,
+    };
+  })
+  .filter(Boolean)
+  .filter(d => d.eta >= 0)
+  .filter(d => !wanted.length || wanted.includes(d.line))
+  .sort((x, y) => x.realMs - y.realMs)
+  .slice(0, block.rows);
+
+  return { list, offset: offset === null ? 120 : offset };
+}
+
 async function departures(block) {
   const limit = Math.min(40, block.rows + 14);
   const url = "https://transport.opendata.ch/v1/stationboard"
@@ -193,6 +248,7 @@ async function departures(block) {
       delay: delay > 0 ? delay : 0,
       schedText: hhmm(sched),
       timeText: hhmm(real),
+      arrText: "",
       eta,
       etaText: eta <= 0 ? "jetzt" : eta + " min",
       realMs,
@@ -288,15 +344,42 @@ async function handle(request) {
   let a = { list: [], offset: 120 }, b = { list: [], offset: 120 };
   let wx = null, stale = false;
 
+  // Demo-Modus: feste Beispieldaten, kein Netz. Praktisch zum
+  // Layout beurteilen, wenn nachts nichts faehrt.
+  if (url.searchParams.get("demo") === "1") {
+    const mk = (line, dest, delay, hh, mm, eta, arr) => ({
+      line, dest, delay,
+      schedText: hh + ":" + String(mm).padStart(2, "0"),
+      timeText: hh + ":" + String(mm + delay).padStart(2, "0"),
+      arrText: arr || "",
+      eta, etaText: eta <= 0 ? "jetzt" : eta + " min",
+    });
+    a = { list: [
+      mk("10", "Dornach, Bahnhof", 1, "07", 16, 2, "07:38"),
+      mk("17", "Basel, Wiesenplatz", 0, "07", 19, 4, "07:41"),
+      mk("10", "Basel, Bahnhof SBB", 0, "07", 24, 9, "07:46"),
+      mk("17", "Basel, MParc", 3, "07", 26, 14, "07:51"),
+    ], offset: 120 };
+    b = { list: [
+      mk("47", "Muttenz, Bahnhof", 0, "07", 21, 6, "07:33"),
+      mk("47", "Muttenz, Bahnhof", 2, "07", 33, 20, "07:47"),
+      mk("47", "Muttenz, Bahnhof", 0, "07", 45, 0, "07:57"),
+    ], offset: 120 };
+    wx = { temp: 21, cond: "heiter", min: 14, max: 27 };
+  } else {
+
+  const hole = (blk) => blk.to ? connections(blk) : departures(blk);
+
   const results = await Promise.allSettled([
-    departures(cfg.a),
-    departures(cfg.b),
+    hole(cfg.a),
+    hole(cfg.b),
     weather(cfg.lat, cfg.lon),
   ]);
 
   if (results[0].status === "fulfilled") a = results[0].value; else stale = true;
   if (results[1].status === "fulfilled") b = results[1].value; else stale = true;
   if (results[2].status === "fulfilled") wx = results[2].value;
+  }
 
   const offset = a.offset ?? b.offset ?? 120;
 
