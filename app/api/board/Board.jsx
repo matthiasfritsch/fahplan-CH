@@ -13,10 +13,21 @@ export const W = 800;
 export const H = 480;
 
 // --- Tokens -------------------------------------------------
-const INK   = "#000000";
-const PAPER = "#ffffff";
-const MID   = "#555555";   // dunkler: helles Grau dithert auf 1 Bit
-const HAIR  = "#9a9a9a";   // Zeilentrenner, ebenfalls kraeftiger
+let INK   = "#000000";
+let PAPER = "#ffffff";
+let MID   = "#555555";   // Sollzeit, Ankunft, Nebenangaben
+let HAIR  = "#9a9a9a";   // Zeilentrenner
+
+/* Serverseitig invertieren.
+   Manche Panels stellen ein PNG genau andersherum dar, als
+   ESPHome es meint. Statt am Geraet herumzuraten drehen wir
+   das Bild hier um, dann stimmt es dort ohne Zutun. */
+export function setInvert(on) {
+  INK   = on ? "#ffffff" : "#000000";
+  PAPER = on ? "#000000" : "#ffffff";
+  MID   = on ? "#b0b0b0" : "#555555";
+  HAIR  = on ? "#707070" : "#9a9a9a";
+}
 
 const PAD    = 16;         // Seitenrand
 const H_TOP  = 44;         // Kopfleiste inkl. Trennlinie
@@ -51,7 +62,7 @@ function clip(s, n) {
 }
 
 // --- Eine Abfahrtszeile -------------------------------------
-function Row({ d, h, last }) {
+function Row({ d, h, fs, last }) {
   const base = {
     display: "flex",
     alignItems: "center",
@@ -72,7 +83,7 @@ function Row({ d, h, last }) {
       <div style={{
         display: "flex", width: C_LINE, marginRight: GAP,
         justifyContent: "flex-end",
-        fontFamily: NUMS, fontWeight: 800, fontSize: Math.round(h * 0.58),
+        fontFamily: NUMS, fontWeight: 800, fontSize: Math.round(fs * 0.58),
         color: INK, letterSpacing: -0.5,
       }}>{d.line}</div>
 
@@ -81,14 +92,14 @@ function Row({ d, h, last }) {
       <div style={{
         display: "flex", flexGrow: 1, marginRight: GAP,
         overflow: "hidden", whiteSpace: "nowrap",
-        fontFamily: SANS, fontWeight: 600, fontSize: Math.round(h * 0.40),
+        fontFamily: SANS, fontWeight: 600, fontSize: Math.round(fs * 0.40),
         color: INK,
       }}>{clip(d.dest, 17)}</div>
 
       <div style={{
         display: "flex", width: C_SCHED, marginRight: GAP,
         justifyContent: "flex-end",
-        fontFamily: NUMS, fontWeight: 700, fontSize: Math.round(h * 0.28),
+        fontFamily: NUMS, fontWeight: 700, fontSize: Math.round(fs * 0.28),
         color: MID, textDecoration: late ? "line-through" : "none",
       }}>{late ? d.schedText : ""}</div>
 
@@ -100,7 +111,7 @@ function Row({ d, h, last }) {
           <div style={{
             display: "flex",
             backgroundColor: INK, color: PAPER,
-            fontFamily: NUMS, fontWeight: 800, fontSize: Math.round(h * 0.28),
+            fontFamily: NUMS, fontWeight: 800, fontSize: Math.round(fs * 0.28),
             paddingTop: 2, paddingBottom: 2, paddingLeft: 6, paddingRight: 6,
           }}>{"+" + d.delay}</div>
         ) : null}
@@ -110,7 +121,7 @@ function Row({ d, h, last }) {
       <div style={{
         display: "flex", width: C_TIME, marginRight: GAP,
         justifyContent: "flex-end", flexShrink: 0, whiteSpace: "nowrap",
-        fontFamily: NUMS, fontWeight: 800, fontSize: Math.round(h * 0.46),
+        fontFamily: NUMS, fontWeight: 800, fontSize: Math.round(fs * 0.46),
         color: INK,
       }}>{d.timeText}</div>
 
@@ -118,7 +129,7 @@ function Row({ d, h, last }) {
       <div style={{
         display: "flex", width: C_ARR, marginRight: GAP,
         justifyContent: "flex-end", flexShrink: 0, whiteSpace: "nowrap",
-        fontFamily: NUMS, fontWeight: 700, fontSize: Math.round(h * 0.40),
+        fontFamily: NUMS, fontWeight: 700, fontSize: Math.round(fs * 0.40),
         color: MID,
       }}>{d.arrText || ""}</div>
 
@@ -126,7 +137,7 @@ function Row({ d, h, last }) {
         display: "flex", width: C_ETA,
         justifyContent: "flex-end", flexShrink: 0, whiteSpace: "nowrap", alignItems: "baseline",
         fontFamily: NUMS, fontWeight: d.eta <= 0 ? 800 : 700,
-        fontSize: Math.round(h * 0.40), color: INK,
+        fontSize: Math.round(fs * 0.40), color: INK,
       }}>{d.etaText}</div>
     </div>
   );
@@ -172,7 +183,13 @@ export default function Board({ a, b, weather, stamp, stale }) {
   const rowsTotal = a.rows + b.rows;
   const space = H - H_TOP - H_BAND * 2;
   const rowH = Math.floor(space / rowsTotal);
-  const slack = space - rowH * rowsTotal;   // Rest unten auffangen
+  // Rest gleichmaessig auf die ersten Zeilen verteilen, sonst wird
+  // eine einzelne Zeile hoeher und damit auch ihre Schrift groesser.
+  const rest = space - rowH * rowsTotal;
+  // Schriftgroessen immer aus derselben Basishoehe rechnen, damit
+  // ein Pixel mehr Zeilenhoehe die Typografie nicht veraendert.
+  const fs = rowH;
+  const extra = (i) => (i < rest ? 1 : 0);
 
   const fill = (list, n) =>
     Array.from({ length: n }, (_, i) => list[i] || null);
@@ -226,7 +243,8 @@ export default function Board({ a, b, weather, stamp, stale }) {
       <Band stop={a.stop} kind={a.label} to={a.to} />
       <div style={{ display: "flex", flexDirection: "column" }}>
         {fill(a.list, a.rows).map((d, i) => (
-          <Row key={"a" + i} d={d} h={rowH} last={i === a.rows - 1} />
+          <Row key={"a" + i} d={d} h={rowH + extra(i)} fs={fs}
+               last={i === a.rows - 1} />
         ))}
       </div>
 
@@ -234,7 +252,8 @@ export default function Board({ a, b, weather, stamp, stale }) {
       <Band stop={b.stop} kind={b.label} to={b.to} />
       <div style={{ display: "flex", flexDirection: "column" }}>
         {fill(b.list, b.rows).map((d, i) => (
-          <Row key={"b" + i} d={d} h={rowH + (i === b.rows - 1 ? slack : 0)} last={i === b.rows - 1} />
+          <Row key={"b" + i} d={d} h={rowH + extra(a.rows + i)} fs={fs}
+               last={i === b.rows - 1} />
         ))}
       </div>
     </div>

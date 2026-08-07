@@ -1,4 +1,4 @@
-import Board, { W, H } from "./Board";
+import Board, { W, H, setInvert } from "./Board";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -28,6 +28,7 @@ const ENV = {
   notDestB: process.env.BOARD_NOTDEST_B,
   labelB: process.env.BOARD_LABEL_B,
   rowsB:  process.env.BOARD_ROWS_B,
+  invert: process.env.BOARD_INVERT,
   lat:    process.env.BOARD_LAT,
   lon:    process.env.BOARD_LON,
 };
@@ -61,6 +62,7 @@ function conf(url) {
       label: pick("labelB", "Bus"),
       rows:  parseInt(pick("rowsB", "3"), 10) || 3,
     },
+    invert: pick("invert", "0") === "1",
     lat: parseFloat(pick("lat", "47.52")),
     lon: parseFloat(pick("lon", "7.57")),
   };
@@ -144,15 +146,20 @@ async function connections(block) {
   const url = "https://transport.opendata.ch/v1/connections"
             + "?from=" + encodeURIComponent(block.stop)
             + "&to=" + encodeURIComponent(block.to)
-            + "&direct=1&limit=10";
+            + "&direct=1&limit=12";
 
   const res = await fetch(url);
   if (!res.ok) throw new Error("Connections-API " + res.status);
   const json = await res.json();
 
-  const wanted = block.lines.split(",").map(x => x.trim()).filter(Boolean);
+  // Nur Ziffern vergleichen. Die API liefert je nach Kurs mal
+  // "10", mal "T 10", mal gar keine Nummer im Journey-Objekt.
+  const nur = (v) => String(v || "").replace(/[^0-9]/g, "");
+  const wanted = block.lines.split(",").map(x => nur(x)).filter(Boolean);
+
   const now = Date.now();
   let offset = null;
+  const roh = [];
 
   const list = (json.connections || []).map(c => {
     const f = c.from || {}, t = c.to || {};
@@ -160,25 +167,31 @@ async function connections(block) {
     if (!sched) return null;
     if (offset === null) offset = offsetMinutes(sched);
 
+    // direct=1 wird von der API nicht zuverlaessig beachtet,
+    // deshalb Umstiege hier selbst aussortieren.
+    const umstiege = typeof c.transfers === "number" ? c.transfers : 0;
+
+    // Ersten Abschnitt nehmen, der wirklich eine Fahrt ist.
+    // Fussweg-Abschnitte haben kein journey-Objekt.
+    const sec = (c.sections || []).find(x => x && x.journey) || {};
+    const jr  = sec.journey || {};
+
+    const linieRoh = jr.number || jr.name || (c.products || [])[0] || "";
+    const line = nur(linieRoh);
+
     const prog = (f.prognosis && f.prognosis.departure) || null;
     const real = prog || sched;
-
     const realMs  = f.departureTimestamp ? f.departureTimestamp * 1000 : Date.parse(real);
     const schedMs = Date.parse(sched);
-    const delay   = (prog ? Math.round((Date.parse(prog) - schedMs) / 60000)
-                          : (typeof f.delay === "number" ? f.delay : 0));
+    const delay = prog ? Math.round((Date.parse(prog) - schedMs) / 60000)
+                       : (typeof f.delay === "number" ? f.delay : 0);
 
-    // Ankunft: Prognose bevorzugen, sonst Sollzeit
-    const arrProg  = (t.prognosis && t.prognosis.arrival) || null;
-    const arrival  = arrProg || t.arrival || null;
-
-    // Liniennummer aus dem ersten Abschnitt, sonst aus products
-    const sec = (c.sections || [])[0] || {};
-    const jr  = sec.journey || {};
-    let line = String(jr.number || (c.products || [])[0] || "").trim();
-    line = line.replace(/^[A-Za-z]+\s*/, "") || line;   // "T 10" -> "10"
+    const arrProg = (t.prognosis && t.prognosis.arrival) || null;
+    const arrival = arrProg || t.arrival || null;
 
     const eta = Math.round((realMs - now) / 60000);
+
+    roh.push({ linieRoh: String(linieRoh), line, umstiege, eta, ziel: jr.to || "" });
 
     return {
       line,
@@ -190,15 +203,30 @@ async function connections(block) {
       eta,
       etaText: eta <= 0 ? "jetzt" : eta + " min",
       realMs,
+      umstiege,
     };
   })
   .filter(Boolean)
   .filter(d => d.eta >= 0)
+  .filter(d => d.umstiege === 0)
   .filter(d => !wanted.length || wanted.includes(d.line))
   .sort((x, y) => x.realMs - y.realMs)
   .slice(0, block.rows);
 
-  return { list, offset: offset === null ? 120 : offset };
+  return {
+    list,
+    offset: offset === null ? 120 : offset,
+    // Fuer ?debug=1: was die API wirklich verstanden und
+    // geliefert hat. Erspart Raten bei falschen Haltestellen.
+    diag: {
+      erkanntVon: (json.from && json.from.name) || null,
+      erkanntNach: (json.to && json.to.name) || null,
+      gefunden: (json.connections || []).length,
+      gefiltertAuf: list.length,
+      linienFilter: wanted,
+      roh: roh.slice(0, 8),
+    },
+  };
 }
 
 async function departures(block) {
@@ -368,7 +396,15 @@ async function handle(request) {
     wx = { temp: 21, cond: "heiter", min: 14, max: 27 };
   } else {
 
-  const hole = (blk) => blk.to ? connections(blk) : departures(blk);
+  const hole = async (blk) => {
+    if (!blk.to) return departures(blk);
+    const r = await connections(blk);
+    if (r.list.length) return r;
+    // Nichts uebrig? Lieber Abfahrten ohne Ankunftszeit zeigen
+    // als eine leere Tafel. Die Diagnose bleibt erhalten.
+    const fb = await departures(blk);
+    return { ...fb, diag: { ...r.diag, hinweis: "leer, Abfahrtstafel als Rueckfall" } };
+  };
 
   const results = await Promise.allSettled([
     hole(cfg.a),
@@ -394,6 +430,9 @@ async function handle(request) {
   // Fehler beim Initialisieren das ganze Modul mit, dann greift
   // kein try-catch mehr und du siehst nur einen nackten 500er.
   const { ImageResponse } = await import("next/og");
+
+  // Farben vor dem Rendern festlegen
+  setInvert(cfg.invert);
 
   // WICHTIG: ImageResponse streamt das PNG und schickt dabei kein
   // Content-Length. Manche Clients, darunter ESPHome, lesen genau
