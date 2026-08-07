@@ -136,12 +136,16 @@ function istStosszeit(offsetMin) {
 const WEEKDAYS = ["Sonntag", "Montag", "Dienstag", "Mittwoch",
                   "Donnerstag", "Freitag", "Samstag"];
 
-function stampFrom(offsetMin) {
+/* Die Uhrzeit steht nur im Kopf, wenn auch im Minutentakt
+   aktualisiert wird. Bei einem Fuenf-Minuten-Takt waere sie bis
+   zu fuenf Minuten alt und wuerde mehr verwirren als helfen. */
+function stampFrom(offsetMin, mitUhrzeit) {
   const d = new Date(Date.now() + offsetMin * 60000);
   const p = n => String(n).padStart(2, "0");
-  return WEEKDAYS[d.getUTCDay()]
-       + "  |  " + p(d.getUTCDate()) + "." + p(d.getUTCMonth() + 1) + "." + d.getUTCFullYear()
-       + "  |  " + p(d.getUTCHours()) + ":" + p(d.getUTCMinutes());
+  const kopf = WEEKDAYS[d.getUTCDay()]
+             + "  |  " + p(d.getUTCDate()) + "." + p(d.getUTCMonth() + 1) + "." + d.getUTCFullYear();
+  if (!mitUhrzeit) return kopf;
+  return kopf + "  |  " + p(d.getUTCHours()) + ":" + p(d.getUTCMinutes());
 }
 
 /* ============================================================
@@ -433,7 +437,7 @@ async function handle(request) {
 
   if (url.searchParams.get("debug") === "1") {
     return new Response(
-      JSON.stringify({ cfg, a, b, wx, stale, stamp: stampFrom(offset) }, null, 2),
+      JSON.stringify({ cfg, a, b, wx, stale, stamp: stampFrom(offset, true) }, null, 2),
       { headers: { "content-type": "application/json; charset=utf-8" } }
     );
   }
@@ -462,7 +466,7 @@ async function handle(request) {
         a={{ ...cfg.a, list: a.list }}
         b={{ ...cfg.b, list: b.list }}
         weather={wx}
-        stamp={stampFrom(offset)}
+        stamp={stampFrom(offset, zeigeEta)}
         stale={stale}
         eta={zeigeEta}
       />
