@@ -45,6 +45,7 @@ if (ev.updated !== null && !DATE_RE.test(ev.updated)) errors.push(`events.update
   if (e.place && len(e.place) > LIMITS.eventPlace) errors.push(`${at}: place zu lang`);
   if (e.city && len(e.city) > LIMITS.eventCity) errors.push(`${at}: city zu lang`);
   if (e.city && !e.travel) errors.push(`${at}: auswaerts ohne travel`);
+  if (e.category && !["flohmarkt"].includes(e.category)) errors.push(`${at}: category "${e.category}" unbekannt`);
 });
 
 if (errors.length) {

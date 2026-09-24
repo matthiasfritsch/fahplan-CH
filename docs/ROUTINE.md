@@ -19,9 +19,17 @@ Was rein soll:
 - Ausfluege bis ca. 1h Fahrzeit mit dem OeV ab Bottmingen (z.B. Luzern,
   Bern, Zuerich, Schwarzwald, Elsass): nur wenn es sich fuer einen Tag
   lohnt, vor allem am Wochenende.
-- **Flohmaerkte haben Vorrang.** Kinderflohmaerkte, Quartier- und
-  Hofflohmaerkte in Basel und Umgebung immer mitnehmen und mit
-  `"prio": true` markieren.
+- **Flohmaerkte haben Vorrang und sind eine eigene Kategorie.**
+  Kinderflohmaerkte, Quartier- und Hofflohmaerkte in Basel und
+  Umgebung immer mitnehmen, auch wenn der Tag schon voll ist, und mit
+  `"category": "flohmarkt"` markieren. Das Board zeigt sie mit
+  schwarzem Badge FLOHMARKT. Pflichtquellen dafuer:
+  - https://www.quartierflohmibasel.ch/ (Quartierflohmaerkte, alle Quartiere)
+  - https://www.basel.com/de/shopping/maerkte-flohmaerkte
+  - Stadtteilsekretariate: https://www.stsbw.ch/veranstalter/quartierflohmi-basel/
+    und https://stskb.ch/kleinbasel/quartierflohmaerkte
+  - Petersplatz-Flohmarkt (jeden Samstag) nur aufnehmen, wenn auf einer
+    Quelle fuer das konkrete Datum bestaetigt.
 - **Termine der Rudolf Steiner Schule Basel** (Yunas Schule): Die
   offizielle Website der Schule suchen und Agenda bzw. Termine pruefen
   (Basare, Feste, Monatsfeiern, Theater, Konzerte, Tag der offenen Tuer).
@@ -65,7 +73,8 @@ Regeln:
 - `title` hoechstens 40 Zeichen, `place` hoechstens 30, `city`
   hoechstens 14. Kurz und klar, ohne Werbesprache.
 - Basel-Events: `place` setzen, `city` weglassen.
-- Optional `"prio": true` (Flohmarkt) bzw. `"school": true` (Rudolf
+- Optional `"category": "flohmarkt"`, `"prio": true` (sonstiges
+  Wichtiges) bzw. `"school": true` (Rudolf
   Steiner Schule Basel). Das Board zeigt Schultermine mit schwarzem
   Badge SCHULE und behaelt beide bevorzugt, wenn der Platz knapp ist.
 - Auswaerts: `city` und `travel` setzen, `place` optional.

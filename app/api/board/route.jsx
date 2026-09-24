@@ -426,7 +426,7 @@ function demoEvents(today) {
     { date: d(1), time: "17:00", title: "Kinderkino", place: "Kult.Kino Atelier" },
     { date: d(sa), time: "14:00", title: "Herbstbasar", place: "Rudolf Steiner Schule", school: true },
     { date: d(sa), time: "10:00", title: "Verkehrshaus: Tag der Bahn", city: "Luzern", travel: "1h10" },
-    { date: d(sa), time: "10:00", title: "Kinderflohmarkt", place: "Kasernenareal" },
+    { date: d(sa), time: "10:00", title: "Quartierflohmi", place: "Gundeli", category: "flohmarkt" },
     { date: d(sa), time: "14:00", title: "Familienführung", place: "Naturhist. Museum" },
     { date: d(sa + 1), time: "11:00", title: "Schaufütterung Seelöwen", place: "Zolli" },
     { date: d(sa + 1), time: "ab 10", title: "Herbstfest mit Kutschenfahrt", city: "Arlesheim", travel: "25 min" },
