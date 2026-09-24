@@ -160,24 +160,24 @@ function Event({ e }) {
   const away = !!e.city;
   // Grobe Zeichenrechnung, Satori kann Text nicht vermessen.
   // Mit Badge ist weniger Platz, der Ort faellt dann zuerst weg.
-  const budget = away ? 34 : 50;
+  const budget = away ? 29 : 40;
   const title = clip(e.title, budget);
   const place = e.place && title.length + e.place.length + 1 <= budget ? e.place : "";
 
   return (
-    <div style={flex({ alignItems: "center", height: 26 })}>
+    <div style={flex({ alignItems: "center", height: 32 })}>
       {e.time ? (
         <div style={flex({
-          width: 56, flexShrink: 0, fontFamily: NUMS, fontWeight: 700, fontSize: 15, color: INK,
+          width: 66, flexShrink: 0, fontFamily: NUMS, fontWeight: 800, fontSize: 18, color: INK,
         })}>{e.time}</div>
       ) : null}
       <div style={flex({
         flexGrow: 1, alignItems: "baseline", overflow: "hidden", whiteSpace: "nowrap",
       })}>
-        <div style={flex({ fontFamily: SANS, fontWeight: 700, fontSize: 16, color: INK })}>{title}</div>
+        <div style={flex({ fontFamily: SANS, fontWeight: 700, fontSize: 19, color: INK })}>{title}</div>
         {place ? (
           <div style={flex({
-            marginLeft: 7, fontFamily: SANS, fontWeight: 700, fontSize: 14, color: MID,
+            marginLeft: 8, fontFamily: SANS, fontWeight: 700, fontSize: 16, color: MID,
           })}>{place}</div>
         ) : null}
       </div>
@@ -186,7 +186,7 @@ function Event({ e }) {
           flexShrink: 0, marginLeft: 8,
           borderWidth: 1.5, borderStyle: "solid", borderColor: INK,
           paddingLeft: 5, paddingRight: 5, paddingTop: 1, paddingBottom: 1,
-          fontFamily: SANS, fontWeight: 700, fontSize: 12, letterSpacing: 0.5, color: INK,
+          fontFamily: SANS, fontWeight: 700, fontSize: 13, letterSpacing: 0.5, color: INK,
         })}>{(e.city + " · " + (e.travel || "")).toUpperCase().replace(/ MIN$/, " MIN")}</div>
       ) : null}
     </div>
@@ -201,10 +201,10 @@ function Events({ days, ideas }) {
     })}>
       {days.length ? days.map(d => (
         <div key={d.label + d.dateText} style={flex({ flexDirection: "column" })}>
-          <div style={flex({ alignItems: "baseline", height: 24, paddingTop: 9 })}>
-            <Label>{d.label}</Label>
+          <div style={flex({ alignItems: "baseline", height: 30, paddingTop: 12 })}>
+            <Label style={{ fontSize: 15 }}>{d.label}</Label>
             <div style={flex({
-              marginLeft: 8, fontFamily: NUMS, fontWeight: 700, fontSize: 13, color: MID,
+              marginLeft: 10, fontFamily: NUMS, fontWeight: 800, fontSize: 15, color: MID,
             })}>{d.dateText}</div>
           </div>
           {d.list.map((e, i) => <Event key={i} e={e} />)}
@@ -212,8 +212,8 @@ function Events({ days, ideas }) {
       )) : (
         /* Rueckfall, wenn weder Routine noch Scraper etwas haben */
         <div style={flex({ flexDirection: "column" })}>
-          <div style={flex({ height: 24, paddingTop: 9 })}>
-            <Label>IDEEN, WENN NICHTS ANSTEHT</Label>
+          <div style={flex({ height: 30, paddingTop: 12 })}>
+            <Label style={{ fontSize: 15 }}>IDEEN, WENN NICHTS ANSTEHT</Label>
           </div>
           {ideas.map((e, i) => <Event key={i} e={{ ...e, time: "" }} />)}
         </div>
@@ -233,28 +233,38 @@ function Events({ days, ideas }) {
    wird hart zu Schwarz oder Weiss. Deshalb hier nichts kleiner
    als 13 px und die Woerter selbst in Schwarz.
    ============================================================ */
-const W_DISH = 150;              // Breite der Znacht-Spalte
+const W_DISH = 190;              // Breite der Znacht-Spalte
 const W_WORD = W_LEFT - W_DISH;  // Rest fuer das Wort
 
-function WordLine({ lang, word, hint, small }) {
+// Satori kann Text nicht vermessen, deshalb grob schaetzen:
+// Inter Bold braucht etwa 0,58 x Schriftgroesse pro Zeichen.
+const textW = (str, size) => String(str || "").length * size * 0.58;
+const W_WORD_LINE = W_WORD - 16 - 12 - 32;   // Platz fuer Wort + Hinweis
+
+function WordLine({ lang, word, hint }) {
+  // Erst die grosse Stufe versuchen, dann die kleinere, zuletzt
+  // den Hinweis weglassen. So bricht nie etwas um.
+  const fits = (size) => textW(word, size) + 9 + textW(hint, 14) <= W_WORD_LINE;
+  const size = fits(25) ? 25 : fits(21) ? 21 : textW(word, 25) <= W_WORD_LINE ? 25 : 21;
+  const showHint = fits(size);
   return (
-    <div style={flex({ alignItems: "baseline", height: 34 })}>
-      <div style={flex({ width: 32, fontFamily: NUMS, fontWeight: 800, fontSize: 14, color: INK })}>{lang}</div>
-      <div style={flex({ fontFamily: SANS, fontWeight: 700, fontSize: small ? 21 : 25, color: INK })}>{word}</div>
-      <div style={flex({ marginLeft: 9, fontFamily: SANS, fontWeight: 700, fontSize: 14, color: MID })}>{hint}</div>
+    <div style={flex({ alignItems: "baseline", height: 34, whiteSpace: "nowrap" })}>
+      <div style={flex({ width: 32, flexShrink: 0, fontFamily: NUMS, fontWeight: 800, fontSize: 14, color: INK })}>{lang}</div>
+      <div style={flex({ flexShrink: 0, fontFamily: SANS, fontWeight: 700, fontSize: size, color: INK })}>{word}</div>
+      {showHint ? (
+        <div style={flex({ marginLeft: 9, fontFamily: SANS, fontWeight: 700, fontSize: 14, color: MID })}>{hint}</div>
+      ) : null}
     </div>
   );
 }
 
 function Word({ w }) {
-  // Lange Woerter eine Stufe kleiner, statt umzubrechen
-  const small = Math.max(w.de.length, w.en.length, w.fr.length) > 14;
   return (
     <div style={flex({ flexDirection: "column", width: W_WORD, paddingLeft: 16, paddingRight: 12, paddingTop: 9 })}>
       <Label style={{ marginBottom: 2 }}>WORT DES TAGES</Label>
-      <WordLine lang="DE" word={w.de} hint={w.deHint} small={small} />
-      <WordLine lang="EN" word={w.en} hint={"sprich: " + w.enSay} small={small} />
-      <WordLine lang="FR" word={w.fr} hint={w.frHint} small={small} />
+      <WordLine lang="DE" word={w.de} hint={w.deHint} />
+      <WordLine lang="EN" word={w.en} hint={"[" + w.enSay + "]"} />
+      <WordLine lang="FR" word={w.fr} hint={w.frHint} />
       <div style={flex({
         marginTop: 1, fontFamily: SANS, fontWeight: 700, fontSize: 14, color: INK,
       })}>{"\u00ab" + w.example + "\u00bb"}</div>
@@ -267,8 +277,8 @@ function Dinner({ d, qr }) {
     <div style={flex({ flexDirection: "column", width: W_DISH, paddingRight: 14, paddingTop: 9 })}>
       <Label style={{ marginBottom: 2 }}>ZNACHT</Label>
       <div style={flex({
-        width: W_DISH - 14, height: 34, overflow: "hidden",
-        fontFamily: SANS, fontWeight: 700, fontSize: 14, lineHeight: "17px", color: INK,
+        width: W_DISH - 14, height: 38, overflow: "hidden",
+        fontFamily: SANS, fontWeight: 700, fontSize: 16, lineHeight: "19px", color: INK,
       })}>{d.name}</div>
       <div style={flex({ alignItems: "flex-end", marginTop: 4 })}>
         {qr ? <img src={qr.src} width={qr.size} height={qr.size} /> : null}
