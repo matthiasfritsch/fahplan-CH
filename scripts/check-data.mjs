@@ -16,7 +16,7 @@ const check = (where, field, value, max) => {
 load("words.json").forEach((w, i) => {
   const at = `words[${i}] ${w.de}`;
   for (const k of ["de", "en", "fr"]) check(at, k, w[k], LIMITS.word);
-  for (const k of ["deHint", "enSay", "frHint"]) check(at, k, w[k], LIMITS.hint);
+  for (const k of ["deHint", "enSay", "frHint", "frSay"]) check(at, k, w[k], LIMITS.hint);
   check(at, "example", w.example, LIMITS.example);
 });
 
