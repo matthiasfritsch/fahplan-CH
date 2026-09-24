@@ -99,10 +99,10 @@ Erste Anlaufstelle, wenn eine Zeile fehlt oder komisch aussieht.
 ## Layout aendern
 
 Alles Wichtige steht oben in `Board.jsx` als Konstanten: Kopfhoehe,
-Balkenhoehe, Fussbereich, Breite der linken Seite, Spaltenbreiten,
+Balkenhoehe, Hoehe von Wort und Znacht (H_LEARN), Breite der linken Seite, Spaltenbreiten,
 Farben. Die Zeilenhoehe im Fahrplan rechnet sich aus der uebrigen Hoehe
 und der Anzahl Zeilen selbst aus, du kannst also 4 plus 3 oder 5 plus 2
-fahren, ohne Zahlen nachzuziehen. Wer die Hoehe des Fussbereichs
+fahren, ohne Zahlen nachzuziehen. Wer H_LEARN
 aendert, muss `EVENT_BUDGET` in `lib/content.mjs` nachziehen.
 
 Satori, der Renderer, kennt nur einen Teil von CSS. Merksaetze:

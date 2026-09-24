@@ -7,11 +7,11 @@
    +--------------------------------------------------------+
    | Kopf: Datum                                     Wetter |
    +-------------------------------------+------------------+
-   | Events, nach Tag gruppiert          | Tram  AB     AN  |
-   |                                     | ...              |
-   +------------------+------------------+ Bus   AB     AN  |
-   | Wort des Tages   | Znacht      [QR] | ...              |
-   +------------------+------------------+------------------+
+   | Wort des Tages (gross)     | Znacht | Tram  AB     AN  |
+   |                            |  [QR]  | ...              |
+   +----------------------------+--------+ Bus   AB     AN  |
+   | Events, nach Tag gruppiert          | ...              |
+   +-------------------------------------+------------------+
 
    Wichtig: Satori (der Renderer hinter ImageResponse) versteht
    nur einen Teil von CSS. Erlaubt ist Flexbox. Nicht erlaubt
@@ -41,7 +41,7 @@ export function setInvert(on) {
 
 const H_TOP  = 44;   // Kopfleiste inkl. Trennlinie
 const H_BAND = 28;   // Tram/Bus-Balken
-const H_FOOT = 128;  // Wort + Znacht
+const H_LEARN = 160; // Wort + Znacht oben links (QR bis 87 px plus Ruhezone)
 const W_LEFT = 560;  // 70 Prozent fuer Events, Rest Fahrplan
 const RULE   = 2;    // Staerke der Zonen-Linien
 
@@ -65,7 +65,7 @@ const flex = (extra) => ({ display: "flex", ...extra });
 function Label({ children, style }) {
   return (
     <div style={flex({
-      fontFamily: SANS, fontWeight: 700, fontSize: 11, letterSpacing: 1,
+      fontFamily: SANS, fontWeight: 700, fontSize: 13, letterSpacing: 1,
       color: INK, ...style,
     })}>{children}</div>
   );
@@ -177,7 +177,7 @@ function Event({ e }) {
         <div style={flex({ fontFamily: SANS, fontWeight: 700, fontSize: 16, color: INK })}>{title}</div>
         {place ? (
           <div style={flex({
-            marginLeft: 6, fontFamily: SANS, fontWeight: 600, fontSize: 14, color: MID,
+            marginLeft: 7, fontFamily: SANS, fontWeight: 700, fontSize: 14, color: MID,
           })}>{place}</div>
         ) : null}
       </div>
@@ -186,7 +186,7 @@ function Event({ e }) {
           flexShrink: 0, marginLeft: 8,
           borderWidth: 1.5, borderStyle: "solid", borderColor: INK,
           paddingLeft: 5, paddingRight: 5, paddingTop: 1, paddingBottom: 1,
-          fontFamily: SANS, fontWeight: 700, fontSize: 11, letterSpacing: 0.5, color: INK,
+          fontFamily: SANS, fontWeight: 700, fontSize: 12, letterSpacing: 0.5, color: INK,
         })}>{(e.city + " · " + (e.travel || "")).toUpperCase().replace(/ MIN$/, " MIN")}</div>
       ) : null}
     </div>
@@ -204,7 +204,7 @@ function Events({ days, ideas }) {
           <div style={flex({ alignItems: "baseline", height: 24, paddingTop: 9 })}>
             <Label>{d.label}</Label>
             <div style={flex({
-              marginLeft: 8, fontFamily: NUMS, fontWeight: 700, fontSize: 12, color: MID,
+              marginLeft: 8, fontFamily: NUMS, fontWeight: 700, fontSize: 13, color: MID,
             })}>{d.dateText}</div>
           </div>
           {d.list.map((e, i) => <Event key={i} e={e} />)}
@@ -223,16 +223,25 @@ function Events({ days, ideas }) {
 }
 
 /* ============================================================
-   LINKS UNTEN: Wort des Tages und 10-Minuten-Znacht
+   LINKS OBEN: Wort des Tages und 10-Minuten-Znacht
+   Das Wort steht gross, weil es zum Lernen gedacht ist. Das
+   Gericht bleibt klein, der QR-Code fuehrt zum Rezept.
    Die Listen halten Zeichenlimits ein (npm run check), deshalb
    darf hier fest gesetzt werden.
+
+   Auf 1-Bit-E-Ink verschwimmt alles unter etwa 13 px, und Grau
+   wird hart zu Schwarz oder Weiss. Deshalb hier nichts kleiner
+   als 13 px und die Woerter selbst in Schwarz.
    ============================================================ */
+const W_DISH = 150;              // Breite der Znacht-Spalte
+const W_WORD = W_LEFT - W_DISH;  // Rest fuer das Wort
+
 function WordLine({ lang, word, hint, small }) {
   return (
-    <div style={flex({ alignItems: "baseline", height: small ? 21 : 23 })}>
-      <div style={flex({ width: 26, fontFamily: NUMS, fontWeight: 700, fontSize: 11, color: MID })}>{lang}</div>
-      <div style={flex({ fontFamily: SANS, fontWeight: 700, fontSize: small ? 16 : 18, color: INK })}>{word}</div>
-      <div style={flex({ marginLeft: 7, fontFamily: SANS, fontWeight: 600, fontSize: 12, color: MID })}>{hint}</div>
+    <div style={flex({ alignItems: "baseline", height: 34 })}>
+      <div style={flex({ width: 32, fontFamily: NUMS, fontWeight: 800, fontSize: 14, color: INK })}>{lang}</div>
+      <div style={flex({ fontFamily: SANS, fontWeight: 700, fontSize: small ? 21 : 25, color: INK })}>{word}</div>
+      <div style={flex({ marginLeft: 9, fontFamily: SANS, fontWeight: 700, fontSize: 14, color: MID })}>{hint}</div>
     </div>
   );
 }
@@ -241,42 +250,32 @@ function Word({ w }) {
   // Lange Woerter eine Stufe kleiner, statt umzubrechen
   const small = Math.max(w.de.length, w.en.length, w.fr.length) > 14;
   return (
-    <div style={flex({ flexDirection: "column", width: W_WORD, paddingLeft: 16, paddingRight: 12, paddingTop: 8 })}>
-      <Label style={{ marginBottom: 3 }}>WORT DES TAGES</Label>
+    <div style={flex({ flexDirection: "column", width: W_WORD, paddingLeft: 16, paddingRight: 12, paddingTop: 9 })}>
+      <Label style={{ marginBottom: 2 }}>WORT DES TAGES</Label>
       <WordLine lang="DE" word={w.de} hint={w.deHint} small={small} />
       <WordLine lang="EN" word={w.en} hint={"sprich: " + w.enSay} small={small} />
       <WordLine lang="FR" word={w.fr} hint={w.frHint} small={small} />
       <div style={flex({
-        marginTop: 2, fontFamily: SANS, fontWeight: 600, fontSize: 12, color: MID,
-      })}>{"«" + w.example + "»"}</div>
+        marginTop: 1, fontFamily: SANS, fontWeight: 700, fontSize: 14, color: INK,
+      })}>{"\u00ab" + w.example + "\u00bb"}</div>
     </div>
   );
 }
 
-const W_WORD = 290;
-
 function Dinner({ d, qr }) {
-  const small = d.name.length > 24;
-  // Feste Textbreite, sonst bricht Satori nicht um und der
-  // Name schiebt den QR-Code in den Fahrplan.
-  const textW = W_LEFT - W_WORD - 6 - 16 - (qr ? qr.size + 8 : 0);
   return (
-    <div style={flex({ flexGrow: 1, paddingLeft: 6, paddingRight: 16, paddingTop: 8 })}>
-      <div style={flex({ flexDirection: "column", width: textW, marginRight: qr ? 8 : 0 })}>
-        <Label style={{ marginBottom: 3 }}>10-MIN-ZNACHT</Label>
+    <div style={flex({ flexDirection: "column", width: W_DISH, paddingRight: 14, paddingTop: 9 })}>
+      <Label style={{ marginBottom: 2 }}>ZNACHT</Label>
+      <div style={flex({
+        width: W_DISH - 14, height: 34, overflow: "hidden",
+        fontFamily: SANS, fontWeight: 700, fontSize: 14, lineHeight: "17px", color: INK,
+      })}>{d.name}</div>
+      <div style={flex({ alignItems: "flex-end", marginTop: 4 })}>
+        {qr ? <img src={qr.src} width={qr.size} height={qr.size} /> : null}
         <div style={flex({
-          fontFamily: SANS, fontWeight: 700, fontSize: small ? 15 : 16,
-          lineHeight: small ? "19px" : "20px", color: INK,
-        })}>{d.name}</div>
-        <div style={flex({
-          marginTop: 3, fontFamily: NUMS, fontWeight: 700, fontSize: 13, color: INK,
-        })}>{d.mins + " MIN"}</div>
+          marginLeft: 8, fontFamily: NUMS, fontWeight: 800, fontSize: 14, color: INK,
+        })}>{d.mins + "'"}</div>
       </div>
-      {qr ? (
-        <div style={flex({ paddingTop: 4 })}>
-          <img src={qr.src} width={qr.size} height={qr.size} />
-        </div>
-      ) : null}
     </div>
   );
 }
@@ -316,19 +315,19 @@ export default function Board({ a, b, weather, stamp, stale, days, ideas, word, 
       </div>
 
       <div style={flex({ flexGrow: 1 })}>
-        {/* Links: Events oben, Wort und Znacht unten */}
+        {/* Links: Wort und Znacht oben, Events darunter */}
         <div style={flex({
           flexDirection: "column", width: W_LEFT,
           borderRightWidth: RULE, borderRightStyle: "solid", borderRightColor: INK,
         })}>
-          <Events days={days} ideas={ideas} />
           <div style={flex({
-            height: H_FOOT, flexShrink: 0,
-            borderTopWidth: RULE, borderTopStyle: "solid", borderTopColor: INK,
+            height: H_LEARN, flexShrink: 0,
+            borderBottomWidth: RULE, borderBottomStyle: "solid", borderBottomColor: INK,
           })}>
             <Word w={word} />
             <Dinner d={dinner} qr={qr} />
           </div>
+          <Events days={days} ideas={ideas} />
         </div>
 
         {/* Rechts: Fahrplan */}
