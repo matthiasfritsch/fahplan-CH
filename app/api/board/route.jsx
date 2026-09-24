@@ -424,6 +424,7 @@ function demoEvents(today) {
   return [
     { date: d(0), time: "16:30", title: "Vorlesestunde", place: "Kinderbuchhandlung" },
     { date: d(1), time: "17:00", title: "Kinderkino", place: "Kult.Kino Atelier" },
+    { date: d(sa), time: "14:00", title: "Herbstbasar", place: "Rudolf Steiner Schule", school: true },
     { date: d(sa), time: "10:00", title: "Verkehrshaus: Tag der Bahn", city: "Luzern", travel: "1h10" },
     { date: d(sa), time: "10:00", title: "Kinderflohmarkt", place: "Kasernenareal" },
     { date: d(sa), time: "14:00", title: "Familienführung", place: "Naturhist. Museum" },

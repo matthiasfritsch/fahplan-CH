@@ -19,6 +19,15 @@ Was rein soll:
 - Ausfluege bis ca. 1h Fahrzeit mit dem OeV ab Bottmingen (z.B. Luzern,
   Bern, Zuerich, Schwarzwald, Elsass): nur wenn es sich fuer einen Tag
   lohnt, vor allem am Wochenende.
+- **Flohmaerkte haben Vorrang.** Kinderflohmaerkte, Quartier- und
+  Hofflohmaerkte in Basel und Umgebung immer mitnehmen und mit
+  `"prio": true` markieren.
+- **Termine der Rudolf Steiner Schule Basel** (Yunas Schule): Die
+  offizielle Website der Schule suchen und Agenda bzw. Termine pruefen
+  (Basare, Feste, Monatsfeiern, Theater, Konzerte, Tag der offenen Tuer).
+  Solche Termine mit `"school": true` markieren, `place` = Schule bzw.
+  Saal, kein `city`. Schulinterne Termine ohne Familienbezug
+  (Elternabende, Konferenzen) weglassen.
 - Pro Werktag reichen 1 bis 2 gute Vorschlaege, am Samstag und Sonntag
   je 3 bis 5. In den Schulferien (Feld `holidays`) auch werktags 3 bis 5,
   dann gibt es viele Ferienangebote (Ferienpass, Museums-Workshops).
@@ -56,6 +65,9 @@ Regeln:
 - `title` hoechstens 40 Zeichen, `place` hoechstens 30, `city`
   hoechstens 14. Kurz und klar, ohne Werbesprache.
 - Basel-Events: `place` setzen, `city` weglassen.
+- Optional `"prio": true` (Flohmarkt) bzw. `"school": true` (Rudolf
+  Steiner Schule Basel). Das Board zeigt Schultermine mit schwarzem
+  Badge SCHULE und behaelt beide bevorzugt, wenn der Platz knapp ist.
 - Auswaerts: `city` und `travel` setzen, `place` optional.
 - `updated` ist das heutige Datum.
 - `holidays`: Schulferien Basel-Landschaft der naechsten Wochen, von
