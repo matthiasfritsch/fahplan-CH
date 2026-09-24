@@ -62,6 +62,13 @@ Regeln:
   baselland.ch pruefen. Bestehende Eintraege behalten, abgelaufene
   entfernen.
 
+Technik: Manche Kalender (z.B. Eventfrog) laden ihre Liste erst im
+Browser per JavaScript. Ein einfacher Abruf sieht dann nur eine leere
+Seite. In dem Fall die Seite mit Playwright und dem vorinstallierten
+Chromium rendern (`executablePath: '/opt/pw-browsers/chromium'` bzw.
+PLAYWRIGHT_BROWSERS_PATH ist gesetzt, nichts nachinstallieren) und den
+sichtbaren Text auswerten.
+
 Netzwerk: Die Routine arbeitet mit allen erreichbaren Quellen. Einzelne
 blockierte Domains ueberspringen und melden. Nur wenn gar keine Quelle
 erreichbar ist: abbrechen. Nie Events aus Suchmaschinen-Snippets uebernehmen.
