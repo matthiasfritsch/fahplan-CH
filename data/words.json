@@ -1,0 +1,542 @@
+[
+ {
+  "de": "die Neugier",
+  "deHint": "Nomen",
+  "en": "curiosity",
+  "enSay": "kjuri-OSS-iti",
+  "fr": "la curiosité",
+  "frHint": "f.",
+  "example": "Neugier macht klug."
+ },
+ {
+  "de": "mutig",
+  "deHint": "Adjektiv",
+  "en": "brave",
+  "enSay": "breiv",
+  "fr": "courageux",
+  "frHint": "/ courageuse",
+  "example": "Es war mutig, als Erste zu fragen."
+ },
+ {
+  "de": "entdecken",
+  "deHint": "Verb",
+  "en": "to discover",
+  "enSay": "dis-KAWER",
+  "fr": "découvrir",
+  "frHint": "Verb",
+  "example": "Wir entdecken einen geheimen Weg."
+ },
+ {
+  "de": "der Regenbogen",
+  "deHint": "Nomen",
+  "en": "rainbow",
+  "enSay": "REIN-bou",
+  "fr": "l'arc-en-ciel",
+  "frHint": "m.",
+  "example": "Nach dem Regen kam ein Regenbogen."
+ },
+ {
+  "de": "die Freundschaft",
+  "deHint": "Nomen",
+  "en": "friendship",
+  "enSay": "FRENDschip",
+  "fr": "l'amitié",
+  "frHint": "f.",
+  "example": "Unsere Freundschaft hält ewig."
+ },
+ {
+  "de": "vergleichen",
+  "deHint": "Verb",
+  "en": "to compare",
+  "enSay": "kom-PÄR",
+  "fr": "comparer",
+  "frHint": "Verb",
+  "example": "Vergleich die zwei Bilder!"
+ },
+ {
+  "de": "geduldig",
+  "deHint": "Adjektiv",
+  "en": "patient",
+  "enSay": "PEI-schent",
+  "fr": "patient",
+  "frHint": "/ patiente",
+  "example": "Sei geduldig, der Kuchen backt noch."
+ },
+ {
+  "de": "das Werkzeug",
+  "deHint": "Nomen",
+  "en": "tool",
+  "enSay": "tuul",
+  "fr": "l'outil",
+  "frHint": "m.",
+  "example": "Der Hammer ist ein Werkzeug."
+ },
+ {
+  "de": "die Brücke",
+  "deHint": "Nomen",
+  "en": "bridge",
+  "enSay": "bridsch",
+  "fr": "le pont",
+  "frHint": "m.",
+  "example": "Wir gehen über die Brücke."
+ },
+ {
+  "de": "erklären",
+  "deHint": "Verb",
+  "en": "to explain",
+  "enSay": "iks-PLEIN",
+  "fr": "expliquer",
+  "frHint": "Verb",
+  "example": "Kannst du mir das erklären?"
+ },
+ {
+  "de": "der Wald",
+  "deHint": "Nomen",
+  "en": "forest",
+  "enSay": "FOR-ist",
+  "fr": "la forêt",
+  "frHint": "f.",
+  "example": "Im Wald riecht es nach Pilzen."
+ },
+ {
+  "de": "hilfsbereit",
+  "deHint": "Adjektiv",
+  "en": "helpful",
+  "enSay": "HELP-ful",
+  "fr": "serviable",
+  "frHint": "Adjektiv",
+  "example": "Sie ist immer hilfsbereit."
+ },
+ {
+  "de": "die Überraschung",
+  "deHint": "Nomen",
+  "en": "surprise",
+  "enSay": "ser-PRAIS",
+  "fr": "la surprise",
+  "frHint": "f.",
+  "example": "Das Geschenk ist eine Überraschung."
+ },
+ {
+  "de": "der Schlüssel",
+  "deHint": "Nomen",
+  "en": "key",
+  "enSay": "kii",
+  "fr": "la clé",
+  "frHint": "f.",
+  "example": "Wo ist mein Schlüssel?"
+ },
+ {
+  "de": "träumen",
+  "deHint": "Verb",
+  "en": "to dream",
+  "enSay": "driim",
+  "fr": "rêver",
+  "frHint": "Verb",
+  "example": "Ich träume vom Meer."
+ },
+ {
+  "de": "das Abenteuer",
+  "deHint": "Nomen",
+  "en": "adventure",
+  "enSay": "äd-VEN-tscher",
+  "fr": "l'aventure",
+  "frHint": "f.",
+  "example": "Der Ausflug war ein Abenteuer."
+ },
+ {
+  "de": "ehrlich",
+  "deHint": "Adjektiv",
+  "en": "honest",
+  "enSay": "ON-ist",
+  "fr": "honnête",
+  "frHint": "Adjektiv",
+  "example": "Sei ehrlich zu deinen Freunden."
+ },
+ {
+  "de": "die Wolke",
+  "deHint": "Nomen",
+  "en": "cloud",
+  "enSay": "klaud",
+  "fr": "le nuage",
+  "frHint": "m.",
+  "example": "Die Wolke sieht aus wie ein Hund."
+ },
+ {
+  "de": "sammeln",
+  "deHint": "Verb",
+  "en": "to collect",
+  "enSay": "ko-LEKT",
+  "fr": "collectionner",
+  "frHint": "Verb",
+  "example": "Ich sammle schöne Steine."
+ },
+ {
+  "de": "der Mond",
+  "deHint": "Nomen",
+  "en": "moon",
+  "enSay": "muun",
+  "fr": "la lune",
+  "frHint": "f.",
+  "example": "Heute ist der Mond ganz rund."
+ },
+ {
+  "de": "die Insel",
+  "deHint": "Nomen",
+  "en": "island",
+  "enSay": "AI-länd",
+  "fr": "l'île",
+  "frHint": "f.",
+  "example": "Die Insel liegt mitten im See."
+ },
+ {
+  "de": "schnell",
+  "deHint": "Adjektiv",
+  "en": "fast",
+  "enSay": "faast",
+  "fr": "rapide",
+  "frHint": "Adjektiv",
+  "example": "Das Tram ist heute schnell."
+ },
+ {
+  "de": "der Stern",
+  "deHint": "Nomen",
+  "en": "star",
+  "enSay": "staar",
+  "fr": "l'étoile",
+  "frHint": "f.",
+  "example": "Siehst du den hellen Stern?"
+ },
+ {
+  "de": "versprechen",
+  "deHint": "Verb",
+  "en": "to promise",
+  "enSay": "PROM-is",
+  "fr": "promettre",
+  "frHint": "Verb",
+  "example": "Ich verspreche, ich komme mit."
+ },
+ {
+  "de": "das Gewitter",
+  "deHint": "Nomen",
+  "en": "thunderstorm",
+  "enSay": "TANDER-storm",
+  "fr": "l'orage",
+  "frHint": "m.",
+  "example": "Das Gewitter war sehr laut."
+ },
+ {
+  "de": "die Bibliothek",
+  "deHint": "Nomen",
+  "en": "library",
+  "enSay": "LAI-bre-ri",
+  "fr": "la bibliothèque",
+  "frHint": "f.",
+  "example": "In der Bibliothek ist es still."
+ },
+ {
+  "de": "lösen",
+  "deHint": "Verb",
+  "en": "to solve",
+  "enSay": "solv",
+  "fr": "résoudre",
+  "frHint": "Verb",
+  "example": "Wir lösen das Rätsel zusammen."
+ },
+ {
+  "de": "das Rätsel",
+  "deHint": "Nomen",
+  "en": "riddle",
+  "enSay": "RIDL",
+  "fr": "la devinette",
+  "frHint": "f.",
+  "example": "Kennst du ein gutes Rätsel?"
+ },
+ {
+  "de": "gemütlich",
+  "deHint": "Adjektiv",
+  "en": "cosy",
+  "enSay": "KOU-si",
+  "fr": "confortable",
+  "frHint": "Adjektiv",
+  "example": "Das Sofa ist so gemütlich."
+ },
+ {
+  "de": "der Frühling",
+  "deHint": "Nomen",
+  "en": "spring",
+  "enSay": "spring",
+  "fr": "le printemps",
+  "frHint": "m.",
+  "example": "Im Frühling blühen die Blumen."
+ },
+ {
+  "de": "der Herbst",
+  "deHint": "Nomen",
+  "en": "autumn",
+  "enSay": "OO-tem",
+  "fr": "l'automne",
+  "frHint": "m.",
+  "example": "Im Herbst fallen die Blätter."
+ },
+ {
+  "de": "der Winter",
+  "deHint": "Nomen",
+  "en": "winter",
+  "enSay": "WIN-ter",
+  "fr": "l'hiver",
+  "frHint": "m.",
+  "example": "Im Winter fahren wir Schlitten."
+ },
+ {
+  "de": "der Sommer",
+  "deHint": "Nomen",
+  "en": "summer",
+  "enSay": "SAMMER",
+  "fr": "l'été",
+  "frHint": "m.",
+  "example": "Im Sommer baden wir im Rhein."
+ },
+ {
+  "de": "flüstern",
+  "deHint": "Verb",
+  "en": "to whisper",
+  "enSay": "WIS-per",
+  "fr": "chuchoter",
+  "frHint": "Verb",
+  "example": "Sie flüstert mir etwas ins Ohr."
+ },
+ {
+  "de": "das Geheimnis",
+  "deHint": "Nomen",
+  "en": "secret",
+  "enSay": "SII-kret",
+  "fr": "le secret",
+  "frHint": "m.",
+  "example": "Kannst du ein Geheimnis behalten?"
+ },
+ {
+  "de": "stolz",
+  "deHint": "Adjektiv",
+  "en": "proud",
+  "enSay": "praud",
+  "fr": "fier",
+  "frHint": "/ fière",
+  "example": "Ich bin stolz auf dich."
+ },
+ {
+  "de": "der Schmetterling",
+  "deHint": "Nomen",
+  "en": "butterfly",
+  "enSay": "BATTER-flai",
+  "fr": "le papillon",
+  "frHint": "m.",
+  "example": "Ein Schmetterling sitzt auf der Blume."
+ },
+ {
+  "de": "klettern",
+  "deHint": "Verb",
+  "en": "to climb",
+  "enSay": "klaim",
+  "fr": "grimper",
+  "frHint": "Verb",
+  "example": "Wir klettern auf den Baum."
+ },
+ {
+  "de": "die Erfindung",
+  "deHint": "Nomen",
+  "en": "invention",
+  "enSay": "in-VEN-schen",
+  "fr": "l'invention",
+  "frHint": "f.",
+  "example": "Das Rad ist eine alte Erfindung."
+ },
+ {
+  "de": "vorsichtig",
+  "deHint": "Adjektiv",
+  "en": "careful",
+  "enSay": "KÄR-ful",
+  "fr": "prudent",
+  "frHint": "/ prudente",
+  "example": "Sei vorsichtig auf der Treppe."
+ },
+ {
+  "de": "der Hafen",
+  "deHint": "Nomen",
+  "en": "harbour",
+  "enSay": "HAA-ber",
+  "fr": "le port",
+  "frHint": "m.",
+  "example": "Im Hafen liegen viele Schiffe."
+ },
+ {
+  "de": "das Gemüse",
+  "deHint": "Nomen",
+  "en": "vegetables",
+  "enSay": "WEDSCH-tebls",
+  "fr": "les légumes",
+  "frHint": "m. Plural",
+  "example": "Gemüse macht stark."
+ },
+ {
+  "de": "teilen",
+  "deHint": "Verb",
+  "en": "to share",
+  "enSay": "schär",
+  "fr": "partager",
+  "frHint": "Verb",
+  "example": "Wir teilen die Schokolade."
+ },
+ {
+  "de": "der Ozean",
+  "deHint": "Nomen",
+  "en": "ocean",
+  "enSay": "OU-schen",
+  "fr": "l'océan",
+  "frHint": "m.",
+  "example": "Wale leben im Ozean."
+ },
+ {
+  "de": "fröhlich",
+  "deHint": "Adjektiv",
+  "en": "cheerful",
+  "enSay": "TSCHIR-ful",
+  "fr": "joyeux",
+  "frHint": "/ joyeuse",
+  "example": "Der Hund ist heute fröhlich."
+ },
+ {
+  "de": "die Uhr",
+  "deHint": "Nomen",
+  "en": "clock",
+  "enSay": "klok",
+  "fr": "l'horloge",
+  "frHint": "f.",
+  "example": "Die Uhr am Bahnhof ist gross."
+ },
+ {
+  "de": "der Berg",
+  "deHint": "Nomen",
+  "en": "mountain",
+  "enSay": "MAUN-ten",
+  "fr": "la montagne",
+  "frHint": "f.",
+  "example": "Wir wandern auf den Berg."
+ },
+ {
+  "de": "lachen",
+  "deHint": "Verb",
+  "en": "to laugh",
+  "enSay": "laaf",
+  "fr": "rire",
+  "frHint": "Verb",
+  "example": "Wir lachen über den Witz."
+ },
+ {
+  "de": "die Zukunft",
+  "deHint": "Nomen",
+  "en": "future",
+  "enSay": "FJUU-tscher",
+  "fr": "l'avenir",
+  "frHint": "m.",
+  "example": "Was bringt die Zukunft?"
+ },
+ {
+  "de": "ordentlich",
+  "deHint": "Adjektiv",
+  "en": "tidy",
+  "enSay": "TAI-di",
+  "fr": "ordonné",
+  "frHint": "/ ordonnée",
+  "example": "Mein Zimmer ist ordentlich."
+ },
+ {
+  "de": "der Fluss",
+  "deHint": "Nomen",
+  "en": "river",
+  "enSay": "RI-wer",
+  "fr": "la rivière",
+  "frHint": "f.",
+  "example": "Am Fluss sammeln wir Steine."
+ },
+ {
+  "de": "sich erinnern",
+  "deHint": "Verb",
+  "en": "to remember",
+  "enSay": "ri-MEM-ber",
+  "fr": "se souvenir",
+  "frHint": "Verb",
+  "example": "Erinnerst du dich an den Zoo?"
+ },
+ {
+  "de": "die Wissenschaft",
+  "deHint": "Nomen",
+  "en": "science",
+  "enSay": "SAI-ens",
+  "fr": "la science",
+  "frHint": "f.",
+  "example": "Wissenschaft erklärt die Welt."
+ },
+ {
+  "de": "stark",
+  "deHint": "Adjektiv",
+  "en": "strong",
+  "enSay": "strong",
+  "fr": "fort",
+  "frHint": "/ forte",
+  "example": "Der Elefant ist sehr stark."
+ },
+ {
+  "de": "der Planet",
+  "deHint": "Nomen",
+  "en": "planet",
+  "enSay": "PLÄ-net",
+  "fr": "la planète",
+  "frHint": "f.",
+  "example": "Die Erde ist unser Planet."
+ },
+ {
+  "de": "bauen",
+  "deHint": "Verb",
+  "en": "to build",
+  "enSay": "bild",
+  "fr": "construire",
+  "frHint": "Verb",
+  "example": "Wir bauen eine Burg aus Sand."
+ },
+ {
+  "de": "die Ente",
+  "deHint": "Nomen",
+  "en": "duck",
+  "enSay": "dak",
+  "fr": "le canard",
+  "frHint": "m.",
+  "example": "Die Ente schwimmt auf dem Rhein."
+ },
+ {
+  "de": "freundlich",
+  "deHint": "Adjektiv",
+  "en": "friendly",
+  "enSay": "FREND-li",
+  "fr": "gentil",
+  "frHint": "/ gentille",
+  "example": "Der Nachbar ist sehr freundlich."
+ },
+ {
+  "de": "das Frühstück",
+  "deHint": "Nomen",
+  "en": "breakfast",
+  "enSay": "BREK-fest",
+  "fr": "le petit-déjeuner",
+  "frHint": "m.",
+  "example": "Zum Frühstück gibt es Müesli."
+ },
+ {
+  "de": "gewinnen",
+  "deHint": "Verb",
+  "en": "to win",
+  "enSay": "win",
+  "fr": "gagner",
+  "frHint": "Verb",
+  "example": "Wer gewinnt das Spiel?"
+ }
+]

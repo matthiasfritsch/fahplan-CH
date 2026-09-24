@@ -1,4 +1,12 @@
 import Board, { W, H, setInvert } from "./Board";
+import qrcode from "qrcode-generator";
+import words from "../../../data/words.json";
+import dinners from "../../../data/dinners.json";
+import ideas from "../../../data/ideas.json";
+import eventsFile from "../../../data/events.json";
+import {
+  zurichNow, pickWord, pickDinner, selectEvents, isStale, parseJsonLdEvents,
+} from "../../../lib/content.mjs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -32,6 +40,8 @@ const ENV = {
   eta:    process.env.BOARD_ETA,
   lat:    process.env.BOARD_LAT,
   lon:    process.env.BOARD_LON,
+  publicUrl: process.env.BOARD_PUBLIC_URL,
+  eventsFallbackUrl: process.env.BOARD_EVENTS_FALLBACK_URL,
 };
 
 function conf(url) {
@@ -67,6 +77,12 @@ function conf(url) {
     eta: pick("eta", "auto"),
     lat: parseFloat(pick("lat", "47.52")),
     lon: parseFloat(pick("lon", "7.57")),
+    // Nur zum Testen: ?date=2026-09-26&time=09:00 spielt einen
+    // anderen Tag durch (Events, Wort, Znacht).
+    date: pick("date", ""),
+    time: pick("time", ""),
+    publicUrl: pick("publicUrl", ""),
+    eventsFallbackUrl: pick("eventsFallbackUrl", ""),
   };
 }
 
@@ -146,6 +162,12 @@ function stampFrom(offsetMin, mitUhrzeit) {
              + "  |  " + p(d.getUTCDate()) + "." + p(d.getUTCMonth() + 1) + "." + d.getUTCFullYear();
   if (!mitUhrzeit) return kopf;
   return kopf + "  |  " + p(d.getUTCHours()) + ":" + p(d.getUTCMinutes());
+}
+
+// Kopfzeile fuer einen per ?date= vorgegebenen Testtag
+function stampForDate(iso) {
+  const [y, m, d] = iso.split("-");
+  return WEEKDAYS[new Date(iso + "T12:00:00Z").getUTCDay()] + "  |  " + d + "." + m + "." + y;
 }
 
 /* ============================================================
@@ -343,6 +365,75 @@ async function weather(lat, lon) {
 }
 
 /* ============================================================
+   Linke Seite: Events, Wort, Znacht
+   ============================================================ */
+
+/* Events kommen aus data/events.json, das die Claude-Routine
+   pflegt. Ist die Datei laenger als 8 Tage nicht aktualisiert
+   worden, versucht der Scraper eine Eventseite
+   (BOARD_EVENTS_FALLBACK_URL). Die Antwort wird einen Tag lang
+   zwischengespeichert, damit nicht jeder Render sie holt. */
+async function loadEvents(today, fallbackUrl) {
+  if (!isStale(eventsFile.updated, today)) {
+    return { events: eventsFile.events || [], source: "routine" };
+  }
+  if (fallbackUrl) {
+    try {
+      const res = await fetch(fallbackUrl, {
+        headers: { "user-agent": "Mozilla/5.0 (Fahrplan-Board)" },
+        next: { revalidate: 86400 },
+      });
+      if (res.ok) {
+        const found = parseJsonLdEvents(await res.text());
+        if (found.length) return { events: found, source: "scraper" };
+      }
+    } catch { /* faellt auf die Ideen zurueck */ }
+  }
+  return { events: eventsFile.events || [], source: "veraltet" };
+}
+
+/* QR-Code als SVG-Bild. 3 px pro Modul, exakt auf dem
+   Pixelraster, damit er auf 1 Bit knackscharf bleibt. Den
+   Weissraum drumherum liefert das Layout. */
+function qrImage(text, ink, paper, module = 3) {
+  const q = qrcode(0, "L");
+  q.addData(text);
+  q.make();
+  const n = q.getModuleCount();
+  let rects = "";
+  for (let y = 0; y < n; y++)
+    for (let x = 0; x < n; x++)
+      if (q.isDark(y, x))
+        rects += `<rect x="${x * module}" y="${y * module}" width="${module}" height="${module}"/>`;
+  const size = n * module;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" shape-rendering="crispEdges">`
+            + `<rect width="${size}" height="${size}" fill="${paper}"/><g fill="${ink}">${rects}</g></svg>`;
+  return { src: "data:image/svg+xml;base64," + Buffer.from(svg).toString("base64"), size };
+}
+
+/* Beispiel-Events fuer ?demo=1, relativ zum Datum, damit die
+   Vorschau an jedem Tag gefuellt ist. Keine echten Termine. */
+function demoEvents(today) {
+  const d = (n) => {
+    const x = new Date(today + "T12:00:00Z");
+    x.setUTCDate(x.getUTCDate() + n);
+    return x.toISOString().slice(0, 10);
+  };
+  const wd = new Date(today + "T12:00:00Z").getUTCDay();
+  const sa = wd === 0 ? -1 : 6 - wd;
+  return [
+    { date: d(0), time: "16:30", title: "Vorlesestunde", place: "Kinderbuchhandlung" },
+    { date: d(1), time: "17:00", title: "Kinderkino", place: "Kult.Kino Atelier" },
+    { date: d(sa), time: "10:00", title: "Verkehrshaus: Tag der Bahn", city: "Luzern", travel: "1h10" },
+    { date: d(sa), time: "10:00", title: "Kinderflohmarkt", place: "Kasernenareal" },
+    { date: d(sa), time: "14:00", title: "Familienführung", place: "Naturhist. Museum" },
+    { date: d(sa + 1), time: "11:00", title: "Schaufütterung Seelöwen", place: "Zolli" },
+    { date: d(sa + 1), time: "ab 10", title: "Herbstfest mit Kutschenfahrt", city: "Arlesheim", travel: "25 min" },
+    { date: d(sa + 1), time: "13:00", title: "Kinder-Workshop", place: "Vitra Campus", city: "Weil a.R.", travel: "20 min" },
+  ];
+}
+
+/* ============================================================
    Route
    ============================================================ */
 export async function GET(request) {
@@ -435,9 +526,23 @@ async function handle(request) {
 
   const offset = a.offset ?? b.offset ?? 120;
 
+  // Linke Seite. Datum in Schweizer Zeit, per ?date= testbar.
+  const jetzt = zurichNow();
+  const today = cfg.date || jetzt.date;
+  const nowTime = cfg.time || (cfg.date ? "00:00" : jetzt.time);
+  const demo = url.searchParams.get("demo") === "1";
+  const ev = demo ? { events: demoEvents(today), source: "demo" }
+                  : await loadEvents(today, cfg.eventsFallbackUrl);
+  const days = selectEvents(ev.events, today, nowTime, undefined, eventsFile.holidays);
+  const word = pickWord(words, today);
+  const dinner = pickDinner(dinners, today);
+  const recipeUrl = (cfg.publicUrl || url.origin).replace(/\/$/, "") + "/r/" + dinner.id;
+
   if (url.searchParams.get("debug") === "1") {
     return new Response(
-      JSON.stringify({ cfg, a, b, wx, stale, stamp: stampFrom(offset, true) }, null, 2),
+      JSON.stringify({ cfg, a, b, wx, stale, stamp: stampFrom(offset, true),
+        today, nowTime, eventSource: ev.source, eventsUpdated: eventsFile.updated,
+        days, word, dinner: dinner.name, recipeUrl }, null, 2),
       { headers: { "content-type": "application/json; charset=utf-8" } }
     );
   }
@@ -466,9 +571,13 @@ async function handle(request) {
         a={{ ...cfg.a, list: a.list }}
         b={{ ...cfg.b, list: b.list }}
         weather={wx}
-        stamp={stampFrom(offset, zeigeEta)}
+        stamp={cfg.date ? stampForDate(cfg.date) : stampFrom(offset, zeigeEta)}
         stale={stale}
-        eta={zeigeEta}
+        days={days}
+        ideas={ideas}
+        word={word}
+        dinner={dinner}
+        qr={qrImage(recipeUrl, cfg.invert ? "#ffffff" : "#000000", cfg.invert ? "#000000" : "#ffffff")}
       />
     ),
     { width: W, height: H, fonts: await fonts(url.origin) }

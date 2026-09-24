@@ -3,11 +3,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/check-data.mjs",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "check": "node scripts/check-data.mjs"
   },
   "dependencies": {
     "next": "^15.5.22",
+    "qrcode-generator": "^2.0.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   }
