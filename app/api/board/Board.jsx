@@ -19,6 +19,8 @@
    Jedes Element mit mehreren Kindern braucht display:"flex".
    ============================================================ */
 
+import { isFleaMarket } from "../../../lib/content.mjs";
+
 export const W = 800;
 export const H = 480;
 
@@ -159,9 +161,10 @@ function Transit({ a, b }) {
 function Event({ e }) {
   const away = !!e.city;
   const school = !!e.school;
+  const flea = !school && isFleaMarket(e);
   // Grobe Zeichenrechnung, Satori kann Text nicht vermessen.
   // Mit Badge ist weniger Platz, der Ort faellt dann zuerst weg.
-  const budget = away ? 29 : school ? 33 : 40;
+  const budget = away ? 29 : flea ? 29 : school ? 33 : 40;
   const title = clip(e.title, budget);
   const place = e.place && title.length + e.place.length + 1 <= budget ? e.place : "";
 
@@ -182,6 +185,15 @@ function Event({ e }) {
           })}>{place}</div>
         ) : null}
       </div>
+      {flea ? (
+        /* Flohmarkt: eigene Kategorie, ebenfalls gefuellt */
+        <div style={flex({
+          flexShrink: 0, marginLeft: 8,
+          backgroundColor: INK, color: PAPER,
+          paddingLeft: 6, paddingRight: 6, paddingTop: 2, paddingBottom: 2,
+          fontFamily: SANS, fontWeight: 700, fontSize: 13, letterSpacing: 0.5,
+        })}>FLOHMARKT</div>
+      ) : null}
       {school ? (
         /* Yunas Schule: schwarz gefuellt, damit es sofort auffaellt */
         <div style={flex({
