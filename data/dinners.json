@@ -1,0 +1,530 @@
+[
+ {
+  "id": "wraps",
+  "name": "Wraps mit Hummus & Rüebli",
+  "mins": 8,
+  "ingredients": [
+   "4 Tortilla-Wraps",
+   "1 Becher Hummus",
+   "2 Rüebli",
+   "100 g Feta",
+   "1 Handvoll Salat"
+  ],
+  "steps": [
+   "Rüebli raffeln, Feta zerbröseln.",
+   "Wraps dünn mit Hummus bestreichen.",
+   "Salat, Rüebli und Feta drauf, fest einrollen.",
+   "Halbieren, fertig."
+  ]
+ },
+ {
+  "id": "gnocchi",
+  "name": "Gnocchi, Tomaten, Mozzarella",
+  "mins": 10,
+  "ingredients": [
+   "500 g Gnocchi (Kühlregal)",
+   "250 g Cherrytomaten",
+   "1 Mozzarella",
+   "Olivenöl, Salz, Basilikum"
+  ],
+  "steps": [
+   "Gnocchi in Öl 5 Min. goldbraun braten.",
+   "Tomaten halbieren, 2 Min. mitbraten.",
+   "Mozzarella zerzupfen, drüber, Deckel drauf, 1 Min.",
+   "Salzen, Basilikum dazu."
+  ]
+ },
+ {
+  "id": "ruehrei",
+  "name": "Rührei mit Spinat & Toast",
+  "mins": 10,
+  "ingredients": [
+   "6 Eier",
+   "2 Handvoll Babyspinat",
+   "Butter",
+   "4 Scheiben Brot",
+   "Salz, Pfeffer"
+  ],
+  "steps": [
+   "Brot toasten.",
+   "Spinat in Butter zusammenfallen lassen.",
+   "Verquirlte Eier dazu, sanft rühren bis cremig.",
+   "Würzen, auf den Toast."
+  ]
+ },
+ {
+  "id": "quesadillas",
+  "name": "Quesadillas mit Bohnen & Mais",
+  "mins": 10,
+  "ingredients": [
+   "4 Tortillas",
+   "1 Dose Kidneybohnen",
+   "1 kleine Dose Mais",
+   "150 g geriebener Käse",
+   "Salsa zum Dippen"
+  ],
+  "steps": [
+   "Bohnen und Mais abtropfen.",
+   "Auf eine Tortilla-Hälfte Käse, Bohnen, Mais.",
+   "Zuklappen, in der Pfanne je Seite 2 Min. braten.",
+   "In Stücke schneiden, mit Salsa."
+  ]
+ },
+ {
+  "id": "tortellini",
+  "name": "Tortellini mit Tomatensauce",
+  "mins": 10,
+  "ingredients": [
+   "500 g frische Tortellini",
+   "1 Glas Tomatensauce",
+   "Parmesan",
+   "Basilikum"
+  ],
+  "steps": [
+   "Wasser aufkochen, salzen.",
+   "Tortellini 3 bis 4 Min. kochen.",
+   "Sauce parallel erwärmen.",
+   "Mischen, Parmesan drüber."
+  ]
+ },
+ {
+  "id": "couscous",
+  "name": "Couscous-Salat mit Feta",
+  "mins": 10,
+  "ingredients": [
+   "200 g Couscous",
+   "1 Gurke",
+   "250 g Cherrytomaten",
+   "200 g Feta",
+   "Zitrone, Olivenöl"
+  ],
+  "steps": [
+   "Couscous mit 250 ml heissem Wasser übergiessen, 5 Min. quellen.",
+   "Gemüse klein schneiden, Feta würfeln.",
+   "Alles mischen.",
+   "Mit Zitrone, Öl und Salz abschmecken."
+  ]
+ },
+ {
+  "id": "pizzatoast",
+  "name": "Pizza-Toast aus der Pfanne",
+  "mins": 10,
+  "ingredients": [
+   "8 Scheiben Toastbrot",
+   "Tomatensauce",
+   "2 Scheiben Schinken pro Toast",
+   "Mozzarella oder Reibkäse",
+   "Oregano"
+  ],
+  "steps": [
+   "Toast mit Sauce bestreichen.",
+   "Schinken und Käse drauf.",
+   "In der Pfanne mit Deckel 5 Min. bei mittlerer Hitze.",
+   "Käse geschmolzen? Fertig."
+  ]
+ },
+ {
+  "id": "asianudeln",
+  "name": "Asia-Nudeln mit Gemüse",
+  "mins": 10,
+  "ingredients": [
+   "250 g Mie-Nudeln",
+   "400 g Wok-Gemüse (tiefgekühlt)",
+   "3 EL Sojasauce",
+   "1 EL Honig",
+   "Öl"
+  ],
+  "steps": [
+   "Nudeln nach Packung 4 Min. kochen.",
+   "Gemüse im Öl 5 Min. anbraten.",
+   "Nudeln dazu, Soja und Honig drüber.",
+   "Kurz durchschwenken."
+  ]
+ },
+ {
+  "id": "omelette",
+  "name": "Omelette mit Käse & Schinken",
+  "mins": 8,
+  "ingredients": [
+   "6 Eier",
+   "100 g Reibkäse",
+   "4 Scheiben Schinken",
+   "Butter, Salz"
+  ],
+  "steps": [
+   "Eier verquirlen, salzen.",
+   "In Butter stocken lassen.",
+   "Käse und Schinken auf eine Hälfte.",
+   "Zuklappen, 1 Min. ziehen lassen."
+  ]
+ },
+ {
+  "id": "bagel",
+  "name": "Lachs-Bagel mit Frischkäse",
+  "mins": 5,
+  "ingredients": [
+   "4 Bagels",
+   "200 g Frischkäse",
+   "200 g Rauchlachs",
+   "1 Gurke",
+   "Zitrone"
+  ],
+  "steps": [
+   "Bagels halbieren und toasten.",
+   "Frischkäse draufstreichen.",
+   "Lachs und Gurkenscheiben drauf.",
+   "Ein paar Tropfen Zitrone."
+  ]
+ },
+ {
+  "id": "griechsalat",
+  "name": "Griechischer Salat mit Pita",
+  "mins": 10,
+  "ingredients": [
+   "4 Pitabrote",
+   "2 Tomaten",
+   "1 Gurke",
+   "200 g Feta",
+   "Oliven, Olivenöl"
+  ],
+  "steps": [
+   "Pita im Toaster aufbacken.",
+   "Tomaten und Gurke grob würfeln.",
+   "Feta drüberbröseln, Oliven dazu.",
+   "Mit Öl und Salz anmachen."
+  ]
+ },
+ {
+  "id": "panini",
+  "name": "Caprese-Panini",
+  "mins": 8,
+  "ingredients": [
+   "4 Ciabatta-Brötchen",
+   "2 Mozzarella",
+   "2 Tomaten",
+   "Pesto"
+  ],
+  "steps": [
+   "Brötchen aufschneiden, mit Pesto bestreichen.",
+   "Mozzarella und Tomate rein.",
+   "In der Pfanne mit Gewicht drauf je Seite 2 Min.",
+   "Aufschneiden."
+  ]
+ },
+ {
+  "id": "tomatensuppe",
+  "name": "Tomatensuppe & Käsetoast",
+  "mins": 10,
+  "ingredients": [
+   "700 g Passata",
+   "200 ml Rahm",
+   "1 Bouillonwürfel",
+   "4 Scheiben Brot",
+   "Käse"
+  ],
+  "steps": [
+   "Passata, Rahm, Bouillon aufkochen.",
+   "5 Min. köcheln, würzen.",
+   "Käsetoast in der Pfanne braten.",
+   "Toast in Streifen zum Tunken."
+  ]
+ },
+ {
+  "id": "pokebowl",
+  "name": "Poke Bowl mit Thon",
+  "mins": 10,
+  "ingredients": [
+   "2 Beutel Express-Reis",
+   "2 Dosen Thon",
+   "1 Avocado",
+   "1 Gurke",
+   "Sojasauce, Sesam"
+  ],
+  "steps": [
+   "Reis nach Packung erwärmen.",
+   "Avocado und Gurke würfeln.",
+   "Reis in Schalen, Thon und Gemüse drauf.",
+   "Soja und Sesam drüber."
+  ]
+ },
+ {
+  "id": "friedrice",
+  "name": "Fried Rice mit Ei",
+  "mins": 10,
+  "ingredients": [
+   "2 Beutel Express-Reis",
+   "3 Eier",
+   "300 g Erbsen & Rüebli (tiefgekühlt)",
+   "3 EL Sojasauce",
+   "Öl"
+  ],
+  "steps": [
+   "Gemüse im Öl 3 Min. braten.",
+   "Reis dazu, 3 Min. mitbraten.",
+   "Eier an den Rand, verrühren, stocken lassen.",
+   "Mit Soja würzen."
+  ]
+ },
+ {
+  "id": "hotdog",
+  "name": "Hot Dogs mit Gurkensalat",
+  "mins": 10,
+  "ingredients": [
+   "4 Wienerli",
+   "4 Hot-Dog-Brötchen",
+   "Senf, Ketchup",
+   "1 Gurke",
+   "Joghurt, Dill"
+  ],
+  "steps": [
+   "Wienerli in heissem Wasser 5 Min. ziehen lassen.",
+   "Gurke hobeln, mit Joghurt und Dill mischen.",
+   "Brötchen kurz aufbacken.",
+   "Zusammenbauen."
+  ]
+ },
+ {
+  "id": "crepes",
+  "name": "Käse-Schinken-Crêpes",
+  "mins": 10,
+  "ingredients": [
+   "4 fertige Crêpes",
+   "150 g Reibkäse",
+   "4 Scheiben Schinken",
+   "Butter"
+  ],
+  "steps": [
+   "Crêpe in Butter in die Pfanne.",
+   "Käse und Schinken auf eine Hälfte.",
+   "Zuklappen, 2 Min. je Seite.",
+   "Mit Salat servieren."
+  ]
+ },
+ {
+  "id": "burritobowl",
+  "name": "Burrito-Bowl",
+  "mins": 10,
+  "ingredients": [
+   "2 Beutel Express-Reis",
+   "1 Dose schwarze Bohnen",
+   "1 Dose Mais",
+   "1 Avocado",
+   "Salsa, Sauerrahm"
+  ],
+  "steps": [
+   "Reis erwärmen, Bohnen und Mais abtropfen.",
+   "Bohnen kurz in der Pfanne würzen.",
+   "Alles in Schalen verteilen.",
+   "Avocado, Salsa und Sauerrahm drauf."
+  ]
+ },
+ {
+  "id": "roesti",
+  "name": "Rösti mit Spiegelei",
+  "mins": 10,
+  "ingredients": [
+   "500 g Rösti (Beutel)",
+   "4 Eier",
+   "Butter",
+   "Salz, Pfeffer"
+  ],
+  "steps": [
+   "Rösti in Butter flach drücken, 4 Min. braten.",
+   "Wenden, weitere 4 Min.",
+   "Parallel Spiegeleier braten.",
+   "Ei auf die Rösti."
+  ]
+ },
+ {
+  "id": "caesarwrap",
+  "name": "Poulet-Caesar-Wrap",
+  "mins": 10,
+  "ingredients": [
+   "4 Wraps",
+   "300 g gebratene Pouletstreifen (fertig)",
+   "1 Romana-Salat",
+   "Caesar-Sauce",
+   "Parmesan"
+  ],
+  "steps": [
+   "Poulet kurz erwärmen.",
+   "Salat klein schneiden, mit Sauce mischen.",
+   "Auf Wraps verteilen, Parmesan drüber.",
+   "Einrollen."
+  ]
+ },
+ {
+  "id": "tortillapizza",
+  "name": "Tortilla-Pizza",
+  "mins": 10,
+  "ingredients": [
+   "4 Tortillas",
+   "Tomatensauce",
+   "Reibkäse",
+   "Mais, Peperoni oder Salami"
+  ],
+  "steps": [
+   "Tortilla in die Pfanne.",
+   "Sauce, Käse, Belag drauf.",
+   "Deckel drauf, 4 Min. bei mittlerer Hitze.",
+   "Schneiden wie eine Pizza."
+  ]
+ },
+ {
+  "id": "nudelsuppe",
+  "name": "Nudelsuppe mit Ei",
+  "mins": 10,
+  "ingredients": [
+   "1 l Gemüsebouillon",
+   "150 g Mie- oder Ramen-Nudeln",
+   "4 Eier",
+   "Frühlingszwiebeln",
+   "Sojasauce"
+  ],
+  "steps": [
+   "Bouillon aufkochen.",
+   "Eier 6 Min. kochen, abschrecken.",
+   "Nudeln 3 Min. in der Bouillon garen.",
+   "Mit Soja würzen, Ei halbiert drauf."
+  ]
+ },
+ {
+  "id": "hummusteller",
+  "name": "Hummus-Teller mit Gemüse",
+  "mins": 5,
+  "ingredients": [
+   "2 Becher Hummus",
+   "Rüebli, Gurke, Peperoni",
+   "4 Pitabrote",
+   "Olivenöl, Paprika"
+  ],
+  "steps": [
+   "Gemüse in Sticks schneiden.",
+   "Hummus auf Teller streichen, Öl und Paprika drüber.",
+   "Pita toasten.",
+   "Dippen!"
+  ]
+ },
+ {
+  "id": "thonpasta",
+  "name": "Thon-Tomaten-Pasta",
+  "mins": 10,
+  "ingredients": [
+   "400 g Spaghettini",
+   "2 Dosen Thon",
+   "1 Glas Tomatensauce",
+   "Kapern (optional)",
+   "Parmesan"
+  ],
+  "steps": [
+   "Spaghettini nach Packung kochen (ca. 5 Min.).",
+   "Sauce mit Thon erwärmen.",
+   "Pasta dazu, mischen.",
+   "Parmesan drüber."
+  ]
+ },
+ {
+  "id": "avocadotoast",
+  "name": "Avocado-Toast mit Ei",
+  "mins": 8,
+  "ingredients": [
+   "4 Scheiben Brot",
+   "2 Avocados",
+   "4 Eier",
+   "Zitrone, Salz, Chili"
+  ],
+  "steps": [
+   "Brot toasten, Eier braten.",
+   "Avocado mit Zitrone und Salz zerdrücken.",
+   "Auf den Toast streichen.",
+   "Ei drauf, wer mag: Chili."
+  ]
+ },
+ {
+  "id": "tofupfanne",
+  "name": "Tofu-Gemüse-Pfanne",
+  "mins": 10,
+  "ingredients": [
+   "400 g Tofu natur",
+   "400 g Wok-Gemüse (tiefgekühlt)",
+   "Sojasauce, Honig",
+   "Express-Reis"
+  ],
+  "steps": [
+   "Tofu würfeln, knusprig anbraten.",
+   "Gemüse dazu, 4 Min. braten.",
+   "Soja und etwas Honig drüber.",
+   "Mit Reis servieren."
+  ]
+ },
+ {
+  "id": "apfeltoast",
+  "name": "Käse-Toast mit Apfel",
+  "mins": 8,
+  "ingredients": [
+   "8 Scheiben Toastbrot",
+   "2 Äpfel",
+   "Raclette- oder Gruyère-Käse",
+   "Butter"
+  ],
+  "steps": [
+   "Äpfel dünn schneiden.",
+   "Toast mit Apfel und Käse belegen, zuklappen.",
+   "Aussen buttern, je Seite 3 Min. braten.",
+   "Diagonal halbieren."
+  ]
+ },
+ {
+  "id": "ravioli",
+  "name": "Ravioli mit Salbeibutter",
+  "mins": 8,
+  "ingredients": [
+   "500 g frische Ravioli",
+   "50 g Butter",
+   "ein paar Salbeiblätter",
+   "Parmesan"
+  ],
+  "steps": [
+   "Ravioli 3 Min. kochen.",
+   "Butter mit Salbei aufschäumen.",
+   "Ravioli in der Butter schwenken.",
+   "Parmesan drüber."
+  ]
+ },
+ {
+  "id": "pancakes",
+  "name": "Pancakes mit Beeren",
+  "mins": 10,
+  "ingredients": [
+   "200 g Mehl",
+   "2 Eier",
+   "250 ml Milch",
+   "1 TL Backpulver, 1 EL Zucker",
+   "Beeren, Ahornsirup"
+  ],
+  "steps": [
+   "Alles ausser Beeren glatt rühren.",
+   "Kleine Pancakes je Seite 1 bis 2 Min. braten.",
+   "Stapeln.",
+   "Beeren und Sirup drauf."
+  ]
+ },
+ {
+  "id": "eiersalat",
+  "name": "Eiersalat-Sandwich",
+  "mins": 10,
+  "ingredients": [
+   "6 Eier",
+   "3 EL Mayonnaise",
+   "Schnittlauch",
+   "8 Scheiben Brot",
+   "Salat"
+  ],
+  "steps": [
+   "Eier 8 Min. kochen, abschrecken.",
+   "Schälen, mit der Gabel zerdrücken.",
+   "Mit Mayo, Schnittlauch, Salz mischen.",
+   "Aufs Brot, Salat dazu."
+  ]
+ }
+]

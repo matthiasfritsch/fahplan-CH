@@ -3,9 +3,19 @@
    Das ist die Datei, die du anfasst, wenn dir etwas nicht
    gefaellt. Alles darunter ist Technik.
 
+   Aufbau (800 x 480):
+   +--------------------------------------------------------+
+   | Kopf: Datum                                     Wetter |
+   +-------------------------------------+------------------+
+   | Events, nach Tag gruppiert          | Tram  AB     AN  |
+   |                                     | ...              |
+   +------------------+------------------+ Bus   AB     AN  |
+   | Wort des Tages   | Znacht      [QR] | ...              |
+   +------------------+------------------+------------------+
+
    Wichtig: Satori (der Renderer hinter ImageResponse) versteht
    nur einen Teil von CSS. Erlaubt ist Flexbox. Nicht erlaubt
-   sind Grid, Float und position:absolute im uebliche Sinn.
+   sind Grid, Float und position:absolute im ueblichen Sinn.
    Jedes Element mit mehreren Kindern braucht display:"flex".
    ============================================================ */
 
@@ -15,8 +25,8 @@ export const H = 480;
 // --- Tokens -------------------------------------------------
 let INK   = "#000000";
 let PAPER = "#ffffff";
-let MID   = "#555555";   // Sollzeit, Ankunft, Nebenangaben
-let HAIR  = "#9a9a9a";   // Zeilentrenner
+let MID   = "#555555";   // Nebenangaben: Ort, Ankunft, Datum
+let HAIR  = "#9a9a9a";   // Zeilentrenner im Fahrplan
 
 /* Serverseitig invertieren.
    Manche Panels stellen ein PNG genau andersherum dar, als
@@ -29,239 +39,300 @@ export function setInvert(on) {
   HAIR  = on ? "#707070" : "#9a9a9a";
 }
 
-const PAD    = 16;         // Seitenrand
-const H_TOP  = 44;         // Kopfleiste inkl. Trennlinie
-const H_BAND = 30;         // Haltestellenbalken
+const H_TOP  = 44;   // Kopfleiste inkl. Trennlinie
+const H_BAND = 28;   // Tram/Bus-Balken
+const H_FOOT = 128;  // Wort + Znacht
+const W_LEFT = 560;  // 70 Prozent fuer Events, Rest Fahrplan
+const RULE   = 2;    // Staerke der Zonen-Linien
 
-const SANS = "Board Sans";  // Inter, Ziele und Haltestellen
+const SANS = "Board Sans";  // Inter
 const NUMS = "Board Nums";  // JetBrains Mono, alle Ziffern
 
-// Spaltenbreiten in Pixeln. Summe plus Abstaende muss unter
-// 800 minus 2x PAD bleiben, der Rest geht ans Ziel.
-const C_LINE  = 50;   // Liniennummer
-const C_SCHED = 62;   // durchgestrichene Sollzeit
-const C_DELAY = 46;   // Verspaetungs-Chip
-const C_TIME  = 100;  // AB, Abfahrt bei dir
-const C_ARR   = 100;  // AN, Ankunft am Ziel
-const C_ETA   = 100;  // IN, Countdown
-const GAP     = 12;
-
-// Lange Ziele hart kuerzen. Satori kann text-overflow nur
-// eingeschraenkt, abschneiden ist verlaesslicher als tricksen.
-// "Bottmingen, Batteriestrasse" -> "Batteriestrasse".
-// Der Ort ist bei beiden Bloecken derselbe und kostet nur Platz.
-function kurz(s) {
-  const t = String(s || "").trim();
-  const i = t.indexOf(", ");
-  return i > 0 ? t.slice(i + 2) : t;
-}
+// Fahrplan-Spalten (rechte Seite, 240 px breit)
+const C_LINE  = 38;
+const C_TIME  = 64;
+const C_DELAY = 34;
+const C_ARR   = 58;
 
 function clip(s, n) {
   const t = String(s || "").trim();
-  return t.length > n ? t.slice(0, n - 1).trimEnd() + "\u2026" : t;
+  return t.length > n ? t.slice(0, n - 1).trimEnd() + "…" : t;
 }
 
-// --- Eine Abfahrtszeile -------------------------------------
-function Row({ d, h, fs, last, eta }) {
-  const base = {
-    display: "flex",
-    alignItems: "center",
-    height: h,
-    borderBottomWidth: last ? 0 : 1,
-    borderBottomStyle: "solid",
-    borderBottomColor: HAIR,
-  };
+const flex = (extra) => ({ display: "flex", ...extra });
 
-  // Leere Platzhalterzeile, damit das Raster abends nicht
+// Kleine Ueberschrift in Versalien, z.B. WORT DES TAGES
+function Label({ children, style }) {
+  return (
+    <div style={flex({
+      fontFamily: SANS, fontWeight: 700, fontSize: 11, letterSpacing: 1,
+      color: INK, ...style,
+    })}>{children}</div>
+  );
+}
+
+/* ============================================================
+   RECHTS: Fahrplan
+   Nur Linie, Abfahrt, Verspaetung und Ankunft. Das Ziel faellt
+   weg, weil es nur eine Fahrtrichtung gibt.
+   ============================================================ */
+function Band({ label }) {
+  return (
+    <div style={flex({
+      alignItems: "center", height: H_BAND, flexShrink: 0,
+      backgroundColor: INK, color: PAPER,
+      paddingLeft: 12, paddingRight: 14,
+      fontFamily: SANS, fontWeight: 700,
+    })}>
+      <div style={flex({ flexGrow: 1, fontSize: 15 })}>{clip(label, 12)}</div>
+      <div style={flex({ width: C_TIME, justifyContent: "flex-end", fontSize: 12, letterSpacing: 0.8 })}>AB</div>
+      <div style={flex({ width: C_DELAY })} />
+      <div style={flex({ width: C_ARR, justifyContent: "flex-end", fontSize: 12, letterSpacing: 0.8 })}>AN</div>
+    </div>
+  );
+}
+
+function Row({ d, h, last }) {
+  const base = {
+    display: "flex", alignItems: "center", height: h, flexShrink: 0,
+    marginLeft: 12, marginRight: 14,
+    borderBottomWidth: last ? 0 : 1, borderBottomStyle: "solid", borderBottomColor: HAIR,
+  };
+  // Leere Platzhalterzeile, damit das Raster nachts nicht
   // zusammenklappt wenn weniger Kurse kommen.
   if (!d) return <div style={base} />;
 
-  const late = d.delay > 0;
-
   return (
     <div style={base}>
-      <div style={{
-        display: "flex", width: C_LINE, marginRight: GAP,
-        justifyContent: "flex-end",
-        fontFamily: NUMS, fontWeight: 800, fontSize: Math.round(fs * 0.58),
-        color: INK, letterSpacing: -0.5,
-      }}>{d.line}</div>
-
-      {/* Endstation der Fahrt. Zeigt die Fahrtrichtung, das
-          eigentliche Ziel steht im Balken darueber. */}
-      <div style={{
-        display: "flex", flexGrow: 1, marginRight: GAP,
-        overflow: "hidden", whiteSpace: "nowrap",
-        fontFamily: SANS, fontWeight: 600, fontSize: Math.round(fs * 0.40),
-        color: INK,
-      }}>{clip(d.dest, eta ? 17 : 26)}</div>
-
-      <div style={{
-        display: "flex", width: C_SCHED, marginRight: GAP,
-        justifyContent: "flex-end",
-        fontFamily: NUMS, fontWeight: 700, fontSize: Math.round(fs * 0.28),
-        color: MID, textDecoration: late ? "line-through" : "none",
-      }}>{late ? d.schedText : ""}</div>
-
-      <div style={{
-        display: "flex", width: C_DELAY, marginRight: GAP,
-        justifyContent: "flex-end",
-      }}>
-        {late ? (
-          <div style={{
-            display: "flex",
+      <div style={flex({
+        width: C_LINE, fontFamily: NUMS, fontWeight: 800, fontSize: 24, color: INK,
+      })}>{d.line}</div>
+      <div style={flex({
+        flexGrow: 1, justifyContent: "flex-end",
+        fontFamily: NUMS, fontWeight: 800, fontSize: 21, color: INK,
+      })}>{d.timeText}</div>
+      <div style={flex({ width: C_DELAY, justifyContent: "center" })}>
+        {d.delay > 0 ? (
+          <div style={flex({
             backgroundColor: INK, color: PAPER,
-            fontFamily: NUMS, fontWeight: 800, fontSize: Math.round(fs * 0.28),
-            paddingTop: 2, paddingBottom: 2, paddingLeft: 6, paddingRight: 6,
-          }}>{"+" + d.delay}</div>
+            fontFamily: NUMS, fontWeight: 800, fontSize: 12,
+            paddingLeft: 4, paddingRight: 4, paddingTop: 1, paddingBottom: 1,
+          })}>{"+" + d.delay}</div>
         ) : null}
       </div>
+      <div style={flex({
+        width: C_ARR, justifyContent: "flex-end",
+        fontFamily: NUMS, fontWeight: 700, fontSize: 18, color: MID,
+      })}>{d.arrText || ""}</div>
+    </div>
+  );
+}
 
-      {/* Abfahrt bei dir */}
-      <div style={{
-        display: "flex", width: C_TIME, marginRight: GAP,
-        justifyContent: "flex-end", flexShrink: 0, whiteSpace: "nowrap",
-        fontFamily: NUMS, fontWeight: 800, fontSize: Math.round(fs * 0.46),
-        color: INK,
-      }}>{d.timeText}</div>
+function Transit({ a, b }) {
+  const rowsTotal = a.rows + b.rows;
+  const space = H - H_TOP - H_BAND * 2;
+  const rowH = Math.floor(space / rowsTotal);
+  // Rest gleichmaessig auf die ersten Zeilen verteilen
+  const rest = space - rowH * rowsTotal;
+  const extra = (i) => (i < rest ? 1 : 0);
+  const fill = (list, n) => Array.from({ length: n }, (_, i) => list[i] || null);
 
-      {/* Ankunft am Ziel, leichter gesetzt damit die Abfahrt fuehrt */}
-      <div style={{
-        display: "flex", width: C_ARR, marginRight: eta ? GAP : 0,
-        justifyContent: "flex-end", flexShrink: 0, whiteSpace: "nowrap",
-        fontFamily: NUMS, fontWeight: 700, fontSize: Math.round(fs * 0.40),
-        color: MID,
-      }}>{d.arrText || ""}</div>
+  return (
+    <div style={flex({ flexDirection: "column", width: W - W_LEFT - RULE })}>
+      <Band label={a.label} />
+      {fill(a.list, a.rows).map((d, i) => (
+        <Row key={"a" + i} d={d} h={rowH + extra(i)} last={i === a.rows - 1} />
+      ))}
+      <Band label={b.label} />
+      {fill(b.list, b.rows).map((d, i) => (
+        <Row key={"b" + i} d={d} h={rowH + extra(a.rows + i)} last={i === b.rows - 1} />
+      ))}
+    </div>
+  );
+}
 
-      {/* Countdown. Nur im Minutentakt sinnvoll. Bei einem
-          Fuenf-Minuten-Takt waere er schlicht falsch, deshalb
-          faellt er dort weg statt zu luegen. */}
-      {eta ? (
-        <div style={{
-          display: "flex", width: C_ETA,
-          justifyContent: "flex-end", flexShrink: 0, whiteSpace: "nowrap",
-          fontFamily: NUMS, fontWeight: d.eta <= 0 ? 800 : 700,
-          fontSize: Math.round(fs * 0.40), color: INK,
-        }}>{d.etaText}</div>
+/* ============================================================
+   LINKS OBEN: Events
+   Nach Tag gruppiert, ohne Trennlinien. Auswaerts bekommt ein
+   Badge mit Ort und Fahrzeit, Basel ist der Normalfall.
+   ============================================================ */
+function Event({ e }) {
+  const away = !!e.city;
+  // Grobe Zeichenrechnung, Satori kann Text nicht vermessen.
+  // Mit Badge ist weniger Platz, der Ort faellt dann zuerst weg.
+  const budget = away ? 34 : 50;
+  const title = clip(e.title, budget);
+  const place = e.place && title.length + e.place.length + 1 <= budget ? e.place : "";
+
+  return (
+    <div style={flex({ alignItems: "center", height: 26 })}>
+      {e.time ? (
+        <div style={flex({
+          width: 56, flexShrink: 0, fontFamily: NUMS, fontWeight: 700, fontSize: 15, color: INK,
+        })}>{e.time}</div>
+      ) : null}
+      <div style={flex({
+        flexGrow: 1, alignItems: "baseline", overflow: "hidden", whiteSpace: "nowrap",
+      })}>
+        <div style={flex({ fontFamily: SANS, fontWeight: 700, fontSize: 16, color: INK })}>{title}</div>
+        {place ? (
+          <div style={flex({
+            marginLeft: 6, fontFamily: SANS, fontWeight: 600, fontSize: 14, color: MID,
+          })}>{place}</div>
+        ) : null}
+      </div>
+      {away ? (
+        <div style={flex({
+          flexShrink: 0, marginLeft: 8,
+          borderWidth: 1.5, borderStyle: "solid", borderColor: INK,
+          paddingLeft: 5, paddingRight: 5, paddingTop: 1, paddingBottom: 1,
+          fontFamily: SANS, fontWeight: 700, fontSize: 11, letterSpacing: 0.5, color: INK,
+        })}>{(e.city + " · " + (e.travel || "")).toUpperCase().replace(/ MIN$/, " MIN")}</div>
       ) : null}
     </div>
   );
 }
 
-// --- Haltestellenbalken -------------------------------------
-// Schwarz invertiert. Mit zwei Haltestellen ist das der
-// klarste Trenner den 1 Bit hergibt.
-function Band({ stop, kind, to, eta }) {
+function Events({ days, ideas }) {
   return (
-    <div style={{
-      display: "flex", alignItems: "center", justifyContent: "space-between",
-      height: H_BAND, backgroundColor: INK, color: PAPER,
-      paddingLeft: PAD, paddingRight: PAD,
-      marginLeft: -PAD, marginRight: -PAD,
-    }}>
-      <div style={{
-        display: "flex", alignItems: "center",
-        fontFamily: SANS, fontWeight: 700, fontSize: 18,
-      }}>
-        <div style={{ display: "flex" }}>{clip(kurz(stop), 24)}</div>
-        {to ? (
-          <div style={{ display: "flex", marginLeft: 8, fontWeight: 600 }}>
-            {"- " + clip(to, 22)}
+    <div style={flex({
+      flexDirection: "column", flexGrow: 1, overflow: "hidden",
+      paddingLeft: 16, paddingRight: 14, paddingTop: 2,
+    })}>
+      {days.length ? days.map(d => (
+        <div key={d.label + d.dateText} style={flex({ flexDirection: "column" })}>
+          <div style={flex({ alignItems: "baseline", height: 24, paddingTop: 9 })}>
+            <Label>{d.label}</Label>
+            <div style={flex({
+              marginLeft: 8, fontFamily: NUMS, fontWeight: 700, fontSize: 12, color: MID,
+            })}>{d.dateText}</div>
           </div>
-        ) : null}
+          {d.list.map((e, i) => <Event key={i} e={e} />)}
+        </div>
+      )) : (
+        /* Rueckfall, wenn weder Routine noch Scraper etwas haben */
+        <div style={flex({ flexDirection: "column" })}>
+          <div style={flex({ height: 24, paddingTop: 9 })}>
+            <Label>IDEEN, WENN NICHTS ANSTEHT</Label>
+          </div>
+          {ideas.map((e, i) => <Event key={i} e={{ ...e, time: "" }} />)}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+   LINKS UNTEN: Wort des Tages und 10-Minuten-Znacht
+   Die Listen halten Zeichenlimits ein (npm run check), deshalb
+   darf hier fest gesetzt werden.
+   ============================================================ */
+function WordLine({ lang, word, hint, small }) {
+  return (
+    <div style={flex({ alignItems: "baseline", height: small ? 21 : 23 })}>
+      <div style={flex({ width: 26, fontFamily: NUMS, fontWeight: 700, fontSize: 11, color: MID })}>{lang}</div>
+      <div style={flex({ fontFamily: SANS, fontWeight: 700, fontSize: small ? 16 : 18, color: INK })}>{word}</div>
+      <div style={flex({ marginLeft: 7, fontFamily: SANS, fontWeight: 600, fontSize: 12, color: MID })}>{hint}</div>
+    </div>
+  );
+}
+
+function Word({ w }) {
+  // Lange Woerter eine Stufe kleiner, statt umzubrechen
+  const small = Math.max(w.de.length, w.en.length, w.fr.length) > 14;
+  return (
+    <div style={flex({ flexDirection: "column", width: W_WORD, paddingLeft: 16, paddingRight: 12, paddingTop: 8 })}>
+      <Label style={{ marginBottom: 3 }}>WORT DES TAGES</Label>
+      <WordLine lang="DE" word={w.de} hint={w.deHint} small={small} />
+      <WordLine lang="EN" word={w.en} hint={"sprich: " + w.enSay} small={small} />
+      <WordLine lang="FR" word={w.fr} hint={w.frHint} small={small} />
+      <div style={flex({
+        marginTop: 2, fontFamily: SANS, fontWeight: 600, fontSize: 12, color: MID,
+      })}>{"«" + w.example + "»"}</div>
+    </div>
+  );
+}
+
+const W_WORD = 290;
+
+function Dinner({ d, qr }) {
+  const small = d.name.length > 24;
+  // Feste Textbreite, sonst bricht Satori nicht um und der
+  // Name schiebt den QR-Code in den Fahrplan.
+  const textW = W_LEFT - W_WORD - 6 - 16 - (qr ? qr.size + 8 : 0);
+  return (
+    <div style={flex({ flexGrow: 1, paddingLeft: 6, paddingRight: 16, paddingTop: 8 })}>
+      <div style={flex({ flexDirection: "column", width: textW, marginRight: qr ? 8 : 0 })}>
+        <Label style={{ marginBottom: 3 }}>10-MIN-ZNACHT</Label>
+        <div style={flex({
+          fontFamily: SANS, fontWeight: 700, fontSize: small ? 15 : 16,
+          lineHeight: small ? "19px" : "20px", color: INK,
+        })}>{d.name}</div>
+        <div style={flex({
+          marginTop: 3, fontFamily: NUMS, fontWeight: 700, fontSize: 13, color: INK,
+        })}>{d.mins + " MIN"}</div>
       </div>
-      {/* Spaltenkoepfe, damit klar ist welche Zeit welche ist */}
-      <div style={{
-        display: "flex", alignItems: "center",
-        fontFamily: SANS, fontWeight: 700, fontSize: 15, letterSpacing: 0.8,
-      }}>
-        <div style={{ display: "flex", width: C_TIME, marginRight: GAP, justifyContent: "flex-end" }}>AB</div>
-        <div style={{ display: "flex", width: C_ARR, marginRight: eta ? GAP : 0, justifyContent: "flex-end" }}>AN</div>
-        {eta ? (
-          <div style={{ display: "flex", width: C_ETA, justifyContent: "flex-end" }}>IN</div>
-        ) : null}
-      </div>
+      {qr ? (
+        <div style={flex({ paddingTop: 4 })}>
+          <img src={qr.src} width={qr.size} height={qr.size} />
+        </div>
+      ) : null}
     </div>
   );
 }
 
 // --- Das ganze Board ----------------------------------------
-export default function Board({ a, b, weather, stamp, stale, eta = true }) {
-  const rowsTotal = a.rows + b.rows;
-  const space = H - H_TOP - H_BAND * 2;
-  const rowH = Math.floor(space / rowsTotal);
-  // Rest gleichmaessig auf die ersten Zeilen verteilen, sonst wird
-  // eine einzelne Zeile hoeher und damit auch ihre Schrift groesser.
-  const rest = space - rowH * rowsTotal;
-  // Schriftgroessen immer aus derselben Basishoehe rechnen, damit
-  // ein Pixel mehr Zeilenhoehe die Typografie nicht veraendert.
-  const fs = rowH;
-  const extra = (i) => (i < rest ? 1 : 0);
-
-  const fill = (list, n) =>
-    Array.from({ length: n }, (_, i) => list[i] || null);
-
+export default function Board({ a, b, weather, stamp, stale, days, ideas, word, dinner, qr }) {
   return (
-    <div style={{
-      display: "flex", flexDirection: "column",
-      width: W, height: H,
+    <div style={flex({
+      flexDirection: "column", width: W, height: H,
       backgroundColor: PAPER, color: INK,
-      paddingLeft: PAD, paddingRight: PAD,
-    }}>
+    })}>
 
       {/* Kopf: Datum links, Wetter rechts */}
-      <div style={{
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        height: H_TOP,
-      }}>
-        <div style={{
-          display: "flex", alignItems: "baseline",
-          fontFamily: NUMS, fontWeight: 800, fontSize: 20, color: INK,
-        }}>
+      <div style={flex({
+        alignItems: "center", justifyContent: "space-between",
+        height: H_TOP, flexShrink: 0, paddingLeft: 16, paddingRight: 16,
+        borderBottomWidth: RULE, borderBottomStyle: "solid", borderBottomColor: INK,
+      })}>
+        <div style={flex({
+          alignItems: "baseline", fontFamily: NUMS, fontWeight: 800, fontSize: 20, color: INK,
+        })}>
           {stamp}
           {stale ? (
-            <div style={{
-              display: "flex", marginLeft: 10,
-              fontFamily: SANS, fontWeight: 700, fontSize: 15, color: MID,
-            }}>alte Daten</div>
+            <div style={flex({
+              marginLeft: 10, fontFamily: SANS, fontWeight: 700, fontSize: 15, color: MID,
+            })}>alte Daten</div>
           ) : null}
         </div>
 
-        <div style={{ display: "flex", alignItems: "baseline" }}>
-          {weather ? (
-            <div style={{ display: "flex", alignItems: "baseline" }}>
-              <div style={{
-                display: "flex", fontFamily: NUMS, fontWeight: 800, fontSize: 23,
-              }}>{weather.temp + "\u00b0"}</div>
-              <div style={{
-                display: "flex", marginLeft: 9,
-                fontFamily: SANS, fontWeight: 600, fontSize: 19, color: INK,
-              }}>{weather.cond}</div>
-              <div style={{
-                display: "flex", marginLeft: 9,
-                fontFamily: NUMS, fontWeight: 700, fontSize: 17, color: MID,
-              }}>{weather.min + "/" + weather.max}</div>
-            </div>
-          ) : null}
+        {weather ? (
+          <div style={flex({ alignItems: "baseline" })}>
+            <div style={flex({ fontFamily: NUMS, fontWeight: 800, fontSize: 23 })}>{weather.temp + "°"}</div>
+            <div style={flex({ marginLeft: 9, fontFamily: SANS, fontWeight: 600, fontSize: 19, color: INK })}>{weather.cond}</div>
+            <div style={flex({ marginLeft: 9, fontFamily: NUMS, fontWeight: 700, fontSize: 17, color: MID })}>{weather.min + "/" + weather.max}</div>
+          </div>
+        ) : <div style={flex({})} />}
+      </div>
+
+      <div style={flex({ flexGrow: 1 })}>
+        {/* Links: Events oben, Wort und Znacht unten */}
+        <div style={flex({
+          flexDirection: "column", width: W_LEFT,
+          borderRightWidth: RULE, borderRightStyle: "solid", borderRightColor: INK,
+        })}>
+          <Events days={days} ideas={ideas} />
+          <div style={flex({
+            height: H_FOOT, flexShrink: 0,
+            borderTopWidth: RULE, borderTopStyle: "solid", borderTopColor: INK,
+          })}>
+            <Word w={word} />
+            <Dinner d={dinner} qr={qr} />
+          </div>
         </div>
-      </div>
 
-      {/* Block A */}
-      <Band stop={a.stop} kind={a.label} to={a.to} eta={eta} />
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        {fill(a.list, a.rows).map((d, i) => (
-          <Row key={"a" + i} d={d} h={rowH + extra(i)} fs={fs} eta={eta}
-               last={i === a.rows - 1} />
-        ))}
-      </div>
-
-      {/* Block B */}
-      <Band stop={b.stop} kind={b.label} to={b.to} eta={eta} />
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        {fill(b.list, b.rows).map((d, i) => (
-          <Row key={"b" + i} d={d} h={rowH + extra(a.rows + i)} fs={fs} eta={eta}
-               last={i === b.rows - 1} />
-        ))}
+        {/* Rechts: Fahrplan */}
+        <Transit a={a} b={b} />
       </div>
     </div>
   );
