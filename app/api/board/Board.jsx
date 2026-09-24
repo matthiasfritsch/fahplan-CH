@@ -41,7 +41,7 @@ export function setInvert(on) {
 
 const H_TOP  = 44;   // Kopfleiste inkl. Trennlinie
 const H_BAND = 28;   // Tram/Bus-Balken
-const H_LEARN = 170; // Wort + Znacht oben links: QR bis 87 px plus 12 px Ruhezone
+const H_LEARN = 152; // Wort + Znacht oben links: QR bis 87 px plus 12 px Ruhezone
 const W_LEFT = 560;  // 70 Prozent fuer Events, Rest Fahrplan
 const RULE   = 2;    // Staerke der Zonen-Linien
 
@@ -158,9 +158,10 @@ function Transit({ a, b }) {
    ============================================================ */
 function Event({ e }) {
   const away = !!e.city;
+  const school = !!e.school;
   // Grobe Zeichenrechnung, Satori kann Text nicht vermessen.
   // Mit Badge ist weniger Platz, der Ort faellt dann zuerst weg.
-  const budget = away ? 29 : 40;
+  const budget = away ? 29 : school ? 33 : 40;
   const title = clip(e.title, budget);
   const place = e.place && title.length + e.place.length + 1 <= budget ? e.place : "";
 
@@ -181,6 +182,15 @@ function Event({ e }) {
           })}>{place}</div>
         ) : null}
       </div>
+      {school ? (
+        /* Yunas Schule: schwarz gefuellt, damit es sofort auffaellt */
+        <div style={flex({
+          flexShrink: 0, marginLeft: 8,
+          backgroundColor: INK, color: PAPER,
+          paddingLeft: 6, paddingRight: 6, paddingTop: 2, paddingBottom: 2,
+          fontFamily: SANS, fontWeight: 700, fontSize: 13, letterSpacing: 0.5,
+        })}>SCHULE</div>
+      ) : null}
       {away ? (
         <div style={flex({
           flexShrink: 0, marginLeft: 8,
@@ -242,17 +252,19 @@ const textW = (str, size) => String(str || "").length * size * 0.58;
 const W_WORD_LINE = W_WORD - 16 - 12 - 32;   // Platz fuer Wort + Hinweis
 
 function WordLine({ lang, word, hint }) {
-  // Erst die grosse Stufe versuchen, dann die kleinere, zuletzt
-  // den Hinweis weglassen. So bricht nie etwas um.
-  const fits = (size) => textW(word, size) + 9 + textW(hint, 14) <= W_WORD_LINE;
-  const size = fits(25) ? 25 : fits(21) ? 21 : textW(word, 25) <= W_WORD_LINE ? 25 : 21;
-  const showHint = fits(size);
+  // Stufen von gross nach klein durchprobieren, bis Wort und
+  // Aussprache nebeneinander passen. Erst ganz am Ende faellt der
+  // Hinweis weg. So bricht nie etwas um.
+  const STEPS = [[25, 14], [21, 14], [21, 12], [19, 12]];
+  const fits = ([w, h]) => textW(word, w) + 9 + textW(hint, h) <= W_WORD_LINE;
+  const step = STEPS.find(fits);
+  const [size, hintSize] = step || [21, 12];
   return (
     <div style={flex({ alignItems: "baseline", height: 34, whiteSpace: "nowrap" })}>
       <div style={flex({ width: 32, flexShrink: 0, fontFamily: NUMS, fontWeight: 800, fontSize: 14, color: INK })}>{lang}</div>
       <div style={flex({ flexShrink: 0, fontFamily: SANS, fontWeight: 700, fontSize: size, color: INK })}>{word}</div>
-      {showHint ? (
-        <div style={flex({ marginLeft: 9, fontFamily: SANS, fontWeight: 700, fontSize: 14, color: MID })}>{hint}</div>
+      {step ? (
+        <div style={flex({ marginLeft: 9, fontFamily: SANS, fontWeight: 700, fontSize: hintSize, color: MID })}>{hint}</div>
       ) : null}
     </div>
   );
@@ -261,10 +273,9 @@ function WordLine({ lang, word, hint }) {
 function Word({ w }) {
   return (
     <div style={flex({ flexDirection: "column", width: W_WORD, paddingLeft: 16, paddingRight: 12, paddingTop: 9 })}>
-      <Label style={{ marginBottom: 2 }}>WORT DES TAGES</Label>
       <WordLine lang="DE" word={w.de} hint={w.deHint} />
       <WordLine lang="EN" word={w.en} hint={"[" + w.enSay + "]"} />
-      <WordLine lang="FR" word={w.fr} hint={w.frHint} />
+      <WordLine lang="FR" word={w.fr} hint={"[" + w.frSay + "]"} />
       <div style={flex({
         marginTop: 1, fontFamily: SANS, fontWeight: 700, fontSize: 14, color: INK,
       })}>{"\u00ab" + w.example + "\u00bb"}</div>
@@ -275,7 +286,6 @@ function Word({ w }) {
 function Dinner({ d, qr }) {
   return (
     <div style={flex({ flexDirection: "column", width: W_DISH, paddingRight: 14, paddingTop: 9 })}>
-      <Label style={{ marginBottom: 2 }}>ZNACHT</Label>
       <div style={flex({
         width: W_DISH - 14, height: 38, overflow: "hidden",
         fontFamily: SANS, fontWeight: 700, fontSize: 16, lineHeight: "19px", color: INK,

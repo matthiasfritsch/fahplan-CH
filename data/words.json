@@ -6,6 +6,7 @@
   "enSay": "kjuri-OSS-iti",
   "fr": "la curiosité",
   "frHint": "f.",
+  "frSay": "kü-rio-si-TE",
   "example": "Neugier macht klug."
  },
  {
@@ -15,6 +16,7 @@
   "enSay": "breiv",
   "fr": "courageux",
   "frHint": "/ courageuse",
+  "frSay": "ku-ra-SCHÖ",
   "example": "Es war mutig, als Erste zu fragen."
  },
  {
@@ -24,6 +26,7 @@
   "enSay": "dis-KAWER",
   "fr": "découvrir",
   "frHint": "Verb",
+  "frSay": "de-ku-WRIR",
   "example": "Wir entdecken einen geheimen Weg."
  },
  {
@@ -33,6 +36,7 @@
   "enSay": "REIN-bou",
   "fr": "l'arc-en-ciel",
   "frHint": "m.",
+  "frSay": "lar-kang-SJEL",
   "example": "Nach dem Regen kam ein Regenbogen."
  },
  {
@@ -42,6 +46,7 @@
   "enSay": "FRENDschip",
   "fr": "l'amitié",
   "frHint": "f.",
+  "frSay": "la-mi-TJE",
   "example": "Unsere Freundschaft hält ewig."
  },
  {
@@ -51,6 +56,7 @@
   "enSay": "kom-PÄR",
   "fr": "comparer",
   "frHint": "Verb",
+  "frSay": "kong-pa-RE",
   "example": "Vergleich die zwei Bilder!"
  },
  {
@@ -60,6 +66,7 @@
   "enSay": "PEI-schent",
   "fr": "patient",
   "frHint": "/ patiente",
+  "frSay": "pa-SJANG",
   "example": "Sei geduldig, der Kuchen backt noch."
  },
  {
@@ -69,6 +76,7 @@
   "enSay": "tuul",
   "fr": "l'outil",
   "frHint": "m.",
+  "frSay": "lu-TI",
   "example": "Der Hammer ist ein Werkzeug."
  },
  {
@@ -78,6 +86,7 @@
   "enSay": "bridsch",
   "fr": "le pont",
   "frHint": "m.",
+  "frSay": "lö PONG",
   "example": "Wir gehen über die Brücke."
  },
  {
@@ -87,6 +96,7 @@
   "enSay": "iks-PLEIN",
   "fr": "expliquer",
   "frHint": "Verb",
+  "frSay": "ex-pli-KE",
   "example": "Kannst du mir das erklären?"
  },
  {
@@ -96,6 +106,7 @@
   "enSay": "FOR-ist",
   "fr": "la forêt",
   "frHint": "f.",
+  "frSay": "la fo-RÄ",
   "example": "Im Wald riecht es nach Pilzen."
  },
  {
@@ -105,6 +116,7 @@
   "enSay": "HELP-ful",
   "fr": "serviable",
   "frHint": "Adjektiv",
+  "frSay": "ser-WJABL",
   "example": "Sie ist immer hilfsbereit."
  },
  {
@@ -114,6 +126,7 @@
   "enSay": "ser-PRAIS",
   "fr": "la surprise",
   "frHint": "f.",
+  "frSay": "la sür-PRIS",
   "example": "Das Geschenk ist eine Überraschung."
  },
  {
@@ -123,6 +136,7 @@
   "enSay": "kii",
   "fr": "la clé",
   "frHint": "f.",
+  "frSay": "la KLE",
   "example": "Wo ist mein Schlüssel?"
  },
  {
@@ -132,6 +146,7 @@
   "enSay": "driim",
   "fr": "rêver",
   "frHint": "Verb",
+  "frSay": "rä-WE",
   "example": "Ich träume vom Meer."
  },
  {
@@ -141,6 +156,7 @@
   "enSay": "äd-VEN-tscher",
   "fr": "l'aventure",
   "frHint": "f.",
+  "frSay": "la-wang-TÜR",
   "example": "Der Ausflug war ein Abenteuer."
  },
  {
@@ -150,6 +166,7 @@
   "enSay": "ON-ist",
   "fr": "honnête",
   "frHint": "Adjektiv",
+  "frSay": "o-NÄT",
   "example": "Sei ehrlich zu deinen Freunden."
  },
  {
@@ -159,6 +176,7 @@
   "enSay": "klaud",
   "fr": "le nuage",
   "frHint": "m.",
+  "frSay": "lö nü-ASCH",
   "example": "Die Wolke sieht aus wie ein Hund."
  },
  {
@@ -168,6 +186,7 @@
   "enSay": "ko-LEKT",
   "fr": "collectionner",
   "frHint": "Verb",
+  "frSay": "ko-lek-sjo-NE",
   "example": "Ich sammle schöne Steine."
  },
  {
@@ -177,6 +196,7 @@
   "enSay": "muun",
   "fr": "la lune",
   "frHint": "f.",
+  "frSay": "la LÜN",
   "example": "Heute ist der Mond ganz rund."
  },
  {
@@ -186,6 +206,7 @@
   "enSay": "AI-länd",
   "fr": "l'île",
   "frHint": "f.",
+  "frSay": "LIL",
   "example": "Die Insel liegt mitten im See."
  },
  {
@@ -195,6 +216,7 @@
   "enSay": "faast",
   "fr": "rapide",
   "frHint": "Adjektiv",
+  "frSay": "ra-PID",
   "example": "Das Tram ist heute schnell."
  },
  {
@@ -204,6 +226,7 @@
   "enSay": "staar",
   "fr": "l'étoile",
   "frHint": "f.",
+  "frSay": "le-TUAL",
   "example": "Siehst du den hellen Stern?"
  },
  {
@@ -213,6 +236,7 @@
   "enSay": "PROM-is",
   "fr": "promettre",
   "frHint": "Verb",
+  "frSay": "pro-MÄTR",
   "example": "Ich verspreche, ich komme mit."
  },
  {
@@ -222,6 +246,7 @@
   "enSay": "TANDER-storm",
   "fr": "l'orage",
   "frHint": "m.",
+  "frSay": "lo-RASCH",
   "example": "Das Gewitter war sehr laut."
  },
  {
@@ -231,6 +256,7 @@
   "enSay": "LAI-bre-ri",
   "fr": "la bibliothèque",
   "frHint": "f.",
+  "frSay": "bi-bli-o-TÄK",
   "example": "In der Bibliothek ist es still."
  },
  {
@@ -240,6 +266,7 @@
   "enSay": "solv",
   "fr": "résoudre",
   "frHint": "Verb",
+  "frSay": "re-SUDR",
   "example": "Wir lösen das Rätsel zusammen."
  },
  {
@@ -249,6 +276,7 @@
   "enSay": "RIDL",
   "fr": "la devinette",
   "frHint": "f.",
+  "frSay": "dö-wi-NÄT",
   "example": "Kennst du ein gutes Rätsel?"
  },
  {
@@ -258,6 +286,7 @@
   "enSay": "KOU-si",
   "fr": "confortable",
   "frHint": "Adjektiv",
+  "frSay": "kong-for-TABL",
   "example": "Das Sofa ist so gemütlich."
  },
  {
@@ -267,6 +296,7 @@
   "enSay": "spring",
   "fr": "le printemps",
   "frHint": "m.",
+  "frSay": "präng-TANG",
   "example": "Im Frühling blühen die Blumen."
  },
  {
@@ -276,6 +306,7 @@
   "enSay": "OO-tem",
   "fr": "l'automne",
   "frHint": "m.",
+  "frSay": "lo-TON",
   "example": "Im Herbst fallen die Blätter."
  },
  {
@@ -285,6 +316,7 @@
   "enSay": "WIN-ter",
   "fr": "l'hiver",
   "frHint": "m.",
+  "frSay": "li-WÄR",
   "example": "Im Winter fahren wir Schlitten."
  },
  {
@@ -294,6 +326,7 @@
   "enSay": "SAMMER",
   "fr": "l'été",
   "frHint": "m.",
+  "frSay": "le-TE",
   "example": "Im Sommer baden wir im Rhein."
  },
  {
@@ -303,6 +336,7 @@
   "enSay": "WIS-per",
   "fr": "chuchoter",
   "frHint": "Verb",
+  "frSay": "schü-scho-TE",
   "example": "Sie flüstert mir etwas ins Ohr."
  },
  {
@@ -312,6 +346,7 @@
   "enSay": "SII-kret",
   "fr": "le secret",
   "frHint": "m.",
+  "frSay": "lö sö-KRÄ",
   "example": "Kannst du ein Geheimnis behalten?"
  },
  {
@@ -321,6 +356,7 @@
   "enSay": "praud",
   "fr": "fier",
   "frHint": "/ fière",
+  "frSay": "FJÄR",
   "example": "Ich bin stolz auf dich."
  },
  {
@@ -330,6 +366,7 @@
   "enSay": "BATTER-flai",
   "fr": "le papillon",
   "frHint": "m.",
+  "frSay": "pa-pi-JONG",
   "example": "Ein Schmetterling sitzt auf der Blume."
  },
  {
@@ -339,6 +376,7 @@
   "enSay": "klaim",
   "fr": "grimper",
   "frHint": "Verb",
+  "frSay": "gräng-PE",
   "example": "Wir klettern auf den Baum."
  },
  {
@@ -348,6 +386,7 @@
   "enSay": "in-VEN-schen",
   "fr": "l'invention",
   "frHint": "f.",
+  "frSay": "äng-wang-SJONG",
   "example": "Das Rad ist eine alte Erfindung."
  },
  {
@@ -357,6 +396,7 @@
   "enSay": "KÄR-ful",
   "fr": "prudent",
   "frHint": "/ prudente",
+  "frSay": "prü-DANG",
   "example": "Sei vorsichtig auf der Treppe."
  },
  {
@@ -366,6 +406,7 @@
   "enSay": "HAA-ber",
   "fr": "le port",
   "frHint": "m.",
+  "frSay": "lö POR",
   "example": "Im Hafen liegen viele Schiffe."
  },
  {
@@ -375,6 +416,7 @@
   "enSay": "WEDSCH-tebls",
   "fr": "les légumes",
   "frHint": "m. Plural",
+  "frSay": "le le-GÜM",
   "example": "Gemüse macht stark."
  },
  {
@@ -384,6 +426,7 @@
   "enSay": "schär",
   "fr": "partager",
   "frHint": "Verb",
+  "frSay": "par-ta-SCHE",
   "example": "Wir teilen die Schokolade."
  },
  {
@@ -393,6 +436,7 @@
   "enSay": "OU-schen",
   "fr": "l'océan",
   "frHint": "m.",
+  "frSay": "lo-se-ANG",
   "example": "Wale leben im Ozean."
  },
  {
@@ -402,6 +446,7 @@
   "enSay": "TSCHIR-ful",
   "fr": "joyeux",
   "frHint": "/ joyeuse",
+  "frSay": "schua-JÖ",
   "example": "Der Hund ist heute fröhlich."
  },
  {
@@ -411,6 +456,7 @@
   "enSay": "klok",
   "fr": "l'horloge",
   "frHint": "f.",
+  "frSay": "lor-LOSCH",
   "example": "Die Uhr am Bahnhof ist gross."
  },
  {
@@ -420,6 +466,7 @@
   "enSay": "MAUN-ten",
   "fr": "la montagne",
   "frHint": "f.",
+  "frSay": "mong-TANJ",
   "example": "Wir wandern auf den Berg."
  },
  {
@@ -429,6 +476,7 @@
   "enSay": "laaf",
   "fr": "rire",
   "frHint": "Verb",
+  "frSay": "RIR",
   "example": "Wir lachen über den Witz."
  },
  {
@@ -438,6 +486,7 @@
   "enSay": "FJUU-tscher",
   "fr": "l'avenir",
   "frHint": "m.",
+  "frSay": "law-NIR",
   "example": "Was bringt die Zukunft?"
  },
  {
@@ -447,6 +496,7 @@
   "enSay": "TAI-di",
   "fr": "ordonné",
   "frHint": "/ ordonnée",
+  "frSay": "or-do-NE",
   "example": "Mein Zimmer ist ordentlich."
  },
  {
@@ -456,6 +506,7 @@
   "enSay": "RI-wer",
   "fr": "la rivière",
   "frHint": "f.",
+  "frSay": "ri-WJÄR",
   "example": "Am Fluss sammeln wir Steine."
  },
  {
@@ -465,6 +516,7 @@
   "enSay": "ri-MEM-ber",
   "fr": "se souvenir",
   "frHint": "Verb",
+  "frSay": "sö suw-NIR",
   "example": "Erinnerst du dich an den Zoo?"
  },
  {
@@ -474,6 +526,7 @@
   "enSay": "SAI-ens",
   "fr": "la science",
   "frHint": "f.",
+  "frSay": "la SJANGS",
   "example": "Wissenschaft erklärt die Welt."
  },
  {
@@ -483,6 +536,7 @@
   "enSay": "strong",
   "fr": "fort",
   "frHint": "/ forte",
+  "frSay": "FOR",
   "example": "Der Elefant ist sehr stark."
  },
  {
@@ -492,6 +546,7 @@
   "enSay": "PLÄ-net",
   "fr": "la planète",
   "frHint": "f.",
+  "frSay": "pla-NÄT",
   "example": "Die Erde ist unser Planet."
  },
  {
@@ -501,6 +556,7 @@
   "enSay": "bild",
   "fr": "construire",
   "frHint": "Verb",
+  "frSay": "kongs-trü-IR",
   "example": "Wir bauen eine Burg aus Sand."
  },
  {
@@ -510,6 +566,7 @@
   "enSay": "dak",
   "fr": "le canard",
   "frHint": "m.",
+  "frSay": "lö ka-NAR",
   "example": "Die Ente schwimmt auf dem Rhein."
  },
  {
@@ -519,6 +576,7 @@
   "enSay": "FREND-li",
   "fr": "gentil",
   "frHint": "/ gentille",
+  "frSay": "schang-TI",
   "example": "Der Nachbar ist sehr freundlich."
  },
  {
@@ -528,6 +586,7 @@
   "enSay": "BREK-fest",
   "fr": "le petit-déjeuner",
   "frHint": "m.",
+  "frSay": "pti-de-schö-NE",
   "example": "Zum Frühstück gibt es Müesli."
  },
  {
@@ -537,6 +596,7 @@
   "enSay": "win",
   "fr": "gagner",
   "frHint": "Verb",
+  "frSay": "ga-NJE",
   "example": "Wer gewinnt das Spiel?"
  }
 ]
