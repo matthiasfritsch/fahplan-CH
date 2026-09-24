@@ -41,7 +41,7 @@ export function setInvert(on) {
 
 const H_TOP  = 44;   // Kopfleiste inkl. Trennlinie
 const H_BAND = 28;   // Tram/Bus-Balken
-const H_LEARN = 160; // Wort + Znacht oben links (QR bis 87 px plus Ruhezone)
+const H_LEARN = 170; // Wort + Znacht oben links: QR bis 87 px plus 12 px Ruhezone
 const W_LEFT = 560;  // 70 Prozent fuer Events, Rest Fahrplan
 const RULE   = 2;    // Staerke der Zonen-Linien
 
