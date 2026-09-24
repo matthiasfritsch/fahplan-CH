@@ -62,9 +62,9 @@ Regeln:
   baselland.ch pruefen. Bestehende Eintraege behalten, abgelaufene
   entfernen.
 
-Netzwerk: Die Routine braucht Zugriff auf die Eventseiten oben. Werden
-sie blockiert, keine Events aus Suchmaschinen-Snippets uebernehmen,
-sondern abbrechen und melden, welche Domains fehlen.
+Netzwerk: Die Routine arbeitet mit allen erreichbaren Quellen. Einzelne
+blockierte Domains ueberspringen und melden. Nur wenn gar keine Quelle
+erreichbar ist: abbrechen. Nie Events aus Suchmaschinen-Snippets uebernehmen.
 
 Danach `npm run check` ausfuehren. Schlaegt der Check fehl, die
 Eintraege kuerzen, bis er gruen ist. Dann committen ("Events KW <nr>")
