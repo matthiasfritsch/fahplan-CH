@@ -533,7 +533,7 @@ async function handle(request) {
   const demo = url.searchParams.get("demo") === "1";
   const ev = demo ? { events: demoEvents(today), source: "demo" }
                   : await loadEvents(today, cfg.eventsFallbackUrl);
-  const days = selectEvents(ev.events, today, nowTime);
+  const days = selectEvents(ev.events, today, nowTime, undefined, eventsFile.holidays);
   const word = pickWord(words, today);
   const dinner = pickDinner(dinners, today);
   const recipeUrl = (cfg.publicUrl || url.origin).replace(/\/$/, "") + "/r/" + dinner.id;

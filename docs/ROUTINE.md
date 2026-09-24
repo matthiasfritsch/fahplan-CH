@@ -20,10 +20,12 @@ Was rein soll:
   Bern, Zuerich, Schwarzwald, Elsass): nur wenn es sich fuer einen Tag
   lohnt, vor allem am Wochenende.
 - Pro Werktag reichen 1 bis 2 gute Vorschlaege, am Samstag und Sonntag
-  je 3 bis 5.
+  je 3 bis 5. In den Schulferien (Feld `holidays`) auch werktags 3 bis 5,
+  dann gibt es viele Ferienangebote (Ferienpass, Museums-Workshops).
 
-Quellen: myBasel (mybasel.ch/veranstaltungen/kinder), Eventfrog,
-BaselLive, Guidle, Websites von Museen, Zoo Basel, Theatern. Jedes
+Quellen: myBasel (mybasel.ch/veranstaltungen/kinder), agendabasel.ch,
+Eventfrog, BaselLive, basel.com, baselland-tourismus.ch, lolabrause.ch,
+Websites von Museen, Zoo Basel, Theater Arlecchino und anderen Theatern. Jedes
 Event muss auf einer Quelle mit Datum und Uhrzeit bestaetigt sein.
 Nichts erfinden, nichts schaetzen. Lieber weniger Eintraege.
 
@@ -36,6 +38,9 @@ Format (UTF-8, Felder genau so):
     {
       "updated": "JJJJ-MM-TT",
       "note": "Wird von der Claude-Routine geschrieben. Nicht von Hand pflegen.",
+      "holidays": [
+        { "name": "Herbstferien BL/BS", "from": "2026-09-26", "to": "2026-10-11" }
+      ],
       "events": [
         { "date": "2026-09-26", "time": "10:00",
           "title": "Kinderflohmarkt", "place": "Kasernenareal" },
@@ -53,6 +58,13 @@ Regeln:
 - Basel-Events: `place` setzen, `city` weglassen.
 - Auswaerts: `city` und `travel` setzen, `place` optional.
 - `updated` ist das heutige Datum.
+- `holidays`: Schulferien Basel-Landschaft der naechsten Wochen, von
+  baselland.ch pruefen. Bestehende Eintraege behalten, abgelaufene
+  entfernen.
+
+Netzwerk: Die Routine braucht Zugriff auf die Eventseiten oben. Werden
+sie blockiert, keine Events aus Suchmaschinen-Snippets uebernehmen,
+sondern abbrechen und melden, welche Domains fehlen.
 
 Danach `npm run check` ausfuehren. Schlaegt der Check fehl, die
 Eintraege kuerzen, bis er gruen ist. Dann committen ("Events KW <nr>")

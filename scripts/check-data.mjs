@@ -33,6 +33,10 @@ load("dinners.json").forEach((d, i) => {
 
 const ev = load("events.json");
 if (ev.updated !== null && !DATE_RE.test(ev.updated)) errors.push(`events.updated "${ev.updated}" ist kein Datum`);
+(ev.holidays || []).forEach((h, i) => {
+  if (!DATE_RE.test(h.from || "") || !DATE_RE.test(h.to || "") || h.from > h.to)
+    errors.push(`holidays[${i}]: from/to muessen JJJJ-MM-TT sein, from <= to`);
+});
 (ev.events || []).forEach((e, i) => {
   const at = `events[${i}] ${e.title}`;
   if (!DATE_RE.test(e.date || "")) errors.push(`${at}: date "${e.date}" nicht JJJJ-MM-TT`);

@@ -1,5 +1,8 @@
 {
  "updated": null,
  "note": "Wird von der Claude-Routine geschrieben. Nicht von Hand pflegen.",
+ "holidays": [
+  { "name": "Herbstferien BL/BS", "from": "2026-09-26", "to": "2026-10-11" }
+ ],
  "events": []
 }
