@@ -1,0 +1,21 @@
+name: probe-live
+on:
+  push:
+    branches: ["claude/eager-euler-s6cyea"]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Live-Board Diagnose (ohne Schluessel)
+        run: |
+          curl -s "https://fahplan-ch.vercel.app/api/board?debug=1" -o d.json
+          python3 - <<'PY'
+          import json
+          d = json.load(open("d.json"))
+          print("today", d.get("today"), "source", d.get("eventSource"))
+          print("REPORT", json.dumps(d.get("sourceReport"), ensure_ascii=False))
+          for day in d.get("days", []):
+              print(day["label"], day["dateText"])
+              for e in day["list"]:
+                  print("   ", e.get("time"), "|", e.get("title"), "|", e.get("place"), "|", e.get("city") or "", e.get("travel") or "", "| score", e.get("score"), "|", e.get("source"))
+          PY
