@@ -5,7 +5,7 @@ import dinners from "../../../data/dinners.json";
 import ideas from "../../../data/ideas.json";
 import eventsFile from "../../../data/events.json";
 import {
-  zurichNow, pickWord, pickDinner, selectEvents, isStale, parseJsonLdEvents,
+  zurichNow, pickWord, pickDinner, selectEvents, parseJsonLdEvents,
 } from "../../../lib/content.mjs";
 import { liveEvents } from "../../../lib/sources.mjs";
 
@@ -371,11 +371,10 @@ async function weather(lat, lon) {
    Linke Seite: Events, Wort, Znacht
    ============================================================ */
 
-/* Events kommen aus data/events.json, das die Claude-Routine
-   pflegt. Ist die Datei laenger als 8 Tage nicht aktualisiert
-   worden, versucht der Scraper eine Eventseite
-   (BOARD_EVENTS_FALLBACK_URL). Die Antwort wird einen Tag lang
-   zwischengespeichert, damit nicht jeder Render sie holt. */
+/* Events kommen live aus lib/sources.mjs (Schule, Basel-West,
+   Eventfrog) plus optionalen Eintraegen aus data/events.json.
+   Liefert keine Quelle etwas, versucht der Scraper eine Eventseite
+   (BOARD_EVENTS_FALLBACK_URL), danach zeigt das Board Ideen. */
 async function loadEvents(today, fallbackUrl) {
   // Handgepflegte Eintraege aus data/events.json gelten immer,
   // solange sie nicht in der Vergangenheit liegen. Dazu kommen die

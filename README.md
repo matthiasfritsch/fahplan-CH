@@ -16,9 +16,9 @@ dauerhaft kostenlos, und braucht keinen Browser zum Rendern.
 | `lib/content.mjs` | Auswahl von Wort, Znacht und Events, Zeichenlimits. |
 | `data/words.json` | Woerter des Tages, rotieren taeglich. |
 | `data/dinners.json` | 10-Minuten-Gerichte mit Zutaten und Schritten. |
-| `data/events.json` | Events, geschrieben von der Claude-Routine. Nicht von Hand pflegen. |
+| `lib/sources.mjs` | Live-Eventquellen: Schule, Basel-West, Eventfrog. |
+| `data/events.json` | Optionale handgepflegte Events und Schulferien. |
 | `data/ideas.json` | Rueckfall, wenn keine Events da sind. |
-| `docs/ROUTINE.md` | Der Auftrag fuer die woechentliche Event-Routine. |
 
 ## Deployen ohne Kommandozeile
 
@@ -56,13 +56,25 @@ Alles laesst sich auch per URL ueberschreiben, praktisch zum Ausprobieren:
 ## Linke Seite
 
 Wort und Znacht rotieren nach Datum, jeder Aufruf am selben Tag zeigt
-dasselbe. Events kommen aus `data/events.json`. Angezeigt wird heute bis
-Sonntag: unter der Woche ein Event pro Tag, das Wochenende bekommt den
-Rest. Auswaerts-Events tragen ein Badge mit Ort und Fahrzeit.
+dasselbe. Events holt das Board live auf Vercel aus diesen Quellen
+(`lib/sources.mjs`), eine Stunde zwischengespeichert:
 
-Ist `events.json` aelter als 8 Tage, versucht das Board eine Eventseite
-mit schema.org-Daten zu lesen (`BOARD_EVENTS_FALLBACK_URL`). Klappt auch
-das nicht, erscheinen die Ideen aus `data/ideas.json`.
+| Quelle | Was | Wie |
+|---|---|---|
+| Rudolf Steiner Schule Basel | Schultermine, Badge SCHULE | iCal-Feed der Schul-Website |
+| Stadtteilsekretariat Basel-West | Quartierflohmaerkte, Badge FLOHMARKT | iCal-Feed |
+| Eventfrog | Kinder & Familie im Umkreis von 30 km | Public API, braucht `EVENTFROG_API_KEY` |
+| `data/events.json` | Handgepflegte Zusatz-Events (optional) | Datei im Repo |
+
+Angezeigt wird heute bis Sonntag: unter der Woche ein Event pro Tag,
+Wochenende und Schulferien bekommen mehr Platz. Schultermine und
+Flohmaerkte haben Vorrang. Events ausserhalb von etwa 9 km tragen ein
+Badge mit Ort und Distanz. Faellt eine Quelle aus, fehlen nur deren
+Events. `/api/board?debug=1` zeigt unter `sourceReport`, wie viele
+Events jede Quelle geliefert hat.
+
+`EVENTFROG_API_KEY` gehoert nur in die Vercel-Umgebungsvariablen, nie
+ins Repo (das Repo ist oeffentlich).
 
 `BOARD_PUBLIC_URL` setzt die Adresse im QR-Code, zum Beispiel
 `https://mein-board.vercel.app`. Ohne Angabe nimmt das Board die
