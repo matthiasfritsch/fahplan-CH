@@ -232,7 +232,7 @@ function Events({ days, ideas }) {
           {d.list.map((e, i) => <Event key={i} e={e} />)}
         </div>
       )) : (
-        /* Rueckfall, wenn weder Routine noch Scraper etwas haben */
+        /* Rueckfall, wenn keine Quelle etwas liefert */
         <div style={flex({ flexDirection: "column" })}>
           <div style={flex({ height: 30, paddingTop: 12 })}>
             <Label style={{ fontSize: 15 }}>IDEEN, WENN NICHTS ANSTEHT</Label>
