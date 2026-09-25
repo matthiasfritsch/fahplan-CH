@@ -7,6 +7,7 @@ import eventsFile from "../../../data/events.json";
 import {
   zurichNow, pickWord, pickDinner, selectEvents, isStale, parseJsonLdEvents,
 } from "../../../lib/content.mjs";
+import { liveEvents } from "../../../lib/sources.mjs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -41,6 +42,8 @@ const ENV = {
   lat:    process.env.BOARD_LAT,
   lon:    process.env.BOARD_LON,
   publicUrl: process.env.BOARD_PUBLIC_URL,
+  // Nur aus der Umgebung, nie per URL-Parameter und nie in ?debug=1
+  eventfrogKey: process.env.EVENTFROG_API_KEY,
   eventsFallbackUrl: process.env.BOARD_EVENTS_FALLBACK_URL,
 };
 
@@ -374,9 +377,14 @@ async function weather(lat, lon) {
    (BOARD_EVENTS_FALLBACK_URL). Die Antwort wird einen Tag lang
    zwischengespeichert, damit nicht jeder Render sie holt. */
 async function loadEvents(today, fallbackUrl) {
-  if (!isStale(eventsFile.updated, today)) {
-    return { events: eventsFile.events || [], source: "routine" };
-  }
+  // Handgepflegte Eintraege aus data/events.json gelten immer,
+  // solange sie nicht in der Vergangenheit liegen. Dazu kommen die
+  // Live-Quellen (lib/sources.mjs), jede einzeln abgesichert.
+  const manual = (eventsFile.events || []).filter(e => e.date >= today);
+  const { events, report } = await liveEvents(manual, { eventfrogKey: ENV.eventfrogKey, today });
+  if (events.length) return { events, source: "live", report };
+
+  // Rueckfall: JSON-LD-Scraper, falls konfiguriert
   if (fallbackUrl) {
     try {
       const res = await fetch(fallbackUrl, {
@@ -385,11 +393,11 @@ async function loadEvents(today, fallbackUrl) {
       });
       if (res.ok) {
         const found = parseJsonLdEvents(await res.text());
-        if (found.length) return { events: found, source: "scraper" };
+        if (found.length) return { events: found, source: "scraper", report };
       }
     } catch { /* faellt auf die Ideen zurueck */ }
   }
-  return { events: eventsFile.events || [], source: "veraltet" };
+  return { events: [], source: "leer", report };
 }
 
 /* QR-Code als SVG-Bild. 3 px pro Modul, exakt auf dem
@@ -542,7 +550,7 @@ async function handle(request) {
   if (url.searchParams.get("debug") === "1") {
     return new Response(
       JSON.stringify({ cfg, a, b, wx, stale, stamp: stampFrom(offset, true),
-        today, nowTime, eventSource: ev.source, eventsUpdated: eventsFile.updated,
+        today, nowTime, eventSource: ev.source, sourceReport: ev.report, eventsUpdated: eventsFile.updated,
         days, word, dinner: dinner.name, recipeUrl }, null, 2),
       { headers: { "content-type": "application/json; charset=utf-8" } }
     );

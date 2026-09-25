@@ -1,19 +1,12 @@
 {
- "updated": "2026-09-24",
- "note": "Wird von der Claude-Routine geschrieben. Nicht von Hand pflegen.",
+ "updated": "2026-09-25",
+ "note": "Handgepflegte Zusatz-Events (optional). Die meisten Events kommen live aus lib/sources.mjs.",
  "holidays": [
-  { "name": "Herbstferien BL/BS", "from": "2026-09-26", "to": "2026-10-11" }
+  {
+   "name": "Herbstferien BL/BS",
+   "from": "2026-09-26",
+   "to": "2026-10-11"
+  }
  ],
- "events": [
-  { "date": "2026-09-26", "time": "09:30", "title": "BitFabrik: Roboter & Mini-Games", "place": "HEK",
-    "source": "https://basellive.ch/kalender" },
-  { "date": "2026-09-26", "time": "10:00", "title": "Workshop: Handbesen binden", "place": "Gärtnerhuus",
-    "source": "https://basellive.ch/kalender" },
-  { "date": "2026-09-26", "time": "14:30", "title": "Glaini Häggs Dintegläggs", "place": "Theater Arlecchino",
-    "source": "https://theater-arlecchino.ch/glaini-haeggs-dinteglaeggs/" },
-  { "date": "2026-09-27", "time": "14:30", "title": "Glaini Häggs Dintegläggs", "place": "Theater Arlecchino",
-    "source": "https://theater-arlecchino.ch/glaini-haeggs-dinteglaeggs/" },
-  { "date": "2026-09-28", "time": "11:00", "title": "Radiobande: Herbstcamp", "place": "MUKS Riehen",
-    "source": "https://basellive.ch/kalender" }
- ]
+ "events": []
 }
