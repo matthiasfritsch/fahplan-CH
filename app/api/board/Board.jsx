@@ -170,12 +170,7 @@ function Event({ e }) {
 
   return (
     <div style={flex({ alignItems: "center", height: 32 })}>
-      {e.tip ? (
-        /* Tipp statt Uhrzeit: Lueckenfueller, wenn wenig ansteht */
-        <div style={flex({
-          width: 66, flexShrink: 0, fontFamily: NUMS, fontWeight: 800, fontSize: 15, color: MID,
-        })}>TIPP</div>
-      ) : e.time ? (
+      {e.time ? (
         <div style={flex({
           width: 66, flexShrink: 0, fontFamily: NUMS, fontWeight: 800, fontSize: 18, color: INK,
         })}>{e.time}</div>
@@ -220,7 +215,7 @@ function Event({ e }) {
   );
 }
 
-function Events({ days, ideas }) {
+function Events({ days }) {
   return (
     <div style={flex({
       flexDirection: "column", flexGrow: 1, overflow: "hidden",
@@ -237,12 +232,9 @@ function Events({ days, ideas }) {
           {d.list.map((e, i) => <Event key={i} e={e} />)}
         </div>
       )) : (
-        /* Rueckfall, wenn keine Quelle etwas liefert */
-        <div style={flex({ flexDirection: "column" })}>
-          <div style={flex({ height: 30, paddingTop: 12 })}>
-            <Label style={{ fontSize: 15 }}>IDEEN, WENN NICHTS ANSTEHT</Label>
-          </div>
-          {ideas.map((e, i) => <Event key={i} e={{ ...e, time: "" }} />)}
+        /* Rueckfall, wenn keine Quelle etwas liefert: ehrlich leer */
+        <div style={flex({ height: 30, paddingTop: 12 })}>
+          <Label style={{ fontSize: 15 }}>DIESE WOCHE NICHTS BESONDERES GEFUNDEN</Label>
         </div>
       )}
     </div>
@@ -318,7 +310,7 @@ function Dinner({ d, qr }) {
 }
 
 // --- Das ganze Board ----------------------------------------
-export default function Board({ a, b, weather, stamp, stale, days, ideas, word, dinner, qr }) {
+export default function Board({ a, b, weather, stamp, stale, days, word, dinner, qr }) {
   return (
     <div style={flex({
       flexDirection: "column", width: W, height: H,
@@ -364,7 +356,7 @@ export default function Board({ a, b, weather, stamp, stale, days, ideas, word, 
             <Word w={word} />
             <Dinner d={dinner} qr={qr} />
           </div>
-          <Events days={days} ideas={ideas} />
+          <Events days={days} />
         </div>
 
         {/* Rechts: Fahrplan */}

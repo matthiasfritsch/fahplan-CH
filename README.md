@@ -18,7 +18,6 @@ dauerhaft kostenlos, und braucht keinen Browser zum Rendern.
 | `data/dinners.json` | 10-Minuten-Gerichte mit Zutaten und Schritten. |
 | `lib/sources.mjs` | Live-Eventquellen: Schule, Basel-West, Eventfrog. |
 | `data/events.json` | Optionale handgepflegte Events und Schulferien. |
-| `data/ideas.json` | Rueckfall, wenn keine Events da sind. |
 
 ## Deployen ohne Kommandozeile
 
