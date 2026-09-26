@@ -16,7 +16,7 @@ dauerhaft kostenlos, und braucht keinen Browser zum Rendern.
 | `lib/content.mjs` | Auswahl von Wort, Znacht und Events, Zeichenlimits. |
 | `data/words.json` | Woerter des Tages, rotieren taeglich. |
 | `data/dinners.json` | 10-Minuten-Gerichte mit Zutaten und Schritten. |
-| `lib/sources.mjs` | Live-Eventquellen: Schule, Basel-West, Eventfrog. |
+| `lib/sources.mjs` | Live-Eventquellen: Schule, Basel-West, myBasel, Eventfrog. |
 | `data/events.json` | Optionale handgepflegte Events und Schulferien. |
 
 ## Deployen ohne Kommandozeile
@@ -62,6 +62,7 @@ dasselbe. Events holt das Board live auf Vercel aus diesen Quellen
 |---|---|---|
 | Rudolf Steiner Schule Basel | Schultermine, Badge SCHULE | iCal-Feed der Schul-Website |
 | Stadtteilsekretariat Basel-West | Quartierflohmaerkte, Badge FLOHMARKT | iCal-Feed |
+| myBasel, Rubrik Kinder | Workshops, Kinderkino, Theater, Mitmach-Aktionen, Kinderflohmis | HTML-Liste, bezahlte "Empfehlungen" gefiltert |
 | Eventfrog | Kinder & Familie im Umkreis von 30 km | Public API, braucht `EVENTFROG_API_KEY` |
 | `data/events.json` | Handgepflegte Zusatz-Events (optional) | Datei im Repo |
 
