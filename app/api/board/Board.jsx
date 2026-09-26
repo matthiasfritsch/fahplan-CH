@@ -209,7 +209,7 @@ function Event({ e }) {
           borderWidth: 1.5, borderStyle: "solid", borderColor: INK,
           paddingLeft: 5, paddingRight: 5, paddingTop: 1, paddingBottom: 1,
           fontFamily: SANS, fontWeight: 700, fontSize: 13, letterSpacing: 0.5, color: INK,
-        })}>{(e.city + " · " + (e.travel || "")).toUpperCase().replace(/ MIN$/, " MIN")}</div>
+        })}>{(e.travel ? e.city + " \u00b7 " + e.travel : e.city).toUpperCase()}</div>
       ) : null}
     </div>
   );
