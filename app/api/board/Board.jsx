@@ -170,7 +170,12 @@ function Event({ e }) {
 
   return (
     <div style={flex({ alignItems: "center", height: 32 })}>
-      {e.time ? (
+      {e.tip ? (
+        /* Tipp statt Uhrzeit: Lueckenfueller, wenn wenig ansteht */
+        <div style={flex({
+          width: 66, flexShrink: 0, fontFamily: NUMS, fontWeight: 800, fontSize: 15, color: MID,
+        })}>TIPP</div>
+      ) : e.time ? (
         <div style={flex({
           width: 66, flexShrink: 0, fontFamily: NUMS, fontWeight: 800, fontSize: 18, color: INK,
         })}>{e.time}</div>
