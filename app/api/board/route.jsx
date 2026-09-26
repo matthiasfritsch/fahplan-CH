@@ -2,7 +2,6 @@ import Board, { W, H, setInvert } from "./Board";
 import qrcode from "qrcode-generator";
 import words from "../../../data/words.json";
 import dinners from "../../../data/dinners.json";
-import ideas from "../../../data/ideas.json";
 import eventsFile from "../../../data/events.json";
 import {
   zurichNow, pickWord, pickDinner, selectEvents, parseJsonLdEvents,
@@ -541,8 +540,7 @@ async function handle(request) {
   const demo = url.searchParams.get("demo") === "1";
   const ev = demo ? { events: demoEvents(today), source: "demo" }
                   : await loadEvents(today, cfg.eventsFallbackUrl);
-  const rainy = /regen|schauer|gewitter|schnee|niesel|hagel/i.test((wx && wx.cond) || "");
-  const days = selectEvents(ev.events, today, nowTime, undefined, eventsFile.holidays, { ideas, rainy });
+  const days = selectEvents(ev.events, today, nowTime, undefined, eventsFile.holidays);
   const word = pickWord(words, today);
   const dinner = pickDinner(dinners, today);
   const recipeUrl = (cfg.publicUrl || url.origin).replace(/\/$/, "") + "/r/" + dinner.id;
@@ -583,7 +581,6 @@ async function handle(request) {
         stamp={cfg.date ? stampForDate(cfg.date) : stampFrom(offset, zeigeEta)}
         stale={stale}
         days={days}
-        ideas={ideas}
         word={word}
         dinner={dinner}
         qr={qrImage(recipeUrl, cfg.invert ? "#ffffff" : "#000000", cfg.invert ? "#000000" : "#ffffff")}
