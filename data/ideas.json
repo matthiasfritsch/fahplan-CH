@@ -1,26 +1,52 @@
 [
  {
   "title": "Zolli",
-  "place": "Zoo Basel"
+  "place": "Zoo Basel",
+  "indoor": false
  },
  {
   "title": "Tierpark Lange Erlen",
-  "place": "Eintritt frei"
+  "place": "Eintritt frei",
+  "indoor": false
  },
  {
   "title": "Naturhistorisches Museum",
-  "place": "Augustinergasse"
+  "place": "Augustinergasse",
+  "indoor": true
  },
  {
   "title": "Spielzeug Welten Museum",
-  "place": "Steinenvorstadt"
+  "place": "Steinenvorstadt",
+  "indoor": true
+ },
+ {
+  "title": "Museum Tinguely",
+  "place": "Solitude-Park",
+  "indoor": true
+ },
+ {
+  "title": "Museum der Kulturen",
+  "place": "Münsterplatz",
+  "indoor": true
  },
  {
   "title": "Mit der Fähre über den Rhein",
-  "place": "Münsterfähre"
+  "place": "Münsterfähre",
+  "indoor": false
  },
  {
   "title": "Dreiländereck",
-  "place": "Kleinhüningen"
+  "place": "Kleinhüningen",
+  "indoor": false
+ },
+ {
+  "title": "Merian Gärten",
+  "place": "Brüglingen",
+  "indoor": false
+ },
+ {
+  "title": "Fondation Beyeler",
+  "place": "Riehen",
+  "indoor": true
  }
 ]
