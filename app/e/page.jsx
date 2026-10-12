@@ -61,7 +61,7 @@ export default async function EventsPage() {
             </h2>
             {list.map((e, i) => (
               <div key={i} style={{ display: "flex", gap: 12, padding: "9px 0", borderBottom: "1px solid #e2e2e0" }}>
-                <div style={{ width: 46, flexShrink: 0, fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>{e.time || ""}</div>
+                <div style={{ width: 46, flexShrink: 0, fontWeight: 700, fontVariantNumeric: "tabular-nums", fontSize: e.time ? 16 : 12 }}>{e.time || "ganztags"}</div>
                 <div style={{ minWidth: 0 }}>
                   <a href={linkFor(e)} target="_blank" rel="noopener" style={{ color: "#111", fontWeight: 700, fontSize: 17 }}>
                     {e.long || e.title}
