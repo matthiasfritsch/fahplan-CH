@@ -371,7 +371,7 @@ async function weather(lat, lon) {
    ============================================================ */
 
 /* Events kommen live aus lib/sources.mjs (Schule, Basel-West,
-   Eventfrog) plus optionalen Eintraegen aus data/events.json.
+   Gugu Basel, myBasel, Eventfrog) plus optionalen Eintraegen aus data/events.json.
    Liefert keine Quelle etwas, versucht der Scraper eine Eventseite
    (BOARD_EVENTS_FALLBACK_URL), danach zeigt das Board Ideen. */
 async function loadEvents(today, fallbackUrl) {
