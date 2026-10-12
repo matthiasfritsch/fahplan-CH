@@ -2,9 +2,9 @@ import Board, { W, H, setInvert } from "./Board";
 import qrcode from "qrcode-generator";
 import words from "../../../data/words.json";
 import {
-  zurichNow, pickWord, selectEvents, DATE_RE,
+  zurichNow, pickWord, selectEvents,
 } from "../../../lib/content.mjs";
-import { loadEvents, holidays, eventsUpdated } from "../../../lib/events.mjs";
+import { loadEvents, countByDay, holidays, eventsUpdated } from "../../../lib/events.mjs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -509,12 +509,11 @@ async function handle(request) {
   const demo = url.searchParams.get("demo") === "1";
   const ev = demo ? { events: demoEvents(today), source: "demo" }
                   : await loadEvents(today);
-  // Wie viele Events es pro Tag insgesamt gibt, auch die, die
-  // nicht aufs Board passen. Der Rest steht auf der Eventseite.
-  const perDay = {};
-  for (const e of ev.events) if (e && DATE_RE.test(e.date || "") && e.title) perDay[e.date] = (perDay[e.date] || 0) + 1;
+  // Gesamtzahl pro Tag, gezaehlt wie auf der Eventseite hinter
+  // dem QR-Code (lib/events.mjs), nicht nur was aufs Board passt
+  const perDay = countByDay(ev.events, today);
   const days = selectEvents(ev.events, today, nowTime, undefined, holidays)
-    .map(d => ({ ...d, total: perDay[d.date] || d.list.length }));
+    .map(d => ({ ...d, total: perDay[d.date] || 0 }));
   const word = pickWord(words, today);
   const eventsUrl = (cfg.publicUrl || url.origin).replace(/\/$/, "") + "/e";
 
