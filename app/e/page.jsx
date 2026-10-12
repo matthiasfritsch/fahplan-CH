@@ -1,5 +1,5 @@
-import { loadEvents } from "../../lib/events.mjs";
-import { zurichNow, addDays, weekday, isFleaMarket } from "../../lib/content.mjs";
+import { loadEvents, pageEvents } from "../../lib/events.mjs";
+import { zurichNow, weekday, isFleaMarket } from "../../lib/content.mjs";
 
 /* Eventseite hinter dem QR-Code auf dem Board.
    Zeigt alles, was die Quellen fuer die naechsten zwei Wochen
@@ -32,12 +32,11 @@ function linkFor(e) {
 
 export default async function EventsPage() {
   const today = zurichNow().date;
-  const until = addDays(today, 13);
   const { events } = await loadEvents(today);
 
+  // Dieselbe Auswahl, aus der das Board die Zahl pro Tag zaehlt
   const byDay = new Map();
-  for (const e of events) {
-    if (!e || !e.date || !e.title || e.date < today || e.date > until) continue;
+  for (const e of pageEvents(events, today)) {
     if (!byDay.has(e.date)) byDay.set(e.date, []);
     byDay.get(e.date).push(e);
   }
