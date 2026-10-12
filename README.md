@@ -64,7 +64,7 @@ dasselbe. Events holt das Board live auf Vercel aus diesen Quellen
 | Stadtteilsekretariat Basel-West | Quartierflohmaerkte, Badge FLOHMARKT | iCal-Feed |
 | Gugu Basel (gugubasel.ch) | Kuratierte Wochenendplaene: Workshops, Kindertheater, Kinderdisco, Flohmis | Statische Seite, "Anytime"-Tipps und Kleinkind-Angebote gefiltert, Picks und Angebote ab ca. 7 Jahren zuerst |
 | myBasel, Rubrik Kinder | Workshops, Kinderkino, Theater, Mitmach-Aktionen, Kinderflohmis | HTML-Liste, bezahlte "Empfehlungen" gefiltert |
-| Eventfrog | Kinder & Familie im Umkreis von 30 km | Public API, braucht `EVENTFROG_API_KEY` |
+| Eventfrog | Kinder & Familie im Umkreis von 30 km | Public API, braucht `EVENTFROG_API_KEY` (oder `Events`) |
 | `data/events.json` | Handgepflegte Zusatz-Events (optional) | Datei im Repo |
 
 Angezeigt wird heute bis Sonntag: unter der Woche ein Event pro Tag,
