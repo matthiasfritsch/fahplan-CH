@@ -1,0 +1,17 @@
+name: probe
+on:
+  push:
+    branches: ["claude/**"]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          U="Mozilla/5.0 (Fahrplan-Board; Familienkalender)"
+          for url in https://www.mybasel.ch/veranstaltungen/kinder https://www.mybasel.ch/veranstaltungen https://www.mybasel.ch/robots.txt; do
+            echo "=== $url"; curl -sSL -m 30 -A "$U" -o p.html -D h.txt -w "%{http_code} %{url_effective} %{size_download}\n" "$url"; grep -iE '^(HTTP|location|server|cf-|content-type)' h.txt
+            echo "--- dates"; grep -oE '[0-9]{2}\.[0-9]{2}\.[0-9]{4}[^<]{0,12}' p.html | head -8
+            echo "--- text"; sed -e 's/<script[^>]*>.*<\/script>//g' -e 's/<[^>]*>/\n/g' p.html | sed 's/^[ \t]*//' | grep -v '^$' | head -60
+          done
+          echo "=== browser UA"; curl -sSL -m 30 -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130 Safari/537.36" -o q.html -w "%{http_code} %{size_download}\n" https://www.mybasel.ch/veranstaltungen/kinder; grep -oE '[0-9]{2}\.[0-9]{2}\.[0-9]{4}' q.html | wc -l
+          echo "=== school ics"; curl -sSL -m 30 "https://www.steinerschule-basel.ch/events/?ical=1" | grep -E '^(DTSTART|SUMMARY)' | head -40
