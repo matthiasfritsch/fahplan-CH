@@ -8,27 +8,17 @@ jobs:
     steps:
       - run: |
           curl -sSL -m 30 -A "Mozilla/5.0 fahrplan-board" -o p.html https://gugubasel.ch/
-          echo "=== size"; wc -c p.html
-          echo "=== sitemap"; curl -sSL -m 20 https://gugubasel.ch/sitemap.xml | head -c 3000; echo
-          echo "=== robots"; curl -sSL -m 20 https://gugubasel.ch/robots.txt | head -c 1500; echo
-          echo "=== other files"; for f in events.json data.json feed.xml rss.xml calendar.ics weekend.json; do echo "$f $(curl -s -o /dev/null -w '%{http_code}' https://gugubasel.ch/$f)"; done
-          echo "=== script src"; grep -oE '<script[^>]*src="[^"]+"' p.html | head
-          echo "=== ids"; grep -oE ' id="[^"]+"' p.html | sort -u | head -80
-          echo "=== datetime attrs"; grep -oE '(datetime|data-date|data-start|data-end|data-day)="[^"]+"' p.html | sort | uniq -c | head -40
+          curl -sSI -m 20 https://gugubasel.ch/ | grep -iE 'last-modified|etag|cache-control|content-length'
           python3 - <<'PY'
-          import re,html
+          import re
           s=open("p.html",encoding="utf-8").read()
           s=re.sub(r"(?s)<(script|style)[^>]*>.*?</\1>","",s)
-          s=re.sub(r"(?s)<img[^>]*>","",s)
-          i=s.lower().find("weekend")
-          print("=== first weekend idx",i)
-          # raw html of the weekend section (structure)
-          m=re.search(r'(?is)<(section|div)[^>]*id="[^"]*weekend[^"]*"',s)
-          start=m.start() if m else max(0,i-500)
-          raw=s[start:start+9000]
-          print("=== RAW"); print(re.sub(r"\s+"," ",raw)[:9000])
-          t=re.sub(r"<br\s*/?>","\n",s); t=re.sub(r"</(div|li|p|h\d|article|summary|tr)>","\n",t)
-          t=html.unescape(re.sub(r"<[^>]+>"," ",t))
-          t="\n".join(l.strip() for l in t.splitlines() if l.strip())
-          print("=== TEXT len",len(t)); print(t[:14000])
+          s=re.sub(r'style="[^"]*"','style=""',s)
+          s=re.sub(r'(src|srcset)="data:[^"]*"',r'\1="DATA"',s)
+          s=re.sub(r"<svg.*?</svg>","<svg/>",s,flags=re.S)
+          s=re.sub(r"\s+"," ",s)
+          i=s.find('id="sat-panel"'); print("=== SAT"); print(s[i:i+5000])
+          i=s.find("FLOHMI"); print("=== FLOHMI"); print(s[i-300:i+2500])
+          i=s.find('id="sun-panel"'); print("=== SUN"); print(s[i:i+1500])
+          print("=== classes"); print(sorted(set(re.findall(r'class="([^"]+)"',s[s.find('id="sat-panel"'):s.find('id="guides-panel"')])))[:80])
           PY
