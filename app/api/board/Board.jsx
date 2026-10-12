@@ -5,7 +5,7 @@
 
    Aufbau (800 x 480):
    +--------------------------------------------------------+
-   | Kopf: Datum, Uhrzeit                            Wetter |
+   |#Kopf: Datum, Uhrzeit (invertiert)               Wetter#|
    +--------------------------------------------------------+
    | DE Wort          | EN word          | FR mot           |
    | Beispielsatz     | [Aussprache]     | [Aussprache]     |
@@ -360,19 +360,20 @@ export default function Board({ a, b, weather, stamp, stale, days, word, qr }) {
       backgroundColor: PAPER, color: INK,
     })}>
 
-      {/* Kopf: Datum links, Wetter rechts */}
+      {/* Kopf: Datum links, Wetter rechts. Invertiert wie der
+          Fahplan, damit Kopf und rechte Spalte zusammengehoeren */}
       <div style={flex({
         alignItems: "center", justifyContent: "space-between",
         height: H_TOP, flexShrink: 0, paddingLeft: 16, paddingRight: 16,
-        borderBottomWidth: RULE, borderBottomStyle: "solid", borderBottomColor: INK,
+        backgroundColor: INK, color: PAPER,
       })}>
         <div style={flex({
-          alignItems: "baseline", fontFamily: NUMS, fontWeight: 800, fontSize: 20, color: INK,
+          alignItems: "baseline", fontFamily: NUMS, fontWeight: 800, fontSize: 20, color: PAPER,
         })}>
           {stamp}
           {stale ? (
             <div style={flex({
-              marginLeft: 10, fontFamily: SANS, fontWeight: 700, fontSize: 15, color: MID,
+              marginLeft: 10, fontFamily: SANS, fontWeight: 700, fontSize: 15, color: MID_DARK,
             })}>alte Daten</div>
           ) : null}
         </div>
@@ -380,8 +381,8 @@ export default function Board({ a, b, weather, stamp, stale, days, word, qr }) {
         {weather ? (
           <div style={flex({ alignItems: "baseline" })}>
             <div style={flex({ fontFamily: NUMS, fontWeight: 800, fontSize: 22 })}>{weather.temp + "°"}</div>
-            <div style={flex({ marginLeft: 9, fontFamily: SANS, fontWeight: 600, fontSize: 18, color: INK })}>{weather.cond}</div>
-            <div style={flex({ marginLeft: 9, fontFamily: NUMS, fontWeight: 700, fontSize: 16, color: MID })}>{weather.min + "/" + weather.max}</div>
+            <div style={flex({ marginLeft: 9, fontFamily: SANS, fontWeight: 600, fontSize: 18, color: PAPER })}>{weather.cond}</div>
+            <div style={flex({ marginLeft: 9, fontFamily: NUMS, fontWeight: 700, fontSize: 16, color: MID_DARK })}>{weather.min + "/" + weather.max}</div>
           </div>
         ) : <div style={flex({})} />}
       </div>
