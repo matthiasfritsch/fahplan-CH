@@ -1,0 +1,19 @@
+name: probe
+on:
+  push:
+    branches: ["claude/**"]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          for h in gugubasel.ch www.gugubasel.ch gugu-basel.ch gugubasel.com; do
+            echo "=== DNS $h"; getent hosts $h || echo "kein DNS"
+            echo "=== HTTP $h"; curl -sSL -m 20 -A "Mozilla/5.0 fahrplan-board" -o /tmp/p.html -w "%{http_code} %{url_effective} %{content_type}\n" https://$h/ || true
+            if [ -s /tmp/p.html ]; then
+              echo "--- generator/feeds"; grep -oiE '(generator"[^>]*|application/(rss|atom)\+xml[^>]*|ical[^"]*|wp-json[^"]*|tribe[^" ]*|wix[^" ]*|squarespace[^" ]*|webflow[^" ]*)' /tmp/p.html | sort -u | head -30
+              echo "--- links"; grep -oE 'href="[^"]+"' /tmp/p.html | sort -u | head -80
+              echo "--- text"; sed -e 's/<script.*<\/script>//g' -e 's/<[^>]*>/ /g' /tmp/p.html | tr -s ' \n' | head -c 4000; echo
+              rm -f /tmp/p.html
+            fi
+          done
