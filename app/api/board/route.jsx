@@ -1,12 +1,10 @@
 import Board, { W, H, setInvert } from "./Board";
 import qrcode from "qrcode-generator";
 import words from "../../../data/words.json";
-import dinners from "../../../data/dinners.json";
-import eventsFile from "../../../data/events.json";
 import {
-  zurichNow, pickWord, pickDinner, selectEvents, parseJsonLdEvents,
+  zurichNow, pickWord, selectEvents, DATE_RE,
 } from "../../../lib/content.mjs";
-import { liveEvents } from "../../../lib/sources.mjs";
+import { loadEvents, holidays, eventsUpdated } from "../../../lib/events.mjs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -41,9 +39,7 @@ const ENV = {
   lat:    process.env.BOARD_LAT,
   lon:    process.env.BOARD_LON,
   publicUrl: process.env.BOARD_PUBLIC_URL,
-  // Nur aus der Umgebung, nie per URL-Parameter und nie in ?debug=1
-  eventfrogKey: process.env.EVENTFROG_API_KEY,
-  eventsFallbackUrl: process.env.BOARD_EVENTS_FALLBACK_URL,
+  // Der Eventfrog-Key wird in lib/events.mjs gelesen, nie hier
 };
 
 function conf(url) {
@@ -84,7 +80,6 @@ function conf(url) {
     date: pick("date", ""),
     time: pick("time", ""),
     publicUrl: pick("publicUrl", ""),
-    eventsFallbackUrl: pick("eventsFallbackUrl", ""),
   };
 }
 
@@ -367,36 +362,8 @@ async function weather(lat, lon) {
 }
 
 /* ============================================================
-   Linke Seite: Events, Wort, Znacht
+   Links: Events, oben: Wort des Tages
    ============================================================ */
-
-/* Events kommen live aus lib/sources.mjs (Schule, Basel-West,
-   Gugu Basel, myBasel, Eventfrog) plus optionalen Eintraegen aus data/events.json.
-   Liefert keine Quelle etwas, versucht der Scraper eine Eventseite
-   (BOARD_EVENTS_FALLBACK_URL), danach zeigt das Board Ideen. */
-async function loadEvents(today, fallbackUrl) {
-  // Handgepflegte Eintraege aus data/events.json gelten immer,
-  // solange sie nicht in der Vergangenheit liegen. Dazu kommen die
-  // Live-Quellen (lib/sources.mjs), jede einzeln abgesichert.
-  const manual = (eventsFile.events || []).filter(e => e.date >= today);
-  const { events, report } = await liveEvents(manual, { eventfrogKey: ENV.eventfrogKey, today });
-  if (events.length) return { events, source: "live", report };
-
-  // Rueckfall: JSON-LD-Scraper, falls konfiguriert
-  if (fallbackUrl) {
-    try {
-      const res = await fetch(fallbackUrl, {
-        headers: { "user-agent": "Mozilla/5.0 (Fahrplan-Board)" },
-        next: { revalidate: 86400 },
-      });
-      if (res.ok) {
-        const found = parseJsonLdEvents(await res.text());
-        if (found.length) return { events: found, source: "scraper", report };
-      }
-    } catch { /* faellt auf die Ideen zurueck */ }
-  }
-  return { events: [], source: "leer", report };
-}
 
 /* QR-Code als SVG-Bild. 3 px pro Modul, exakt auf dem
    Pixelraster, damit er auf 1 Bit knackscharf bleibt. Den
@@ -416,6 +383,8 @@ function qrImage(text, ink, paper, module = 3) {
             + `<rect width="${size}" height="${size}" fill="${paper}"/><g fill="${ink}">${rects}</g></svg>`;
   return { src: "data:image/svg+xml;base64," + Buffer.from(svg).toString("base64"), size };
 }
+
+/* Beispiel-Events fuer ?demo=1, relativ zum Datum, damit die
 
 /* Beispiel-Events fuer ?demo=1, relativ zum Datum, damit die
    Vorschau an jedem Tag gefuellt ist. Keine echten Termine. */
@@ -539,17 +508,21 @@ async function handle(request) {
   const nowTime = cfg.time || (cfg.date ? "00:00" : jetzt.time);
   const demo = url.searchParams.get("demo") === "1";
   const ev = demo ? { events: demoEvents(today), source: "demo" }
-                  : await loadEvents(today, cfg.eventsFallbackUrl);
-  const days = selectEvents(ev.events, today, nowTime, undefined, eventsFile.holidays);
+                  : await loadEvents(today);
+  // Wie viele Events es pro Tag insgesamt gibt, auch die, die
+  // nicht aufs Board passen. Der Rest steht auf der Eventseite.
+  const perDay = {};
+  for (const e of ev.events) if (e && DATE_RE.test(e.date || "") && e.title) perDay[e.date] = (perDay[e.date] || 0) + 1;
+  const days = selectEvents(ev.events, today, nowTime, undefined, holidays)
+    .map(d => ({ ...d, total: perDay[d.date] || d.list.length }));
   const word = pickWord(words, today);
-  const dinner = pickDinner(dinners, today);
-  const recipeUrl = (cfg.publicUrl || url.origin).replace(/\/$/, "") + "/r/" + dinner.id;
+  const eventsUrl = (cfg.publicUrl || url.origin).replace(/\/$/, "") + "/e";
 
   if (url.searchParams.get("debug") === "1") {
     return new Response(
       JSON.stringify({ cfg, a, b, wx, stale, stamp: stampFrom(offset, true),
-        today, nowTime, eventSource: ev.source, sourceReport: ev.report, eventsUpdated: eventsFile.updated,
-        days, word, dinner: dinner.name, recipeUrl }, null, 2),
+        today, nowTime, eventSource: ev.source, sourceReport: ev.report, eventsUpdated,
+        days, word, eventsUrl }, null, 2),
       { headers: { "content-type": "application/json; charset=utf-8" } }
     );
   }
@@ -582,8 +555,7 @@ async function handle(request) {
         stale={stale}
         days={days}
         word={word}
-        dinner={dinner}
-        qr={qrImage(recipeUrl, cfg.invert ? "#ffffff" : "#000000", cfg.invert ? "#000000" : "#ffffff")}
+        qr={qrImage(eventsUrl, cfg.invert ? "#ffffff" : "#000000", cfg.invert ? "#000000" : "#ffffff")}
       />
     ),
     { width: W, height: H, fonts: await fonts(url.origin) }

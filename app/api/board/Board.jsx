@@ -5,13 +5,16 @@
 
    Aufbau (800 x 480):
    +--------------------------------------------------------+
-   | Kopf: Datum                                     Wetter |
-   +-------------------------------------+------------------+
-   | Wort des Tages (gross)     | Znacht | Tram  AB     AN  |
-   |                            |  [QR]  | ...              |
-   +----------------------------+--------+ Bus   AB     AN  |
-   | Events, nach Tag gruppiert          | ...              |
-   +-------------------------------------+------------------+
+   | Kopf: Datum, Uhrzeit                            Wetter |
+   +--------------------------------------------------------+
+   | DE Wort          | EN word          | FR mot           |
+   | Beispielsatz     | [Aussprache]     | [Aussprache]     |
+   +-------------------------------------+==================+
+   | Events, nach Tag gruppiert          # Tram  AB     AN  #
+   |                                     # ...  (invertiert)#
+   |                              [QR]   # Bus   AB     AN  #
+   |                         alle Events # ...              #
+   +-------------------------------------+==================+
 
    Wichtig: Satori (der Renderer hinter ImageResponse) versteht
    nur einen Teil von CSS. Erlaubt ist Flexbox. Nicht erlaubt
@@ -28,7 +31,10 @@ export const H = 480;
 let INK   = "#000000";
 let PAPER = "#ffffff";
 let MID   = "#555555";   // Nebenangaben: Ort, Ankunft, Datum
-let HAIR  = "#9a9a9a";   // Zeilentrenner im Fahrplan
+// Auf dem schwarzen Fahrplan: hell genug, dass es auf 1-Bit
+// weiss bleibt, aber zurueckhaltender als reines Weiss
+let LINE_DARK = "#b4b4b4";  // Zeilentrenner im Fahrplan
+let MID_DARK  = "#c8c8c8";  // Ankunft im Fahrplan
 
 /* Serverseitig invertieren.
    Manche Panels stellen ein PNG genau andersherum dar, als
@@ -38,23 +44,27 @@ export function setInvert(on) {
   INK   = on ? "#ffffff" : "#000000";
   PAPER = on ? "#000000" : "#ffffff";
   MID   = on ? "#b0b0b0" : "#555555";
-  HAIR  = on ? "#707070" : "#9a9a9a";
+  LINE_DARK = on ? "#4c4c4c" : "#b4b4b4";
+  MID_DARK  = on ? "#383838" : "#c8c8c8";
 }
 
-const H_TOP  = 44;   // Kopfleiste inkl. Trennlinie
-const H_BAND = 28;   // Tram/Bus-Balken
-const H_LEARN = 152; // Wort + Znacht oben links: QR bis 87 px plus 12 px Ruhezone
+const H_TOP  = 40;   // Kopfleiste inkl. Trennlinie
+const H_WORD = 88;   // Wortband inkl. Trennlinie
+const H_BAND = 28;   // Tram/Bus-Kopf
 const W_LEFT = 560;  // 70 Prozent fuer Events, Rest Fahrplan
 const RULE   = 2;    // Staerke der Zonen-Linien
+const W_QR   = 118;  // QR-Spalte unten rechts in den Events
+// Platz fuer Titel + Ort: Eventliste minus Raender und Uhrzeit
+const W_TITLE = W_LEFT - W_QR - 16 - 6 - 66;
 
 const SANS = "Board Sans";  // Inter
 const NUMS = "Board Nums";  // JetBrains Mono, alle Ziffern
 
 // Fahrplan-Spalten (rechte Seite, 240 px breit)
-const C_LINE  = 38;
-const C_TIME  = 64;
-const C_DELAY = 34;
-const C_ARR   = 58;
+const C_LINE  = 40;
+const C_TIME  = 62;
+const C_DELAY = 36;
+const C_ARR   = 56;
 
 function clip(s, n) {
   const t = String(s || "").trim();
@@ -74,22 +84,23 @@ function Label({ children, style }) {
 }
 
 /* ============================================================
-   RECHTS: Fahrplan
-   Nur Linie, Abfahrt, Verspaetung und Ankunft. Das Ziel faellt
-   weg, weil es nur eine Fahrtrichtung gibt.
+   RECHTS: Fahrplan, invertiert (weiss auf schwarz)
+   Bewusst etwas leiser als frueher: kleinere Ziffern, duenne
+   Linien. Nur Linie, Abfahrt, Verspaetung und Ankunft, das Ziel
+   faellt weg, weil es nur eine Fahrtrichtung gibt.
    ============================================================ */
 function Band({ label }) {
   return (
     <div style={flex({
-      alignItems: "center", height: H_BAND, flexShrink: 0,
-      backgroundColor: INK, color: PAPER,
-      paddingLeft: 12, paddingRight: 14,
-      fontFamily: SANS, fontWeight: 700,
+      alignItems: "flex-end", height: H_BAND, flexShrink: 0,
+      marginLeft: 12, marginRight: 14, paddingBottom: 4,
+      borderBottomWidth: 2, borderBottomStyle: "solid", borderBottomColor: PAPER,
+      color: PAPER, fontFamily: SANS, fontWeight: 700,
     })}>
-      <div style={flex({ flexGrow: 1, fontSize: 15 })}>{clip(label, 12)}</div>
-      <div style={flex({ width: C_TIME, justifyContent: "flex-end", fontSize: 12, letterSpacing: 0.8 })}>AB</div>
+      <div style={flex({ flexGrow: 1, fontSize: 15, letterSpacing: 0.5 })}>{clip(label, 12).toUpperCase()}</div>
+      <div style={flex({ width: C_TIME, justifyContent: "flex-end", fontSize: 13, letterSpacing: 0.8 })}>AB</div>
       <div style={flex({ width: C_DELAY })} />
-      <div style={flex({ width: C_ARR, justifyContent: "flex-end", fontSize: 12, letterSpacing: 0.8 })}>AN</div>
+      <div style={flex({ width: C_ARR, justifyContent: "flex-end", fontSize: 13, letterSpacing: 0.8 })}>AN</div>
     </div>
   );
 }
@@ -98,7 +109,7 @@ function Row({ d, h, last }) {
   const base = {
     display: "flex", alignItems: "center", height: h, flexShrink: 0,
     marginLeft: 12, marginRight: 14,
-    borderBottomWidth: last ? 0 : 1, borderBottomStyle: "solid", borderBottomColor: HAIR,
+    borderBottomWidth: last ? 0 : 1, borderBottomStyle: "solid", borderBottomColor: LINE_DARK,
   };
   // Leere Platzhalterzeile, damit das Raster nachts nicht
   // zusammenklappt wenn weniger Kurse kommen.
@@ -107,24 +118,24 @@ function Row({ d, h, last }) {
   return (
     <div style={base}>
       <div style={flex({
-        width: C_LINE, fontFamily: NUMS, fontWeight: 800, fontSize: 24, color: INK,
+        width: C_LINE, fontFamily: NUMS, fontWeight: 800, fontSize: 21, color: PAPER,
       })}>{d.line}</div>
       <div style={flex({
         flexGrow: 1, justifyContent: "flex-end",
-        fontFamily: NUMS, fontWeight: 800, fontSize: 21, color: INK,
+        fontFamily: NUMS, fontWeight: 800, fontSize: 19, color: PAPER,
       })}>{d.timeText}</div>
       <div style={flex({ width: C_DELAY, justifyContent: "center" })}>
         {d.delay > 0 ? (
           <div style={flex({
-            backgroundColor: INK, color: PAPER,
-            fontFamily: NUMS, fontWeight: 800, fontSize: 12,
-            paddingLeft: 4, paddingRight: 4, paddingTop: 1, paddingBottom: 1,
+            backgroundColor: PAPER, color: INK,
+            fontFamily: NUMS, fontWeight: 800, fontSize: 13,
+            paddingLeft: 4, paddingRight: 4,
           })}>{"+" + d.delay}</div>
         ) : null}
       </div>
       <div style={flex({
         width: C_ARR, justifyContent: "flex-end",
-        fontFamily: NUMS, fontWeight: 700, fontSize: 18, color: MID,
+        fontFamily: NUMS, fontWeight: 700, fontSize: 16, color: MID_DARK,
       })}>{d.arrText || ""}</div>
     </div>
   );
@@ -132,7 +143,7 @@ function Row({ d, h, last }) {
 
 function Transit({ a, b }) {
   const rowsTotal = a.rows + b.rows;
-  const space = H - H_TOP - H_BAND * 2;
+  const space = H - H_TOP - H_WORD - H_BAND * 2 - 8;   // 8 px Luft unten
   const rowH = Math.floor(space / rowsTotal);
   // Rest gleichmaessig auf die ersten Zeilen verteilen
   const rest = space - rowH * rowsTotal;
@@ -140,7 +151,7 @@ function Transit({ a, b }) {
   const fill = (list, n) => Array.from({ length: n }, (_, i) => list[i] || null);
 
   return (
-    <div style={flex({ flexDirection: "column", width: W - W_LEFT - RULE })}>
+    <div style={flex({ flexDirection: "column", width: W - W_LEFT, backgroundColor: INK })}>
       <Band label={a.label} />
       {fill(a.list, a.rows).map((d, i) => (
         <Row key={"a" + i} d={d} h={rowH + extra(i)} last={i === a.rows - 1} />
@@ -154,7 +165,7 @@ function Transit({ a, b }) {
 }
 
 /* ============================================================
-   LINKS OBEN: Events
+   LINKS: Events
    Nach Tag gruppiert, ohne Trennlinien. Auswaerts bekommt ein
    Badge mit Ort und Fahrzeit, Basel ist der Normalfall.
    ============================================================ */
@@ -163,13 +174,16 @@ function Event({ e }) {
   const school = !!e.school;
   const flea = !school && isFleaMarket(e);
   // Grobe Zeichenrechnung, Satori kann Text nicht vermessen.
-  // Mit Badge ist weniger Platz, der Ort faellt dann zuerst weg.
-  const budget = away ? 29 : flea ? 29 : school ? 33 : 40;
+  // Das Badge nimmt seine Breite dem Titel weg (13 px Versalien,
+  // ~8.6 px pro Zeichen plus Rand), der Ort faellt zuerst weg.
+  const badge = school ? "SCHULE" : flea ? "FLOHMARKT" : away ? (e.travel ? e.city + " \u00b7 " + e.travel : e.city) : "";
+  const badgePx = badge ? [...badge].length * 8.6 + 20 : 0;
+  const budget = Math.floor((W_TITLE - badgePx) / 10.8);
   const title = clip(e.title, budget);
   const place = e.place && title.length + e.place.length + 1 <= budget ? e.place : "";
 
   return (
-    <div style={flex({ alignItems: "center", height: 32 })}>
+    <div style={flex({ alignItems: "center", height: 30 })}>
       {e.time ? (
         <div style={flex({
           width: 66, flexShrink: 0, fontFamily: NUMS, fontWeight: 800, fontSize: 18, color: INK,
@@ -215,102 +229,112 @@ function Event({ e }) {
   );
 }
 
-function Events({ days }) {
+function Events({ days, qr }) {
   return (
-    <div style={flex({
-      flexDirection: "column", flexGrow: 1, overflow: "hidden",
-      paddingLeft: 16, paddingRight: 14, paddingTop: 2,
-    })}>
-      {days.length ? days.map(d => (
-        <div key={d.label + d.dateText} style={flex({ flexDirection: "column" })}>
-          <div style={flex({ alignItems: "baseline", height: 30, paddingTop: 12 })}>
-            <Label style={{ fontSize: 15 }}>{d.label}</Label>
-            <div style={flex({
-              marginLeft: 10, fontFamily: NUMS, fontWeight: 800, fontSize: 15, color: MID,
-            })}>{d.dateText}</div>
+    <div style={flex({ width: W_LEFT, flexShrink: 0, overflow: "hidden" })}>
+      <div style={flex({
+        flexDirection: "column", width: W_LEFT - W_QR, flexShrink: 0, overflow: "hidden",
+        paddingLeft: 16, paddingRight: 6, paddingTop: 2,
+      })}>
+        {days.length ? days.map(d => (
+          <div key={d.label + d.dateText} style={flex({ flexDirection: "column" })}>
+            <div style={flex({ alignItems: "baseline", height: 30, paddingTop: 12 })}>
+              <Label style={{ fontSize: 15 }}>{d.label}</Label>
+              <div style={flex({
+                marginLeft: 10, fontFamily: NUMS, fontWeight: 800, fontSize: 15, color: MID,
+              })}>{d.dateText}</div>
+              {d.total ? (
+                <div style={flex({
+                  marginLeft: 10, fontFamily: SANS, fontWeight: 700, fontSize: 14, color: MID,
+                })}>{d.total === 1 ? "1 Event" : d.total + " Events"}</div>
+              ) : null}
+            </div>
+            {d.list.map((e, i) => <Event key={i} e={e} />)}
           </div>
-          {d.list.map((e, i) => <Event key={i} e={e} />)}
+        )) : (
+          /* Rueckfall, wenn keine Quelle etwas liefert: ehrlich leer */
+          <div style={flex({ height: 30, paddingTop: 12 })}>
+            <Label style={{ fontSize: 15 }}>NICHTS BESONDERES GEFUNDEN</Label>
+          </div>
+        )}
+      </div>
+
+      {/* QR unten rechts: fuehrt zur Liste aller Events mit Links */}
+      <div style={flex({
+        flexDirection: "column", justifyContent: "flex-end", alignItems: "center",
+        width: W_QR, flexShrink: 0, paddingRight: 12, paddingBottom: 12,
+      })}>
+        {qr ? <img src={qr.src} width={qr.size} height={qr.size} /> : null}
+        <div style={flex({
+          flexDirection: "column", alignItems: "center", marginTop: 6,
+          fontFamily: SANS, fontWeight: 700, fontSize: 13, lineHeight: "16px", color: INK,
+        })}>
+          <div style={flex({})}>Alle Events</div>
+          <div style={flex({})}>mit Links</div>
         </div>
-      )) : (
-        /* Rueckfall, wenn keine Quelle etwas liefert: ehrlich leer */
-        <div style={flex({ height: 30, paddingTop: 12 })}>
-          <Label style={{ fontSize: 15 }}>DIESE WOCHE NICHTS BESONDERES GEFUNDEN</Label>
-        </div>
-      )}
+      </div>
     </div>
   );
 }
 
 /* ============================================================
-   LINKS OBEN: Wort des Tages und 10-Minuten-Znacht
-   Das Wort steht gross, weil es zum Lernen gedacht ist. Das
-   Gericht bleibt klein, der QR-Code fuehrt zum Rezept.
-   Die Listen halten Zeichenlimits ein (npm run check), deshalb
-   darf hier fest gesetzt werden.
+   OBEN: Wort des Tages, ueber die ganze Breite
+   Drei Spalten DE, EN, FR, das Wort so gross wie es passt.
+   Unter DE der Beispielsatz, unter EN und FR die Aussprache in
+   deutscher Schreibweise.
 
    Auf 1-Bit-E-Ink verschwimmt alles unter etwa 13 px, und Grau
    wird hart zu Schwarz oder Weiss. Deshalb hier nichts kleiner
-   als 13 px und die Woerter selbst in Schwarz.
+   als 13 px und alles in Schwarz.
    ============================================================ */
-const W_DISH = 190;              // Breite der Znacht-Spalte
-const W_WORD = W_LEFT - W_DISH;  // Rest fuer das Wort
+const COLS = [300, 250, 250];   // DE bekommt mehr Platz fuer den Satz
+const TAG_W = 28;               // Breite fuer "DE", "EN", "FR"
 
 // Satori kann Text nicht vermessen, deshalb grob schaetzen:
-// Inter Bold braucht etwa 0,58 x Schriftgroesse pro Zeichen.
-const textW = (str, size) => String(str || "").length * size * 0.58;
-const W_WORD_LINE = W_WORD - 16 - 12 - 32;   // Platz fuer Wort + Hinweis
+// Inter Bold braucht etwa 0,6 x Schriftgroesse pro Zeichen.
+const textW = (str, size, k = 0.6) => [...String(str || "")].length * size * k;
 
-function WordLine({ lang, word, hint }) {
-  // Stufen von gross nach klein durchprobieren, bis Wort und
-  // Aussprache nebeneinander passen. Erst ganz am Ende faellt der
-  // Hinweis weg. So bricht nie etwas um.
-  const STEPS = [[25, 14], [21, 14], [21, 12], [19, 12]];
-  const fits = ([w, h]) => textW(word, w) + 9 + textW(hint, h) <= W_WORD_LINE;
-  const step = STEPS.find(fits);
-  const [size, hintSize] = step || [21, 12];
+// Groesste Stufe, bei der der Text in die Breite passt
+function fitSize(str, width, steps, k) {
+  return steps.find(sz => textW(str, sz, k) <= width) || steps[steps.length - 1];
+}
+
+function WordCol({ width, lang, word, sub, first }) {
+  const padL = first ? 16 : 12;
+  const size = fitSize(word, width - padL - TAG_W - 8, [36, 33, 30, 27, 24, 22, 20]);
+  const subW = width - padL - 8;
+  const subSize = fitSize(sub, subW, [16, 15, 14, 13], 0.56);
   return (
-    <div style={flex({ alignItems: "baseline", height: 34, whiteSpace: "nowrap" })}>
-      <div style={flex({ width: 32, flexShrink: 0, fontFamily: NUMS, fontWeight: 800, fontSize: 14, color: INK })}>{lang}</div>
-      <div style={flex({ flexShrink: 0, fontFamily: SANS, fontWeight: 700, fontSize: size, color: INK })}>{word}</div>
-      {step ? (
-        <div style={flex({ marginLeft: 9, fontFamily: SANS, fontWeight: 700, fontSize: hintSize, color: MID })}>{hint}</div>
-      ) : null}
+    <div style={flex({ flexDirection: "column", width, paddingLeft: padL, paddingTop: 10 })}>
+      <div style={flex({ alignItems: "baseline", height: 44, whiteSpace: "nowrap" })}>
+        <div style={flex({
+          width: TAG_W, flexShrink: 0, fontFamily: NUMS, fontWeight: 800, fontSize: 14, color: INK,
+        })}>{lang}</div>
+        <div style={flex({ fontFamily: SANS, fontWeight: 700, fontSize: size, color: INK })}>{word}</div>
+      </div>
+      <div style={flex({
+        whiteSpace: "nowrap", overflow: "hidden",
+        fontFamily: SANS, fontWeight: 700, fontSize: subSize, color: INK,
+      })}>{textW(sub, subSize, 0.56) <= subW ? sub : clip(sub, Math.floor(subW / (subSize * 0.56)))}</div>
     </div>
   );
 }
 
 function Word({ w }) {
   return (
-    <div style={flex({ flexDirection: "column", width: W_WORD, paddingLeft: 16, paddingRight: 12, paddingTop: 9 })}>
-      <WordLine lang="DE" word={w.de} hint={w.deHint} />
-      <WordLine lang="EN" word={w.en} hint={"[" + w.enSay + "]"} />
-      <WordLine lang="FR" word={w.fr} hint={"[" + w.frSay + "]"} />
-      <div style={flex({
-        marginTop: 1, fontFamily: SANS, fontWeight: 700, fontSize: 14, color: INK,
-      })}>{"\u00ab" + w.example + "\u00bb"}</div>
-    </div>
-  );
-}
-
-function Dinner({ d, qr }) {
-  return (
-    <div style={flex({ flexDirection: "column", width: W_DISH, paddingRight: 14, paddingTop: 9 })}>
-      <div style={flex({
-        width: W_DISH - 14, height: 38, overflow: "hidden",
-        fontFamily: SANS, fontWeight: 700, fontSize: 16, lineHeight: "19px", color: INK,
-      })}>{d.name}</div>
-      <div style={flex({ alignItems: "flex-end", marginTop: 4 })}>
-        {qr ? <img src={qr.src} width={qr.size} height={qr.size} /> : null}
-        <div style={flex({
-          marginLeft: 8, fontFamily: NUMS, fontWeight: 800, fontSize: 14, color: INK,
-        })}>{d.mins + "'"}</div>
-      </div>
+    <div style={flex({
+      height: H_WORD, flexShrink: 0,
+      borderBottomWidth: RULE, borderBottomStyle: "solid", borderBottomColor: INK,
+    })}>
+      <WordCol first width={COLS[0]} lang="DE" word={w.de} sub={"\u00ab" + w.example + "\u00bb"} />
+      <WordCol width={COLS[1]} lang="EN" word={w.en} sub={"[" + w.enSay + "]"} />
+      <WordCol width={COLS[2]} lang="FR" word={w.fr} sub={"[" + w.frSay + "]"} />
     </div>
   );
 }
 
 // --- Das ganze Board ----------------------------------------
-export default function Board({ a, b, weather, stamp, stale, days, word, dinner, qr }) {
+export default function Board({ a, b, weather, stamp, stale, days, word, qr }) {
   return (
     <div style={flex({
       flexDirection: "column", width: W, height: H,
@@ -336,30 +360,17 @@ export default function Board({ a, b, weather, stamp, stale, days, word, dinner,
 
         {weather ? (
           <div style={flex({ alignItems: "baseline" })}>
-            <div style={flex({ fontFamily: NUMS, fontWeight: 800, fontSize: 23 })}>{weather.temp + "°"}</div>
-            <div style={flex({ marginLeft: 9, fontFamily: SANS, fontWeight: 600, fontSize: 19, color: INK })}>{weather.cond}</div>
-            <div style={flex({ marginLeft: 9, fontFamily: NUMS, fontWeight: 700, fontSize: 17, color: MID })}>{weather.min + "/" + weather.max}</div>
+            <div style={flex({ fontFamily: NUMS, fontWeight: 800, fontSize: 22 })}>{weather.temp + "°"}</div>
+            <div style={flex({ marginLeft: 9, fontFamily: SANS, fontWeight: 600, fontSize: 18, color: INK })}>{weather.cond}</div>
+            <div style={flex({ marginLeft: 9, fontFamily: NUMS, fontWeight: 700, fontSize: 16, color: MID })}>{weather.min + "/" + weather.max}</div>
           </div>
         ) : <div style={flex({})} />}
       </div>
 
-      <div style={flex({ flexGrow: 1 })}>
-        {/* Links: Wort und Znacht oben, Events darunter */}
-        <div style={flex({
-          flexDirection: "column", width: W_LEFT,
-          borderRightWidth: RULE, borderRightStyle: "solid", borderRightColor: INK,
-        })}>
-          <div style={flex({
-            height: H_LEARN, flexShrink: 0,
-            borderBottomWidth: RULE, borderBottomStyle: "solid", borderBottomColor: INK,
-          })}>
-            <Word w={word} />
-            <Dinner d={dinner} qr={qr} />
-          </div>
-          <Events days={days} />
-        </div>
+      <Word w={word} />
 
-        {/* Rechts: Fahrplan */}
+      <div style={flex({ flexGrow: 1 })}>
+        <Events days={days} qr={qr} />
         <Transit a={a} b={b} />
       </div>
     </div>
