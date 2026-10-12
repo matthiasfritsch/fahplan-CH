@@ -1,8 +1,8 @@
 # Fahrplan-Board
 
-Rendert ein 800 x 480 PNG fuer den reTerminal E1001: links Familien-Events
-in und um Basel, Wort des Tages (DE, EN, FR) und ein 10-Minuten-Znacht mit
-QR-Code zum Rezept, rechts der Fahrplan fuer zwei Haltestellen. Laeuft auf Vercel Hobby, also
+Rendert ein 800 x 480 PNG fuer den reTerminal E1001: oben das Wort des
+Tages (DE, EN, FR), links Familien-Events in und um Basel mit QR-Code zur
+vollen Eventliste, rechts invertiert der Fahrplan fuer zwei Haltestellen. Laeuft auf Vercel Hobby, also
 dauerhaft kostenlos, und braucht keinen Browser zum Rendern.
 
 ## Was wo liegt
@@ -12,11 +12,11 @@ dauerhaft kostenlos, und braucht keinen Browser zum Rendern.
 | `app/api/board/Board.jsx` | Das Layout. Die einzige Datei, die du zum Umgestalten anfassen musst. |
 | `app/api/board/route.jsx` | Daten holen, Schriften laden, PNG ausliefern. |
 | `app/page.jsx` | Bedienseite im Browser: Haltestellen suchen, Vorschau, Geraete-URL. |
-| `app/r/[id]/page.jsx` | Rezeptseite hinter dem QR-Code, z.B. `/r/gnocchi`. |
-| `lib/content.mjs` | Auswahl von Wort, Znacht und Events, Zeichenlimits. |
+| `app/e/page.jsx` | Eventseite hinter dem QR-Code (`/e`): alle Events der naechsten zwei Wochen mit Links. |
+| `lib/content.mjs` | Auswahl von Wort und Events, Zeichenlimits. |
 | `data/words.json` | Woerter des Tages, rotieren taeglich. |
-| `data/dinners.json` | 10-Minuten-Gerichte mit Zutaten und Schritten. |
 | `lib/sources.mjs` | Live-Eventquellen: Schule, Basel-West, Gugu Basel, myBasel, Eventfrog. |
+| `lib/events.mjs` | Laedt die Events fuer Board und Eventseite (`/e`). |
 | `data/events.json` | Optionale handgepflegte Events und Schulferien. |
 
 ## Deployen ohne Kommandozeile
@@ -52,9 +52,9 @@ BOARD_LON       7.57
 Alles laesst sich auch per URL ueberschreiben, praktisch zum Ausprobieren:
 `/api/board?stopA=...&linesA=10,17&rowsA=5`
 
-## Linke Seite
+## Wort und Events
 
-Wort und Znacht rotieren nach Datum, jeder Aufruf am selben Tag zeigt
+Das Wort rotiert nach Datum, jeder Aufruf am selben Tag zeigt
 dasselbe. Events holt das Board live auf Vercel aus diesen Quellen
 (`lib/sources.mjs`), eine Stunde zwischengespeichert:
 
@@ -82,7 +82,7 @@ ins Repo (das Repo ist oeffentlich).
 Adresse, unter der es aufgerufen wurde.
 
 Die Layout-Flaechen sind fix, deshalb gelten Zeichenlimits (Wort 20,
-Gericht 30, Eventtitel 40, siehe `LIMITS` in `lib/content.mjs`).
+Beispielsatz 40, Eventtitel 40, siehe `LIMITS` in `lib/content.mjs`).
 `npm run check` prueft alle Listen und laeuft vor jedem Build
 automatisch. Ein zu langer Eintrag bricht den Deploy ab, statt auf dem
 Geraet abgeschnitten zu werden.
@@ -112,7 +112,7 @@ Erste Anlaufstelle, wenn eine Zeile fehlt oder komisch aussieht.
 ## Layout aendern
 
 Alles Wichtige steht oben in `Board.jsx` als Konstanten: Kopfhoehe,
-Balkenhoehe, Hoehe von Wort und Znacht (H_LEARN), Breite der linken Seite, Spaltenbreiten,
+Balkenhoehe, Hoehe des Wortbands (H_WORD), Breite der linken Seite, Spaltenbreiten,
 Farben. Die Zeilenhoehe im Fahrplan rechnet sich aus der uebrigen Hoehe
 und der Anzahl Zeilen selbst aus, du kannst also 4 plus 3 oder 5 plus 2
 fahren, ohne Zahlen nachzuziehen. Wer H_LEARN

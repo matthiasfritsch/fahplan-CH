@@ -20,17 +20,6 @@ load("words.json").forEach((w, i) => {
   check(at, "example", w.example, LIMITS.example);
 });
 
-const ids = new Set();
-load("dinners.json").forEach((d, i) => {
-  const at = `dinners[${i}] ${d.id}`;
-  check(at, "name", d.name, LIMITS.dish);
-  if (!/^[a-z0-9-]+$/.test(d.id || "")) errors.push(`${at}: id nur a-z, 0-9, -`);
-  if (ids.has(d.id)) errors.push(`${at}: id doppelt`);
-  ids.add(d.id);
-  if (!(d.mins > 0 && d.mins <= 12)) errors.push(`${at}: mins ${d.mins} ist kein Schnellgericht`);
-  if (!d.ingredients?.length || !d.steps?.length) errors.push(`${at}: Zutaten oder Schritte fehlen`);
-});
-
 const ev = load("events.json");
 if (ev.updated !== null && !DATE_RE.test(ev.updated)) errors.push(`events.updated "${ev.updated}" ist kein Datum`);
 (ev.holidays || []).forEach((h, i) => {
