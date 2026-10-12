@@ -12,11 +12,12 @@ dauerhaft kostenlos, und braucht keinen Browser zum Rendern.
 | `app/api/board/Board.jsx` | Das Layout. Die einzige Datei, die du zum Umgestalten anfassen musst. |
 | `app/api/board/route.jsx` | Daten holen, Schriften laden, PNG ausliefern. |
 | `app/page.jsx` | Bedienseite im Browser: Haltestellen suchen, Vorschau, Geraete-URL. |
-| `app/e/page.jsx` | Eventseite hinter dem QR-Code (`/e`): alle Events der naechsten zwei Wochen mit Links. |
+| `app/e/page.jsx` | Eventseite hinter dem QR-Code (`/e`): alle Familien-Events der naechsten zwei Wochen mit Links, darunter Jazz, Streetart, Gaming, Anime und Hip-Hop fuer Lisa und Matthias. |
 | `lib/content.mjs` | Auswahl von Wort und Events, Zeichenlimits. |
 | `data/words.json` | Woerter des Tages, rotieren taeglich. |
 | `lib/sources.mjs` | Live-Eventquellen: Schule, Basel-West, Gugu Basel, myBasel, Eventfrog. |
 | `lib/events.mjs` | Laedt die Events fuer Board und Eventseite (`/e`). |
+| `lib/curate.mjs` | Doppelte zusammenlegen, Kleinkind-Angebote und Dauerangebote filtern, Themen fuer Lisa und Matthias erkennen. |
 | `data/events.json` | Optionale handgepflegte Events und Schulferien. |
 
 ## Deployen ohne Kommandozeile
