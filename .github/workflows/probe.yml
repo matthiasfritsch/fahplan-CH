@@ -7,13 +7,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          for h in gugubasel.ch www.gugubasel.ch gugu-basel.ch gugubasel.com; do
-            echo "=== DNS $h"; getent hosts $h || echo "kein DNS"
-            echo "=== HTTP $h"; curl -sSL -m 20 -A "Mozilla/5.0 fahrplan-board" -o /tmp/p.html -w "%{http_code} %{url_effective} %{content_type}\n" https://$h/ || true
-            if [ -s /tmp/p.html ]; then
-              echo "--- generator/feeds"; grep -oiE '(generator"[^>]*|application/(rss|atom)\+xml[^>]*|ical[^"]*|wp-json[^"]*|tribe[^" ]*|wix[^" ]*|squarespace[^" ]*|webflow[^" ]*)' /tmp/p.html | sort -u | head -30
-              echo "--- links"; grep -oE 'href="[^"]+"' /tmp/p.html | sort -u | head -80
-              echo "--- text"; sed -e 's/<script.*<\/script>//g' -e 's/<[^>]*>/ /g' /tmp/p.html | tr -s ' \n' | head -c 4000; echo
-              rm -f /tmp/p.html
-            fi
-          done
+          curl -sSL -m 30 -A "Mozilla/5.0 fahrplan-board" -o p.html https://gugubasel.ch/
+          echo "=== size"; wc -c p.html
+          echo "=== sitemap"; curl -sSL -m 20 https://gugubasel.ch/sitemap.xml | head -c 3000; echo
+          echo "=== robots"; curl -sSL -m 20 https://gugubasel.ch/robots.txt | head -c 1500; echo
+          echo "=== other files"; for f in events.json data.json feed.xml rss.xml calendar.ics weekend.json; do echo "$f $(curl -s -o /dev/null -w '%{http_code}' https://gugubasel.ch/$f)"; done
+          echo "=== script src"; grep -oE '<script[^>]*src="[^"]+"' p.html | head
+          echo "=== ids"; grep -oE ' id="[^"]+"' p.html | sort -u | head -80
+          echo "=== datetime attrs"; grep -oE '(datetime|data-date|data-start|data-end|data-day)="[^"]+"' p.html | sort | uniq -c | head -40
+          python3 - <<'PY'
+          import re,html
+          s=open("p.html",encoding="utf-8").read()
+          s=re.sub(r"(?s)<(script|style)[^>]*>.*?</\1>","",s)
+          s=re.sub(r"(?s)<img[^>]*>","",s)
+          i=s.lower().find("weekend")
+          print("=== first weekend idx",i)
+          # raw html of the weekend section (structure)
+          m=re.search(r'(?is)<(section|div)[^>]*id="[^"]*weekend[^"]*"',s)
+          start=m.start() if m else max(0,i-500)
+          raw=s[start:start+9000]
+          print("=== RAW"); print(re.sub(r"\s+"," ",raw)[:9000])
+          t=re.sub(r"<br\s*/?>","\n",s); t=re.sub(r"</(div|li|p|h\d|article|summary|tr)>","\n",t)
+          t=html.unescape(re.sub(r"<[^>]+>"," ",t))
+          t="\n".join(l.strip() for l in t.splitlines() if l.strip())
+          print("=== TEXT len",len(t)); print(t[:14000])
+          PY
