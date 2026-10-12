@@ -8,10 +8,14 @@ jobs:
     steps:
       - run: |
           U="Mozilla/5.0 (Fahrplan-Board; Familienkalender)"
-          for url in https://www.mybasel.ch/veranstaltungen/kinder https://www.mybasel.ch/veranstaltungen https://www.mybasel.ch/robots.txt; do
-            echo "=== $url"; curl -sSL -m 30 -A "$U" -o p.html -D h.txt -w "%{http_code} %{url_effective} %{size_download}\n" "$url"; grep -iE '^(HTTP|location|server|cf-|content-type)' h.txt
-            echo "--- dates"; grep -oE '[0-9]{2}\.[0-9]{2}\.[0-9]{4}[^<]{0,12}' p.html | head -8
-            echo "--- text"; sed -e 's/<script[^>]*>.*<\/script>//g' -e 's/<[^>]*>/\n/g' p.html | sed 's/^[ \t]*//' | grep -v '^$' | head -60
-          done
-          echo "=== browser UA"; curl -sSL -m 30 -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130 Safari/537.36" -o q.html -w "%{http_code} %{size_download}\n" https://www.mybasel.ch/veranstaltungen/kinder; grep -oE '[0-9]{2}\.[0-9]{2}\.[0-9]{4}' q.html | wc -l
-          echo "=== school ics"; curl -sSL -m 30 "https://www.steinerschule-basel.ch/events/?ical=1" | grep -E '^(DTSTART|SUMMARY)' | head -40
+          curl -sSL -m 30 -A "$U" -o p.html https://www.mybasel.ch/veranstaltungen/kinder
+          python3 - <<'PY'
+          import re
+          s=open("p.html",encoding="utf-8").read()
+          s=re.sub(r"(?s)<(script|style)[^>]*>.*?</\1>","",s)
+          i=s.find("Veranstaltungen f")
+          j=s.find("Veranstaltung", s.find("Ab heute"))
+          print("=== RAW"); print(re.sub(r"\s+"," ",s[j:j+6000]))
+          t=re.sub(r"<[^>]+>","\n",s[j:]); lines=[l.strip() for l in t.split("\n") if l.strip()]
+          print("=== LINES"); print("\n".join(lines[:150]))
+          PY
