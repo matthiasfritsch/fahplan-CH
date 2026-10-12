@@ -18,7 +18,8 @@
 
    Wichtig: Satori (der Renderer hinter ImageResponse) versteht
    nur einen Teil von CSS. Erlaubt ist Flexbox. Nicht erlaubt
-   sind Grid, Float und position:absolute im ueblichen Sinn.
+   sind Grid und Float. position:absolute geht, nutzen wir nur
+   fuer den QR-Code.
    Jedes Element mit mehreren Kindern braucht display:"flex".
    ============================================================ */
 
@@ -53,9 +54,11 @@ const H_WORD = 88;   // Wortband inkl. Trennlinie
 const H_BAND = 28;   // Tram/Bus-Kopf
 const W_LEFT = 560;  // 70 Prozent fuer Events, Rest Fahrplan
 const RULE   = 2;    // Staerke der Zonen-Linien
-const W_QR   = 118;  // QR-Spalte unten rechts in den Events
-// Platz fuer Titel + Ort: Eventliste minus Raender und Uhrzeit
-const W_TITLE = W_LEFT - W_QR - 16 - 6 - 66;
+const W_QR   = 118;  // Platz fuer den QR-Block unten rechts in den Events
+const H_BODY = H - H_TOP - H_WORD;   // Hoehe unter dem Wortband
+const W_ROW_FULL   = W_LEFT - 16 - 16;          // Eventzeile volle Breite
+const W_ROW_NARROW = W_LEFT - 16 - W_QR - 4;    // Zeile neben dem QR-Code
+const W_TIME = 66;                               // Spalte fuer die Uhrzeit
 
 const SANS = "Board Sans";  // Inter
 const NUMS = "Board Nums";  // JetBrains Mono, alle Ziffern
@@ -169,7 +172,7 @@ function Transit({ a, b }) {
    Nach Tag gruppiert, ohne Trennlinien. Auswaerts bekommt ein
    Badge mit Ort und Fahrzeit, Basel ist der Normalfall.
    ============================================================ */
-function Event({ e }) {
+function Event({ e, width }) {
   const away = !!e.city;
   const school = !!e.school;
   const flea = !school && isFleaMarket(e);
@@ -178,17 +181,17 @@ function Event({ e }) {
   // ~8.6 px pro Zeichen plus Rand), der Ort faellt zuerst weg.
   const badge = school ? "SCHULE" : flea ? "FLOHMARKT" : away ? (e.travel ? e.city + " \u00b7 " + e.travel : e.city) : "";
   const badgePx = badge ? [...badge].length * 8.6 + 20 : 0;
-  const budget = Math.floor((W_TITLE - badgePx) / 10.8);
+  const budget = Math.floor((width - W_TIME - badgePx) / 10.8);
   const title = clip(e.title, budget);
   const place = e.place && title.length + e.place.length + 1 <= budget ? e.place : "";
 
   return (
-    <div style={flex({ alignItems: "center", height: 30 })}>
-      {e.time ? (
-        <div style={flex({
-          width: 66, flexShrink: 0, fontFamily: NUMS, fontWeight: 800, fontSize: 18, color: INK,
-        })}>{e.time}</div>
-      ) : null}
+    <div style={flex({ alignItems: "center", height: 30, width })}>
+      {/* Zeitspalte immer zeichnen, damit Titel auch bei ganztaegigen
+          Anlaessen ohne Uhrzeit sauber untereinander stehen */}
+      <div style={flex({
+        width: W_TIME, flexShrink: 0, fontFamily: NUMS, fontWeight: 800, fontSize: 18, color: INK,
+      })}>{e.time || ""}</div>
       <div style={flex({
         flexGrow: 1, alignItems: "baseline", overflow: "hidden", whiteSpace: "nowrap",
       })}>
@@ -229,14 +232,30 @@ function Event({ e }) {
   );
 }
 
+/* Der QR-Code sitzt frei unten rechts. Zeilen darueber nutzen die
+   volle Breite, nur Zeilen auf Hoehe des QR-Codes werden schmaler.
+   Satori kann nicht messen, deshalb rechnen wir die Hoehen selbst:
+   Tageskopf 30 px, Eventzeile 30 px (wie in lib/content.mjs). */
 function Events({ days, qr }) {
+  const qrBlockH = 12 + (qr ? qr.size : 0) + 6 + 32;   // Rand + QR + Abstand + 2 Zeilen Text
+  const qrTop = H_BODY - qrBlockH;
+  let y = 2;
+  const rows = days.map(d => {
+    y += 30;
+    const list = d.list.map(e => {
+      const top = y;
+      y += 30;
+      return { e, width: top + 30 > qrTop - 4 ? W_ROW_NARROW : W_ROW_FULL };
+    });
+    return { d, list };
+  });
+
   return (
-    <div style={flex({ width: W_LEFT, flexShrink: 0, overflow: "hidden" })}>
+    <div style={flex({ position: "relative", width: W_LEFT, height: H_BODY, flexShrink: 0, overflow: "hidden" })}>
       <div style={flex({
-        flexDirection: "column", width: W_LEFT - W_QR, flexShrink: 0, overflow: "hidden",
-        paddingLeft: 16, paddingRight: 6, paddingTop: 2,
+        flexDirection: "column", width: W_LEFT, paddingLeft: 16, paddingTop: 2,
       })}>
-        {days.length ? days.map(d => (
+        {days.length ? rows.map(({ d, list }) => (
           <div key={d.label + d.dateText} style={flex({ flexDirection: "column" })}>
             <div style={flex({ alignItems: "baseline", height: 30, paddingTop: 12 })}>
               <Label style={{ fontSize: 15 }}>{d.label}</Label>
@@ -249,7 +268,7 @@ function Events({ days, qr }) {
                 })}>{d.total === 1 ? "1 Event" : d.total + " Events"}</div>
               ) : null}
             </div>
-            {d.list.map((e, i) => <Event key={i} e={e} />)}
+            {list.map(({ e, width }, i) => <Event key={i} e={e} width={width} />)}
           </div>
         )) : (
           /* Rueckfall, wenn keine Quelle etwas liefert: ehrlich leer */
@@ -261,8 +280,8 @@ function Events({ days, qr }) {
 
       {/* QR unten rechts: fuehrt zur Liste aller Events mit Links */}
       <div style={flex({
-        flexDirection: "column", justifyContent: "flex-end", alignItems: "center",
-        width: W_QR, flexShrink: 0, paddingRight: 12, paddingBottom: 12,
+        position: "absolute", right: 12, bottom: 12,
+        flexDirection: "column", alignItems: "center", width: W_QR - 16,
       })}>
         {qr ? <img src={qr.src} width={qr.size} height={qr.size} /> : null}
         <div style={flex({
