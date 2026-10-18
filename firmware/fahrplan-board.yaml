@@ -34,7 +34,16 @@ esp32:
   framework:
     type: arduino
 
+# 8 MB Zusatzspeicher (Octal, laut Seeed-Wiki fuer E1001/E1002).
+# Ohne ihn reicht der Speicher nicht fuer HTTPS + PNG + Display.
+psram:
+  mode: octal
+  speed: 80MHz
+
+# Meldungen ueber den USB-Anschluss des Geraets (UART0), damit sie in
+# web.esphome.io unter "Logs" sichtbar sind und "Configure Wi-Fi" geht
 logger:
+  hardware_uart: UART0
 
 ota:
   - platform: esphome
@@ -82,7 +91,7 @@ online_image:
       - lambda: 'id(image_ok) = true;'
       - component.update: epaper
     on_error:
-      - logger.log: "Board-Bild konnte nicht geladen werden"
+      - logger.log: "Board-Bild konnte nicht geladen werden, neuer Versuch in 1 Minute"
 
 # Takt: zur Pendelzeit (Mo-Fr 6:30-8:30) alle 2 Minuten, sonst alle
 # 15 Minuten. Passt zum Vercel-Kontingent (siehe README).
@@ -95,7 +104,8 @@ interval:
           bool rush = now.is_valid() && now.day_of_week >= 2 && now.day_of_week <= 6 &&
                       ((now.hour == 6 && now.minute >= 30) || now.hour == 7 ||
                        (now.hour == 8 && now.minute < 30));
-          int every = rush ? 2 : 15;
+          // Solange noch kein Bild da ist: jede Minute neu versuchen
+          int every = !id(image_ok) ? 1 : (rush ? 2 : 15);
           if (id(minutes) >= every) {
             id(minutes) = 0;
             id(board_image).update();
