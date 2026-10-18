@@ -1,0 +1,42 @@
+# Baut die E-Paper-Firmware aus firmware/fahrplan-board.yaml und legt
+# die fertige Datei als Release "firmware-latest" ab. Flashen: siehe README.
+name: firmware
+on:
+  push:
+    paths: ["firmware/**", ".github/workflows/firmware.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install esphome
+      - run: esphome version
+      - run: esphome compile firmware/fahrplan-board.yaml
+      - name: Fertige Datei einsammeln
+        run: |
+          f=$(find firmware/.esphome -name "firmware.factory.bin" | head -1)
+          echo "Gefunden: $f"; ls -la "$f"
+          cp "$f" fahrplan-board.factory.bin
+      - name: Pruefen, wie BINARY-Bilder hell/dunkel zuordnen
+        run: |
+          d=$(python -c "import esphome,os;print(os.path.dirname(esphome.__file__))")
+          grep -rn -A6 "BINARY" $d/components/online_image/*.cpp | head -40 || true
+          grep -rn -A4 "is_on\|get_pixel" $d/components/image/image.cpp | head -40 || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fahrplan-board-firmware
+          path: fahrplan-board.factory.bin
+      - name: Release aktualisieren (nur main)
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: firmware-latest
+          name: E-Paper-Firmware (aktuell)
+          body: "Fertige Firmware fuer das E-Paper. Flashen ueber https://web.esphome.io, Anleitung im README."
+          files: fahrplan-board.factory.bin
+          make_latest: true
