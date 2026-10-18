@@ -1,0 +1,152 @@
+# ============================================================
+# FIRMWARE FUER DAS E-PAPER (Seeed reTerminal E1001, 7,5", 800x480)
+#
+# Holt alle paar Minuten das fertige Bild von
+# https://fahplan-ch.vercel.app/api/board und zeigt es an.
+#
+# Kein WLAN-Passwort in dieser Datei (das Repo ist oeffentlich):
+# - Nach dem Flashen auf web.esphome.io "Configure Wi-Fi" klicken
+#   und das WLAN eintragen (geht ueber das USB-Kabel).
+# - Aendert sich das Passwort spaeter, oeffnet das Geraet nach etwa
+#   einer Minute ohne WLAN den Hotspot "Fahrplan-Board". Mit dem
+#   Handy verbinden, Seite 192.168.4.1, neues Passwort eintragen.
+#
+# Gebaut wird automatisch von GitHub (.github/workflows/firmware.yml),
+# die fertige Datei liegt unter Releases.
+# Display-Pins aus dem Seeed-Wiki (reTerminal E Series, ESPHome).
+# ============================================================
+
+substitutions:
+  board_url: "https://fahplan-ch.vercel.app/api/board"
+
+esphome:
+  name: fahrplan-board
+  friendly_name: Fahrplan-Board
+  on_boot:
+    priority: -100
+    then:
+      # Hinweis anzeigen, solange noch kein Bild da ist
+      - delay: 3s
+      - component.update: epaper
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: arduino
+
+logger:
+
+ota:
+  - platform: esphome
+
+wifi:
+  id: wifi_comp
+  # Notfall-Hotspot, wenn das gespeicherte WLAN nicht erreichbar ist
+  ap:
+    ssid: "Fahrplan-Board"
+    password: "fahrplan-hilfe"
+  on_connect:
+    - delay: 2s
+    - component.update: board_image
+
+# WLAN beim Flashen ueber USB setzen (web.esphome.io)
+improv_serial:
+
+# Seite unter 192.168.4.1 im Notfall-Hotspot
+captive_portal:
+
+time:
+  - platform: sntp
+    id: sntp_time
+    timezone: Europe/Zurich
+
+http_request:
+  verify_ssl: false
+  timeout: 20s
+
+globals:
+  - id: image_ok
+    type: bool
+    initial_value: "false"
+  - id: minutes
+    type: int
+    initial_value: "0"
+
+online_image:
+  - id: board_image
+    url: ${board_url}
+    format: PNG
+    type: BINARY
+    update_interval: never
+    on_download_finished:
+      - lambda: 'id(image_ok) = true;'
+      - component.update: epaper
+    on_error:
+      - logger.log: "Board-Bild konnte nicht geladen werden"
+
+# Takt: zur Pendelzeit (Mo-Fr 6:30-8:30) alle 2 Minuten, sonst alle
+# 15 Minuten. Passt zum Vercel-Kontingent (siehe README).
+interval:
+  - interval: 60s
+    then:
+      - lambda: |-
+          id(minutes) += 1;
+          auto now = id(sntp_time).now();
+          bool rush = now.is_valid() && now.day_of_week >= 2 && now.day_of_week <= 6 &&
+                      ((now.hour == 6 && now.minute >= 30) || now.hour == 7 ||
+                       (now.hour == 8 && now.minute < 30));
+          int every = rush ? 2 : 15;
+          if (id(minutes) >= every) {
+            id(minutes) = 0;
+            id(board_image).update();
+          }
+  # Ohne Bild nach 90 s den Hotspot-Hinweis zeigen
+  - interval: 90s
+    then:
+      - if:
+          condition:
+            lambda: 'return !id(image_ok);'
+          then:
+            - component.update: epaper
+
+font:
+  - file: "gfonts://Inter@700"
+    id: font_big
+    size: 34
+  - file: "gfonts://Inter@600"
+    id: font_small
+    size: 22
+
+spi:
+  clk_pin: GPIO7
+  mosi_pin: GPIO9
+
+display:
+  - platform: waveshare_epaper
+    id: epaper
+    model: 7.50inv2
+    cs_pin: GPIO10
+    dc_pin: GPIO11
+    reset_pin:
+      number: GPIO12
+      inverted: false
+    busy_pin:
+      number: GPIO13
+      inverted: true
+    update_interval: never
+    lambda: |-
+      if (id(image_ok)) {
+        // Das Bild ist schwarz auf weiss. Bei BINARY zaehlen helle
+        // Pixel als "an", deshalb hier Farben getauscht.
+        it.image(0, 0, id(board_image), COLOR_OFF, COLOR_ON);
+        return;
+      }
+      it.print(40, 60, id(font_big), "Fahrplan-Board startet ...");
+      if (wifi::global_wifi_component->is_connected()) {
+        it.print(40, 120, id(font_small), "WLAN verbunden, Bild wird geladen.");
+      } else {
+        it.print(40, 120, id(font_small), "Noch kein WLAN. Dauert es laenger als 2 Minuten:");
+        it.print(40, 160, id(font_small), "Handy mit WLAN \"Fahrplan-Board\" verbinden");
+        it.print(40, 195, id(font_small), "(Passwort: fahrplan-hilfe), dann 192.168.4.1 oeffnen");
+        it.print(40, 230, id(font_small), "und das Heim-WLAN mit Passwort eintragen.");
+      }
