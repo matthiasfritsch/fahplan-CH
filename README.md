@@ -143,9 +143,24 @@ mit 720 Abrufen knapp; sinnvoller ist ein enger Takt nur zur Pendelzeit
 und sonst alle 15 bis 20 Minuten. Die Antwort wird 45 Sekunden am Rand
 zwischengespeichert, versehentliche Doppelabrufe kosten also nichts.
 
-## Weiter zum Geraet
+## Das Geraet (E-Paper)
 
-Im ESPHome-Setup des reTerminal die URL als `online_image` eintragen,
-Format PNG, Typ BINARY. Alle 10 bis 20 Aktualisierungen einen vollen
-Refresh statt eines Partial Refresh einplanen, sonst bauen sich
-Schatten alter Ziffern auf.
+Die Firmware steht in `firmware/fahrplan-board.yaml` (ESPHome, Seeed
+reTerminal E1001). GitHub baut sie bei jeder Aenderung automatisch und
+legt die fertige Datei hier ab:
+https://github.com/matthiasfritsch/fahplan-CH/releases/download/firmware-latest/fahrplan-board.factory.bin
+
+**Neu aufspielen (per USB-Kabel, Chrome oder Edge):**
+1. Datei oben herunterladen.
+2. https://web.esphome.io oeffnen, E-Paper per USB-C anstecken, **Connect**,
+   Anschluss waehlen.
+3. **Install** und die heruntergeladene Datei auswaehlen. Warten bis fertig.
+4. Danach **Configure Wi-Fi** (falls angeboten), WLAN und Passwort eintragen.
+
+**WLAN-Passwort geaendert:** Das Geraet findet das alte WLAN nicht und
+oeffnet nach etwa einer Minute den Hotspot **Fahrplan-Board** (Passwort
+`fahrplan-hilfe`). Handy verbinden, Seite `192.168.4.1` oeffnen, Heim-WLAN
+waehlen, neues Passwort eintragen. Kein Kabel, kein Flashen noetig.
+
+Das WLAN-Passwort steht bewusst nirgends im Repo, es liegt nur im Geraet.
+Takt: Mo bis Fr 6:30 bis 8:30 alle 2 Minuten, sonst alle 15 Minuten.
