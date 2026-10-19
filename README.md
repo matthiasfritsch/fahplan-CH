@@ -30,15 +30,18 @@ dauerhaft kostenlos, und braucht keinen Browser zum Rendern.
 
 ## Haltestellen dauerhaft hinterlegen
 
-In Vercel unter Settings, Environment Variables eintragen, dann einmal
-neu deployen. Danach reicht dem Geraet der nackte Pfad `/api/board`.
+Unsere Haltestellen stehen als Voreinstellung im Code
+(`conf()` in `app/api/board/route.jsx`), das Geraet ruft einfach
+`/api/board` auf. Zum Aendern entweder dort anpassen oder in Vercel
+unter Settings, Environment Variables diese Namen setzen (schlaegt die
+Voreinstellung), dann einmal neu deployen:
 
 ```
 BOARD_STOP_A      Bottmingen, Batteriestrasse
 BOARD_LINES_A     10, 17
 BOARD_LABEL_A     Tram
 BOARD_ROWS_A      4
-BOARD_NOTDEST_A   Rodersdorf, Ettingen
+BOARD_NOTDEST_A   Rodersdorf, Flüh, Ettingen
 
 BOARD_STOP_B      Bottmingen, Bodenackerstrasse
 BOARD_LINES_B     47

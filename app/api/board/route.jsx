@@ -53,21 +53,25 @@ function conf(url) {
   };
 
   return {
+    // Voreinstellung = unsere Haltestellen (wie im README). So
+    // braucht das Geraet keine Parameter und Vercel keine Variablen.
+    // Tram Richtung Basel: Rodersdorf, Flueh, Ettingen ausgeblendet.
     a: {
-      stop:  pick("stopA",  "Bottmingen"),
-      lines: pick("linesA", ""),
+      stop:  pick("stopA",  "Bottmingen, Batteriestrasse"),
+      lines: pick("linesA", "10, 17"),
       to:    pick("toA", ""),
       dest:  pick("destA", ""),
-      notDest: pick("notDestA", ""),
+      notDest: pick("notDestA", "Rodersdorf, Fl\u00fch, Ettingen"),
       label: pick("labelA", "Tram"),
       rows:  parseInt(pick("rowsA", "4"), 10) || 4,
     },
+    // Bus 47 Richtung Muttenz: die Gegenrichtung endet am Schloss
     b: {
-      stop:  pick("stopB",  "Bottmingen"),
-      lines: pick("linesB", ""),
+      stop:  pick("stopB",  "Bottmingen, Bodenackerstrasse"),
+      lines: pick("linesB", "47"),
       to:    pick("toB", ""),
       dest:  pick("destB", ""),
-      notDest: pick("notDestB", ""),
+      notDest: pick("notDestB", "Schloss"),
       label: pick("labelB", "Bus"),
       rows:  parseInt(pick("rowsB", "3"), 10) || 3,
     },
