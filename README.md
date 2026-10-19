@@ -42,12 +42,14 @@ BOARD_LINES_A     10, 17
 BOARD_LABEL_A     Tram
 BOARD_ROWS_A      4
 BOARD_NOTDEST_A   Rodersdorf, Flüh, Ettingen
+BOARD_TO_A        10=Basel, Bahnhof SBB; 17=Basel, Heuwaage
 
 BOARD_STOP_B      Bottmingen, Bodenackerstrasse
 BOARD_LINES_B     47
 BOARD_LABEL_B     Bus
 BOARD_ROWS_B      3
 BOARD_NOTDEST_B   Schloss
+BOARD_TO_B        Basel, Jakobsberg
 
 BOARD_LAT       47.52
 BOARD_LON       7.57

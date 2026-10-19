@@ -59,7 +59,8 @@ function conf(url) {
     a: {
       stop:  pick("stopA",  "Bottmingen, Batteriestrasse"),
       lines: pick("linesA", "10, 17"),
-      to:    pick("toA", ""),
+      // Ziel je Linie, damit die Ankunft (AN) angezeigt wird
+      to:    pick("toA", "10=Basel, Bahnhof SBB; 17=Basel, Heuwaage"),
       dest:  pick("destA", ""),
       notDest: pick("notDestA", "Rodersdorf, Fl\u00fch, Ettingen"),
       label: pick("labelA", "Tram"),
@@ -69,7 +70,7 @@ function conf(url) {
     b: {
       stop:  pick("stopB",  "Bottmingen, Bodenackerstrasse"),
       lines: pick("linesB", "47"),
-      to:    pick("toB", ""),
+      to:    pick("toB", "Basel, Jakobsberg"),
       dest:  pick("destB", ""),
       notDest: pick("notDestB", "Schloss"),
       label: pick("labelB", "Bus"),
@@ -485,7 +486,18 @@ async function handle(request) {
 
   const hole = async (blk) => {
     if (!blk.to) return departures(blk);
-    const r = await connections(blk);
+    // Mehrere Ziele moeglich, je Linie eines: "10=Basel, Bahnhof SBB;
+    // 17=Basel, Heuwaage". Ohne "Linie=" gilt das Ziel fuer alle Linien.
+    const ziele = String(blk.to).split(";").map(x => x.trim()).filter(Boolean).map(x => {
+      const m = /^([\d\s,]+)=\s*(.+)$/.exec(x);
+      return m ? { lines: m[1], to: m[2].trim() } : { lines: blk.lines, to: x };
+    });
+    const teile = await Promise.all(ziele.map(z => connections({ ...blk, lines: z.lines, to: z.to })));
+    const r = {
+      list: teile.flatMap(t => t.list).sort((x, y) => x.realMs - y.realMs).slice(0, blk.rows),
+      offset: teile[0] ? teile[0].offset : 120,
+      diag: teile.length === 1 ? teile[0].diag : teile.map(t => t.diag),
+    };
     if (r.list.length) return r;
     // Nichts uebrig? Lieber Abfahrten ohne Ankunftszeit zeigen
     // als eine leere Tafel. Die Diagnose bleibt erhalten.
