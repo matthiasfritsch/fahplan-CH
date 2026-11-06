@@ -7,8 +7,8 @@
    +--------------------------------------------------------+
    |#Kopf: Datum, Uhrzeit (invertiert)               Wetter#|
    +--------------------------------------------------------+
-   | DE Wort          | EN word          | FR mot           |
-   | Beispielsatz     | [Aussprache]     | [Aussprache]     |
+   | CH Wort          | EN word          | FR mot           |
+   | = Hochdeutsch    | [Aussprache]     | [Aussprache]     |
    +-------------------------------------+==================+
    | Events, nach Tag gruppiert          # Tram  AB     AN  #
    |                                     # ...  (invertiert)#
@@ -298,15 +298,15 @@ function Events({ days, qr }) {
 
 /* ============================================================
    OBEN: Wort des Tages, ueber die ganze Breite
-   Drei Spalten DE, EN, FR, das Wort so gross wie es passt.
-   Unter DE der Beispielsatz, unter EN und FR die Aussprache in
-   deutscher Schreibweise.
+   Drei Spalten CH (Baseldytsch), EN, FR, das Wort so gross wie es
+   passt. Unter CH das Hochdeutsche, unter EN und FR die Aussprache
+   in deutscher Schreibweise.
 
    Auf 1-Bit-E-Ink verschwimmt alles unter etwa 13 px, und Grau
    wird hart zu Schwarz oder Weiss. Deshalb hier nichts kleiner
    als 13 px und alles in Schwarz.
    ============================================================ */
-const COLS = [300, 250, 250];   // DE bekommt mehr Platz fuer den Satz
+const COLS = [300, 250, 250];   // CH bekommt etwas mehr Platz
 const TAG_W = 28;               // Breite fuer "DE", "EN", "FR"
 
 // Satori kann Text nicht vermessen, deshalb grob schaetzen:
@@ -345,7 +345,8 @@ function Word({ w }) {
       height: H_WORD, flexShrink: 0,
       borderBottomWidth: RULE, borderBottomStyle: "solid", borderBottomColor: INK,
     })}>
-      <WordCol first width={COLS[0]} lang="DE" word={w.de} sub={"\u00ab" + w.example + "\u00bb"} />
+      {/* Baseldytsch, darunter das Hochdeutsche */}
+      <WordCol first width={COLS[0]} lang="CH" word={w.ch} sub={"= " + w.de} />
       <WordCol width={COLS[1]} lang="EN" word={w.en} sub={"[" + w.enSay + "]"} />
       <WordCol width={COLS[2]} lang="FR" word={w.fr} sub={"[" + w.frSay + "]"} />
     </div>

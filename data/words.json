@@ -1,602 +1,482 @@
 [
  {
-  "de": "die Neugier",
-  "deHint": "Nomen",
-  "en": "curiosity",
-  "enSay": "kjuri-OSS-iti",
-  "fr": "la curiosité",
-  "frHint": "f.",
-  "frSay": "kü-rio-si-TE",
-  "example": "Neugier macht klug."
- },
- {
-  "de": "mutig",
-  "deHint": "Adjektiv",
-  "en": "brave",
-  "enSay": "breiv",
-  "fr": "courageux",
-  "frHint": "/ courageuse",
-  "frSay": "ku-ra-SCHÖ",
-  "example": "Es war mutig, als Erste zu fragen."
- },
- {
-  "de": "entdecken",
-  "deHint": "Verb",
-  "en": "to discover",
-  "enSay": "dis-KAWER",
-  "fr": "découvrir",
-  "frHint": "Verb",
-  "frSay": "de-ku-WRIR",
-  "example": "Wir entdecken einen geheimen Weg."
- },
- {
-  "de": "der Regenbogen",
-  "deHint": "Nomen",
-  "en": "rainbow",
-  "enSay": "REIN-bou",
-  "fr": "l'arc-en-ciel",
-  "frHint": "m.",
-  "frSay": "lar-kang-SJEL",
-  "example": "Nach dem Regen kam ein Regenbogen."
- },
- {
-  "de": "die Freundschaft",
-  "deHint": "Nomen",
-  "en": "friendship",
-  "enSay": "FRENDschip",
-  "fr": "l'amitié",
-  "frHint": "f.",
-  "frSay": "la-mi-TJE",
-  "example": "Unsere Freundschaft hält ewig."
- },
- {
-  "de": "vergleichen",
-  "deHint": "Verb",
-  "en": "to compare",
-  "enSay": "kom-PÄR",
-  "fr": "comparer",
-  "frHint": "Verb",
-  "frSay": "kong-pa-RE",
-  "example": "Vergleich die zwei Bilder!"
- },
- {
-  "de": "geduldig",
-  "deHint": "Adjektiv",
-  "en": "patient",
-  "enSay": "PEI-schent",
-  "fr": "patient",
-  "frHint": "/ patiente",
-  "frSay": "pa-SJANG",
-  "example": "Sei geduldig, der Kuchen backt noch."
- },
- {
-  "de": "das Werkzeug",
-  "deHint": "Nomen",
-  "en": "tool",
-  "enSay": "tuul",
-  "fr": "l'outil",
-  "frHint": "m.",
-  "frSay": "lu-TI",
-  "example": "Der Hammer ist ein Werkzeug."
- },
- {
-  "de": "die Brücke",
-  "deHint": "Nomen",
-  "en": "bridge",
-  "enSay": "bridsch",
-  "fr": "le pont",
-  "frHint": "m.",
-  "frSay": "lö PONG",
-  "example": "Wir gehen über die Brücke."
- },
- {
-  "de": "erklären",
-  "deHint": "Verb",
-  "en": "to explain",
-  "enSay": "iks-PLEIN",
-  "fr": "expliquer",
-  "frHint": "Verb",
-  "frSay": "ex-pli-KE",
-  "example": "Kannst du mir das erklären?"
- },
- {
-  "de": "der Wald",
-  "deHint": "Nomen",
-  "en": "forest",
-  "enSay": "FOR-ist",
-  "fr": "la forêt",
-  "frHint": "f.",
-  "frSay": "la fo-RÄ",
-  "example": "Im Wald riecht es nach Pilzen."
- },
- {
-  "de": "hilfsbereit",
-  "deHint": "Adjektiv",
-  "en": "helpful",
-  "enSay": "HELP-ful",
-  "fr": "serviable",
-  "frHint": "Adjektiv",
-  "frSay": "ser-WJABL",
-  "example": "Sie ist immer hilfsbereit."
- },
- {
-  "de": "die Überraschung",
-  "deHint": "Nomen",
-  "en": "surprise",
-  "enSay": "ser-PRAIS",
-  "fr": "la surprise",
-  "frHint": "f.",
-  "frSay": "la sür-PRIS",
-  "example": "Das Geschenk ist eine Überraschung."
- },
- {
-  "de": "der Schlüssel",
-  "deHint": "Nomen",
-  "en": "key",
-  "enSay": "kii",
-  "fr": "la clé",
-  "frHint": "f.",
-  "frSay": "la KLE",
-  "example": "Wo ist mein Schlüssel?"
- },
- {
-  "de": "träumen",
-  "deHint": "Verb",
-  "en": "to dream",
-  "enSay": "driim",
-  "fr": "rêver",
-  "frHint": "Verb",
-  "frSay": "rä-WE",
-  "example": "Ich träume vom Meer."
- },
- {
-  "de": "das Abenteuer",
-  "deHint": "Nomen",
-  "en": "adventure",
-  "enSay": "äd-VEN-tscher",
-  "fr": "l'aventure",
-  "frHint": "f.",
-  "frSay": "la-wang-TÜR",
-  "example": "Der Ausflug war ein Abenteuer."
- },
- {
-  "de": "ehrlich",
-  "deHint": "Adjektiv",
-  "en": "honest",
-  "enSay": "ON-ist",
-  "fr": "honnête",
-  "frHint": "Adjektiv",
-  "frSay": "o-NÄT",
-  "example": "Sei ehrlich zu deinen Freunden."
- },
- {
-  "de": "die Wolke",
-  "deHint": "Nomen",
-  "en": "cloud",
-  "enSay": "klaud",
-  "fr": "le nuage",
-  "frHint": "m.",
-  "frSay": "lö nü-ASCH",
-  "example": "Die Wolke sieht aus wie ein Hund."
- },
- {
-  "de": "sammeln",
-  "deHint": "Verb",
-  "en": "to collect",
-  "enSay": "ko-LEKT",
-  "fr": "collectionner",
-  "frHint": "Verb",
-  "frSay": "ko-lek-sjo-NE",
-  "example": "Ich sammle schöne Steine."
- },
- {
-  "de": "der Mond",
-  "deHint": "Nomen",
-  "en": "moon",
-  "enSay": "muun",
-  "fr": "la lune",
-  "frHint": "f.",
-  "frSay": "la LÜN",
-  "example": "Heute ist der Mond ganz rund."
- },
- {
-  "de": "die Insel",
-  "deHint": "Nomen",
-  "en": "island",
-  "enSay": "AI-länd",
-  "fr": "l'île",
-  "frHint": "f.",
-  "frSay": "LIL",
-  "example": "Die Insel liegt mitten im See."
- },
- {
-  "de": "schnell",
-  "deHint": "Adjektiv",
-  "en": "fast",
-  "enSay": "faast",
-  "fr": "rapide",
-  "frHint": "Adjektiv",
-  "frSay": "ra-PID",
-  "example": "Das Tram ist heute schnell."
- },
- {
-  "de": "der Stern",
-  "deHint": "Nomen",
-  "en": "star",
-  "enSay": "staar",
-  "fr": "l'étoile",
-  "frHint": "f.",
-  "frSay": "le-TUAL",
-  "example": "Siehst du den hellen Stern?"
- },
- {
-  "de": "versprechen",
-  "deHint": "Verb",
-  "en": "to promise",
-  "enSay": "PROM-is",
-  "fr": "promettre",
-  "frHint": "Verb",
-  "frSay": "pro-MÄTR",
-  "example": "Ich verspreche, ich komme mit."
- },
- {
-  "de": "das Gewitter",
-  "deHint": "Nomen",
-  "en": "thunderstorm",
-  "enSay": "TANDER-storm",
-  "fr": "l'orage",
-  "frHint": "m.",
-  "frSay": "lo-RASCH",
-  "example": "Das Gewitter war sehr laut."
- },
- {
-  "de": "die Bibliothek",
-  "deHint": "Nomen",
-  "en": "library",
-  "enSay": "LAI-bre-ri",
-  "fr": "la bibliothèque",
-  "frHint": "f.",
-  "frSay": "bi-bli-o-TÄK",
-  "example": "In der Bibliothek ist es still."
- },
- {
-  "de": "lösen",
-  "deHint": "Verb",
-  "en": "to solve",
-  "enSay": "solv",
-  "fr": "résoudre",
-  "frHint": "Verb",
-  "frSay": "re-SUDR",
-  "example": "Wir lösen das Rätsel zusammen."
- },
- {
-  "de": "das Rätsel",
-  "deHint": "Nomen",
-  "en": "riddle",
-  "enSay": "RIDL",
-  "fr": "la devinette",
-  "frHint": "f.",
-  "frSay": "dö-wi-NÄT",
-  "example": "Kennst du ein gutes Rätsel?"
- },
- {
-  "de": "gemütlich",
-  "deHint": "Adjektiv",
-  "en": "cosy",
-  "enSay": "KOU-si",
-  "fr": "confortable",
-  "frHint": "Adjektiv",
-  "frSay": "kong-for-TABL",
-  "example": "Das Sofa ist so gemütlich."
- },
- {
-  "de": "der Frühling",
-  "deHint": "Nomen",
-  "en": "spring",
-  "enSay": "spring",
-  "fr": "le printemps",
-  "frHint": "m.",
-  "frSay": "präng-TANG",
-  "example": "Im Frühling blühen die Blumen."
- },
- {
-  "de": "der Herbst",
-  "deHint": "Nomen",
-  "en": "autumn",
-  "enSay": "OO-tem",
-  "fr": "l'automne",
-  "frHint": "m.",
-  "frSay": "lo-TON",
-  "example": "Im Herbst fallen die Blätter."
- },
- {
-  "de": "der Winter",
-  "deHint": "Nomen",
-  "en": "winter",
-  "enSay": "WIN-ter",
-  "fr": "l'hiver",
-  "frHint": "m.",
-  "frSay": "li-WÄR",
-  "example": "Im Winter fahren wir Schlitten."
- },
- {
-  "de": "der Sommer",
-  "deHint": "Nomen",
-  "en": "summer",
-  "enSay": "SAMMER",
-  "fr": "l'été",
-  "frHint": "m.",
-  "frSay": "le-TE",
-  "example": "Im Sommer baden wir im Rhein."
- },
- {
-  "de": "flüstern",
-  "deHint": "Verb",
-  "en": "to whisper",
-  "enSay": "WIS-per",
-  "fr": "chuchoter",
-  "frHint": "Verb",
-  "frSay": "schü-scho-TE",
-  "example": "Sie flüstert mir etwas ins Ohr."
- },
- {
-  "de": "das Geheimnis",
-  "deHint": "Nomen",
-  "en": "secret",
-  "enSay": "SII-kret",
-  "fr": "le secret",
-  "frHint": "m.",
-  "frSay": "lö sö-KRÄ",
-  "example": "Kannst du ein Geheimnis behalten?"
- },
- {
-  "de": "stolz",
-  "deHint": "Adjektiv",
-  "en": "proud",
-  "enSay": "praud",
-  "fr": "fier",
-  "frHint": "/ fière",
-  "frSay": "FJÄR",
-  "example": "Ich bin stolz auf dich."
- },
- {
-  "de": "der Schmetterling",
-  "deHint": "Nomen",
-  "en": "butterfly",
-  "enSay": "BATTER-flai",
-  "fr": "le papillon",
-  "frHint": "m.",
-  "frSay": "pa-pi-JONG",
-  "example": "Ein Schmetterling sitzt auf der Blume."
- },
- {
-  "de": "klettern",
-  "deHint": "Verb",
-  "en": "to climb",
-  "enSay": "klaim",
-  "fr": "grimper",
-  "frHint": "Verb",
-  "frSay": "gräng-PE",
-  "example": "Wir klettern auf den Baum."
- },
- {
-  "de": "die Erfindung",
-  "deHint": "Nomen",
-  "en": "invention",
-  "enSay": "in-VEN-schen",
-  "fr": "l'invention",
-  "frHint": "f.",
-  "frSay": "äng-wang-SJONG",
-  "example": "Das Rad ist eine alte Erfindung."
- },
- {
-  "de": "vorsichtig",
-  "deHint": "Adjektiv",
-  "en": "careful",
-  "enSay": "KÄR-ful",
-  "fr": "prudent",
-  "frHint": "/ prudente",
-  "frSay": "prü-DANG",
-  "example": "Sei vorsichtig auf der Treppe."
- },
- {
-  "de": "der Hafen",
-  "deHint": "Nomen",
-  "en": "harbour",
-  "enSay": "HAA-ber",
-  "fr": "le port",
-  "frHint": "m.",
-  "frSay": "lö POR",
-  "example": "Im Hafen liegen viele Schiffe."
- },
- {
-  "de": "das Gemüse",
-  "deHint": "Nomen",
-  "en": "vegetables",
-  "enSay": "WEDSCH-tebls",
-  "fr": "les légumes",
-  "frHint": "m. Plural",
-  "frSay": "le le-GÜM",
-  "example": "Gemüse macht stark."
- },
- {
-  "de": "teilen",
-  "deHint": "Verb",
-  "en": "to share",
-  "enSay": "schär",
-  "fr": "partager",
-  "frHint": "Verb",
-  "frSay": "par-ta-SCHE",
-  "example": "Wir teilen die Schokolade."
- },
- {
-  "de": "der Ozean",
-  "deHint": "Nomen",
-  "en": "ocean",
-  "enSay": "OU-schen",
-  "fr": "l'océan",
-  "frHint": "m.",
-  "frSay": "lo-se-ANG",
-  "example": "Wale leben im Ozean."
- },
- {
-  "de": "fröhlich",
-  "deHint": "Adjektiv",
-  "en": "cheerful",
-  "enSay": "TSCHIR-ful",
-  "fr": "joyeux",
-  "frHint": "/ joyeuse",
-  "frSay": "schua-JÖ",
-  "example": "Der Hund ist heute fröhlich."
- },
- {
-  "de": "die Uhr",
-  "deHint": "Nomen",
-  "en": "clock",
-  "enSay": "klok",
-  "fr": "l'horloge",
-  "frHint": "f.",
-  "frSay": "lor-LOSCH",
-  "example": "Die Uhr am Bahnhof ist gross."
- },
- {
-  "de": "der Berg",
-  "deHint": "Nomen",
-  "en": "mountain",
-  "enSay": "MAUN-ten",
-  "fr": "la montagne",
-  "frHint": "f.",
-  "frSay": "mong-TANJ",
-  "example": "Wir wandern auf den Berg."
- },
- {
-  "de": "lachen",
-  "deHint": "Verb",
-  "en": "to laugh",
-  "enSay": "laaf",
-  "fr": "rire",
-  "frHint": "Verb",
-  "frSay": "RIR",
-  "example": "Wir lachen über den Witz."
- },
- {
-  "de": "die Zukunft",
-  "deHint": "Nomen",
-  "en": "future",
-  "enSay": "FJUU-tscher",
-  "fr": "l'avenir",
-  "frHint": "m.",
-  "frSay": "law-NIR",
-  "example": "Was bringt die Zukunft?"
- },
- {
-  "de": "ordentlich",
-  "deHint": "Adjektiv",
-  "en": "tidy",
-  "enSay": "TAI-di",
-  "fr": "ordonné",
-  "frHint": "/ ordonnée",
-  "frSay": "or-do-NE",
-  "example": "Mein Zimmer ist ordentlich."
- },
- {
-  "de": "der Fluss",
-  "deHint": "Nomen",
-  "en": "river",
-  "enSay": "RI-wer",
-  "fr": "la rivière",
-  "frHint": "f.",
-  "frSay": "ri-WJÄR",
-  "example": "Am Fluss sammeln wir Steine."
- },
- {
-  "de": "sich erinnern",
-  "deHint": "Verb",
-  "en": "to remember",
-  "enSay": "ri-MEM-ber",
-  "fr": "se souvenir",
-  "frHint": "Verb",
-  "frSay": "sö suw-NIR",
-  "example": "Erinnerst du dich an den Zoo?"
- },
- {
-  "de": "die Wissenschaft",
-  "deHint": "Nomen",
-  "en": "science",
-  "enSay": "SAI-ens",
-  "fr": "la science",
-  "frHint": "f.",
-  "frSay": "la SJANGS",
-  "example": "Wissenschaft erklärt die Welt."
- },
- {
-  "de": "stark",
-  "deHint": "Adjektiv",
-  "en": "strong",
-  "enSay": "strong",
-  "fr": "fort",
-  "frHint": "/ forte",
-  "frSay": "FOR",
-  "example": "Der Elefant ist sehr stark."
- },
- {
-  "de": "der Planet",
-  "deHint": "Nomen",
-  "en": "planet",
-  "enSay": "PLÄ-net",
-  "fr": "la planète",
-  "frHint": "f.",
-  "frSay": "pla-NÄT",
-  "example": "Die Erde ist unser Planet."
- },
- {
-  "de": "bauen",
-  "deHint": "Verb",
-  "en": "to build",
-  "enSay": "bild",
-  "fr": "construire",
-  "frHint": "Verb",
-  "frSay": "kongs-trü-IR",
-  "example": "Wir bauen eine Burg aus Sand."
- },
- {
-  "de": "die Ente",
-  "deHint": "Nomen",
-  "en": "duck",
-  "enSay": "dak",
-  "fr": "le canard",
-  "frHint": "m.",
-  "frSay": "lö ka-NAR",
-  "example": "Die Ente schwimmt auf dem Rhein."
- },
- {
-  "de": "freundlich",
-  "deHint": "Adjektiv",
-  "en": "friendly",
-  "enSay": "FREND-li",
-  "fr": "gentil",
-  "frHint": "/ gentille",
-  "frSay": "schang-TI",
-  "example": "Der Nachbar ist sehr freundlich."
- },
- {
-  "de": "das Frühstück",
-  "deHint": "Nomen",
+  "ch": "Zmorge",
+  "de": "Frühstück",
   "en": "breakfast",
   "enSay": "BREK-fest",
   "fr": "le petit-déjeuner",
-  "frHint": "m.",
-  "frSay": "pti-de-schö-NE",
-  "example": "Zum Frühstück gibt es Müesli."
+  "frSay": "pti-de-schö-NE"
  },
  {
-  "de": "gewinnen",
-  "deHint": "Verb",
-  "en": "to win",
-  "enSay": "win",
-  "fr": "gagner",
-  "frHint": "Verb",
-  "frSay": "ga-NJE",
-  "example": "Wer gewinnt das Spiel?"
+  "ch": "Zmittag",
+  "de": "Mittagessen",
+  "en": "lunch",
+  "enSay": "lantsch",
+  "fr": "le déjeuner",
+  "frSay": "de-schö-NE"
+ },
+ {
+  "ch": "Znacht",
+  "de": "Abendessen",
+  "en": "dinner",
+  "enSay": "DIN-er",
+  "fr": "le dîner",
+  "frSay": "di-NE"
+ },
+ {
+  "ch": "Zvieri",
+  "de": "Nachmittagsimbiss",
+  "en": "afternoon snack",
+  "enSay": "af-ter-NUUN snäk",
+  "fr": "le goûter",
+  "frSay": "gu-TE"
+ },
+ {
+  "ch": "Gipfeli",
+  "de": "Croissant",
+  "en": "croissant",
+  "enSay": "KRUA-song",
+  "fr": "le croissant",
+  "frSay": "krua-SANG"
+ },
+ {
+  "ch": "Rüebli",
+  "de": "Karotte",
+  "en": "carrot",
+  "enSay": "KÄR-ot",
+  "fr": "la carotte",
+  "frSay": "ka-ROTT"
+ },
+ {
+  "ch": "Häärdöpfel",
+  "de": "Kartoffel",
+  "en": "potato",
+  "enSay": "po-TEI-to",
+  "fr": "la pomme de terre",
+  "frSay": "pomm dö TÄR"
+ },
+ {
+  "ch": "Schoggi",
+  "de": "Schokolade",
+  "en": "chocolate",
+  "enSay": "TSCHOK-lit",
+  "fr": "le chocolat",
+  "frSay": "scho-ko-LA"
+ },
+ {
+  "ch": "Glace",
+  "de": "Speiseeis",
+  "en": "ice cream",
+  "enSay": "EIS-kriim",
+  "fr": "la glace",
+  "frSay": "GLASS"
+ },
+ {
+  "ch": "Wäje",
+  "de": "Wähe, Blechkuchen",
+  "en": "tart",
+  "enSay": "taart",
+  "fr": "la tarte",
+  "frSay": "TART"
+ },
+ {
+  "ch": "Gutzi",
+  "de": "Keks",
+  "en": "biscuit",
+  "enSay": "BIS-kit",
+  "fr": "le biscuit",
+  "frSay": "bis-KÜI"
+ },
+ {
+  "ch": "Angge",
+  "de": "Butter",
+  "en": "butter",
+  "enSay": "BA-ter",
+  "fr": "le beurre",
+  "frSay": "BÖR"
+ },
+ {
+  "ch": "Kääs",
+  "de": "Käse",
+  "en": "cheese",
+  "enSay": "tschiis",
+  "fr": "le fromage",
+  "frSay": "fro-MASCH"
+ },
+ {
+  "ch": "Kuchi",
+  "de": "Küche",
+  "en": "kitchen",
+  "enSay": "KIT-schen",
+  "fr": "la cuisine",
+  "frSay": "küi-SIIN"
+ },
+ {
+  "ch": "Drämmli",
+  "de": "Tram",
+  "en": "tram",
+  "enSay": "träm",
+  "fr": "le tram",
+  "frSay": "TRAM"
+ },
+ {
+  "ch": "Velo",
+  "de": "Fahrrad",
+  "en": "bike",
+  "enSay": "baik",
+  "fr": "le vélo",
+  "frSay": "we-LO"
+ },
+ {
+  "ch": "Trottinett",
+  "de": "Tretroller",
+  "en": "scooter",
+  "enSay": "SKUU-ter",
+  "fr": "la trottinette",
+  "frSay": "tro-ti-NETT"
+ },
+ {
+  "ch": "Billet",
+  "de": "Fahrkarte",
+  "en": "ticket",
+  "enSay": "TI-kit",
+  "fr": "le billet",
+  "frSay": "bi-JE"
+ },
+ {
+  "ch": "Perron",
+  "de": "Bahnsteig",
+  "en": "platform",
+  "enSay": "PLÄT-form",
+  "fr": "le quai",
+  "frSay": "KE"
+ },
+ {
+  "ch": "Rhyy",
+  "de": "Rhein",
+  "en": "the Rhine",
+  "enSay": "dö RAIN",
+  "fr": "le Rhin",
+  "frSay": "RÄNG"
+ },
+ {
+  "ch": "Fähri",
+  "de": "Fähre",
+  "en": "ferry",
+  "enSay": "FE-ri",
+  "fr": "le bac",
+  "frSay": "BAK"
+ },
+ {
+  "ch": "Stäge",
+  "de": "Treppe",
+  "en": "stairs",
+  "enSay": "stäärs",
+  "fr": "l'escalier",
+  "frSay": "les-ka-LJE"
+ },
+ {
+  "ch": "Lavabo",
+  "de": "Waschbecken",
+  "en": "sink",
+  "enSay": "sink",
+  "fr": "le lavabo",
+  "frSay": "la-wa-BO"
+ },
+ {
+  "ch": "Estrich",
+  "de": "Dachboden",
+  "en": "attic",
+  "enSay": "Ä-tik",
+  "fr": "le grenier",
+  "frSay": "grö-NJE"
+ },
+ {
+  "ch": "Kaschte",
+  "de": "Schrank",
+  "en": "cupboard",
+  "enSay": "KA-berd",
+  "fr": "l'armoire",
+  "frSay": "lar-MUAR"
+ },
+ {
+  "ch": "Däfeli",
+  "de": "Bonbon",
+  "en": "sweet",
+  "enSay": "swiit",
+  "fr": "le bonbon",
+  "frSay": "bong-BONG"
+ },
+ {
+  "ch": "Duvet",
+  "de": "Bettdecke",
+  "en": "duvet",
+  "enSay": "DUU-wei",
+  "fr": "la couette",
+  "frSay": "ku-ETT"
+ },
+ {
+  "ch": "Natel",
+  "de": "Handy",
+  "en": "phone",
+  "enSay": "foun",
+  "fr": "le portable",
+  "frSay": "por-TABL"
+ },
+ {
+  "ch": "Grossmami",
+  "de": "Grossmutter",
+  "en": "grandma",
+  "enSay": "GRÄN-ma",
+  "fr": "la mamie",
+  "frSay": "ma-MI"
+ },
+ {
+  "ch": "Grossbappi",
+  "de": "Grossvater",
+  "en": "grandpa",
+  "enSay": "GRÄN-pa",
+  "fr": "le papi",
+  "frSay": "pa-PI"
+ },
+ {
+  "ch": "Gotti",
+  "de": "Patentante",
+  "en": "godmother",
+  "enSay": "GOD-ma-ther",
+  "fr": "la marraine",
+  "frSay": "ma-RÄN"
+ },
+ {
+  "ch": "Götti",
+  "de": "Patenonkel",
+  "en": "godfather",
+  "enSay": "GOD-fa-ther",
+  "fr": "le parrain",
+  "frSay": "pa-RÄNG"
+ },
+ {
+  "ch": "Gschpänli",
+  "de": "Spielkamerad/in",
+  "en": "buddy",
+  "enSay": "BA-di",
+  "fr": "le copain",
+  "frSay": "ko-PÄNG"
+ },
+ {
+  "ch": "Bueb",
+  "de": "Junge",
+  "en": "boy",
+  "enSay": "boi",
+  "fr": "le garçon",
+  "frSay": "gar-SONG"
+ },
+ {
+  "ch": "Maitli",
+  "de": "Mädchen",
+  "en": "girl",
+  "enSay": "görl",
+  "fr": "la fille",
+  "frSay": "FIJ"
+ },
+ {
+  "ch": "Mugge",
+  "de": "Mücke",
+  "en": "mosquito",
+  "enSay": "mos-KII-to",
+  "fr": "le moustique",
+  "frSay": "mus-TIK"
+ },
+ {
+  "ch": "Pfnüsel",
+  "de": "Schnupfen",
+  "en": "a cold",
+  "enSay": "ö KOULD",
+  "fr": "le rhume",
+  "frSay": "RÜM"
+ },
+ {
+  "ch": "Gwitter",
+  "de": "Gewitter",
+  "en": "thunderstorm",
+  "enSay": "TANDER-storm",
+  "fr": "l'orage",
+  "frSay": "lo-RASCH"
+ },
+ {
+  "ch": "Ziibele",
+  "de": "Zwiebel",
+  "en": "onion",
+  "enSay": "AN-jen",
+  "fr": "l'oignon",
+  "frSay": "lo-NJONG"
+ },
+ {
+  "ch": "Larve",
+  "de": "Fasnachtsmaske",
+  "en": "mask",
+  "enSay": "maask",
+  "fr": "le masque",
+  "frSay": "MASK"
+ },
+ {
+  "ch": "Räppli",
+  "de": "Konfetti",
+  "en": "confetti",
+  "enSay": "kon-FE-ti",
+  "fr": "les confettis",
+  "frSay": "kong-fe-TI"
+ },
+ {
+  "ch": "Mäss",
+  "de": "Herbstmesse",
+  "en": "fair",
+  "enSay": "fäär",
+  "fr": "la foire",
+  "frSay": "FUAR"
+ },
+ {
+  "ch": "Guggemuusig",
+  "de": "Fasnachts-Blaskapelle",
+  "en": "brass band",
+  "enSay": "braas bänd",
+  "fr": "la fanfare",
+  "frSay": "fang-FAR"
+ },
+ {
+  "ch": "luege",
+  "de": "schauen",
+  "en": "to look",
+  "enSay": "tu LUK",
+  "fr": "regarder",
+  "frSay": "rö-gar-DE"
+ },
+ {
+  "ch": "schaffe",
+  "de": "arbeiten",
+  "en": "to work",
+  "enSay": "tu WÖRK",
+  "fr": "travailler",
+  "frSay": "tra-wa-JE"
+ },
+ {
+  "ch": "poschte",
+  "de": "einkaufen",
+  "en": "to shop",
+  "enSay": "tu SCHOP",
+  "fr": "faire les courses",
+  "frSay": "fär le KURS"
+ },
+ {
+  "ch": "haimgoo",
+  "de": "heimgehen",
+  "en": "to go home",
+  "enSay": "tu gou HOUM",
+  "fr": "rentrer",
+  "frSay": "rang-TRE"
+ },
+ {
+  "ch": "schnorre",
+  "de": "plappern",
+  "en": "to chatter",
+  "enSay": "tu TSCHÄ-ter",
+  "fr": "bavarder",
+  "frSay": "ba-war-DE"
+ },
+ {
+  "ch": "gumpe",
+  "de": "springen",
+  "en": "to jump",
+  "enSay": "tu DSCHAMP",
+  "fr": "sauter",
+  "frSay": "so-TE"
+ },
+ {
+  "ch": "zwängele",
+  "de": "quengeln",
+  "en": "to whine",
+  "enSay": "tu WAIN",
+  "fr": "pleurnicher",
+  "frSay": "plör-ni-SCHE"
+ },
+ {
+  "ch": "pfuuse",
+  "de": "schlafen",
+  "en": "to snooze",
+  "enSay": "tu SNUUS",
+  "fr": "roupiller",
+  "frSay": "ru-pi-JE"
+ },
+ {
+  "ch": "tschutte",
+  "de": "Fussball spielen",
+  "en": "to play football",
+  "enSay": "tu plei FUT-bol",
+  "fr": "jouer au foot",
+  "frSay": "schu-E o FUT"
+ },
+ {
+  "ch": "gäll?",
+  "de": "nicht wahr?",
+  "en": "right?",
+  "enSay": "rait",
+  "fr": "n'est-ce pas ?",
+  "frSay": "ness PA"
+ },
+ {
+  "ch": "mega",
+  "de": "sehr",
+  "en": "very",
+  "enSay": "WE-ri",
+  "fr": "très",
+  "frSay": "TRÄ"
+ },
+ {
+  "ch": "Sali",
+  "de": "Hallo",
+  "en": "hi",
+  "enSay": "hai",
+  "fr": "salut",
+  "frSay": "sa-LÜ"
+ },
+ {
+  "ch": "merci vilmool",
+  "de": "vielen Dank",
+  "en": "thanks a lot",
+  "enSay": "tänks ö LOT",
+  "fr": "merci beaucoup",
+  "frSay": "mär-SI bo-KU"
+ },
+ {
+  "ch": "Ade",
+  "de": "Auf Wiedersehen",
+  "en": "goodbye",
+  "enSay": "gud-BAI",
+  "fr": "au revoir",
+  "frSay": "o rö-WUAR"
+ },
+ {
+  "ch": "Finöggel",
+  "de": "Besserwisser",
+  "en": "know-it-all",
+  "enSay": "NOU-it-ool",
+  "fr": "le je-sais-tout",
+  "frSay": "schö-se-TU"
+ },
+ {
+  "ch": "Gstürm",
+  "de": "Aufregung, Theater",
+  "en": "fuss",
+  "enSay": "fass",
+  "fr": "le remue-ménage",
+  "frSay": "rö-mü-me-NASCH"
+ },
+ {
+  "ch": "Kissi",
+  "de": "Kissen",
+  "en": "pillow",
+  "enSay": "PI-lou",
+  "fr": "l'oreiller",
+  "frSay": "lo-re-JE"
  }
 ]
