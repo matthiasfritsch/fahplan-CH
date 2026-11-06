@@ -1,7 +1,7 @@
 # Fahrplan-Board
 
 Rendert ein 800 x 480 PNG fuer den reTerminal E1001: oben das Wort des
-Tages (DE, EN, FR), links Familien-Events in und um Basel mit QR-Code zur
+Tages (Baseldytsch mit Hochdeutsch, EN, FR), links Familien-Events in und um Basel mit QR-Code zur
 vollen Eventliste, rechts invertiert der Fahrplan fuer zwei Haltestellen. Laeuft auf Vercel Hobby, also
 dauerhaft kostenlos, und braucht keinen Browser zum Rendern.
 
@@ -14,7 +14,7 @@ dauerhaft kostenlos, und braucht keinen Browser zum Rendern.
 | `app/page.jsx` | Bedienseite im Browser: Haltestellen suchen, Vorschau, Geraete-URL. |
 | `app/e/page.jsx` | Eventseite hinter dem QR-Code (`/e`): alle Familien-Events der naechsten zwei Wochen mit Links, darunter Jazz, Streetart, Gaming, Anime und Hip-Hop fuer Lisa und Matthias. |
 | `lib/content.mjs` | Auswahl von Wort und Events, Zeichenlimits. |
-| `data/words.json` | Woerter des Tages, rotieren taeglich. |
+| `data/words.json` | Woerter des Tages: Baseldytsch, Hochdeutsch, EN, FR mit Aussprache. Rotieren taeglich. |
 | `lib/sources.mjs` | Live-Eventquellen: Schule, Basel-West, Gugu Basel, myBasel, Eventfrog. |
 | `lib/events.mjs` | Laedt die Events fuer Board und Eventseite (`/e`). |
 | `lib/curate.mjs` | Doppelte zusammenlegen, Kleinkind-Angebote und Dauerangebote filtern, Themen fuer Lisa und Matthias erkennen. |
@@ -88,7 +88,7 @@ ins Repo (das Repo ist oeffentlich).
 Adresse, unter der es aufgerufen wurde.
 
 Die Layout-Flaechen sind fix, deshalb gelten Zeichenlimits (Wort 20,
-Beispielsatz 40, Eventtitel 40, siehe `LIMITS` in `lib/content.mjs`).
+Hochdeutsch 22, Eventtitel 40, siehe `LIMITS` in `lib/content.mjs`).
 `npm run check` prueft alle Listen und laeuft vor jedem Build
 automatisch. Ein zu langer Eintrag bricht den Deploy ab, statt auf dem
 Geraet abgeschnitten zu werden.

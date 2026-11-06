@@ -14,10 +14,10 @@ const check = (where, field, value, max) => {
 };
 
 load("words.json").forEach((w, i) => {
-  const at = `words[${i}] ${w.de}`;
-  for (const k of ["de", "en", "fr"]) check(at, k, w[k], LIMITS.word);
-  for (const k of ["deHint", "enSay", "frHint", "frSay"]) check(at, k, w[k], LIMITS.hint);
-  check(at, "example", w.example, LIMITS.example);
+  const at = `words[${i}] ${w.ch}`;
+  for (const k of ["ch", "en", "fr"]) check(at, k, w[k], LIMITS.word);
+  check(at, "de", w.de, LIMITS.meaning);
+  for (const k of ["enSay", "frSay"]) check(at, k, w[k], LIMITS.hint);
 });
 
 const ev = load("events.json");
